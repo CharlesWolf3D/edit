@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
+#include <sys/ioctl.h>
 #include <sys/time.h>
 
 #include "term.h"
@@ -53,7 +54,7 @@ static int textFG = -1; //último color de primer plano seleccionado
 static int textBG = -1; //último color de fondo seleccionado
 
 //búfer temporal para enviar datos a stdout en bloques
-#define TERMBUFSZ 4096
+#define TERMBUFSZ 8192
 char termBuffer[TERMBUFSZ];
 int termBufferCount = 0;
 
@@ -90,17 +91,17 @@ void refresh(void)
 void setattr(unsigned char attr)
 {
 	unsigned char change;
-	if(attr == textAttr)
-		return;
 	change = attr ^ textAttr;
+	if(!change)
+		return;
 	if(change & ATTR_BOLD)
-		tputs(attr & ATTR_BOLD ? "\x1b[1m" : "\x1b[22m");
+		tputs(attr & ATTR_BOLD ?      "\x1b[1m" : "\x1b[22m");
 	if(change & ATTR_ITALIC)
-		tputs(attr & ATTR_ITALIC ? "\x1b[3m" : "\x1b[23m");
+		tputs(attr & ATTR_ITALIC ?    "\x1b[3m" : "\x1b[23m");
 	if(change & ATTR_UNDERLINE)
 		tputs(attr & ATTR_UNDERLINE ? "\x1b[4m" : "\x1b[24m");
 	if(change & ATTR_STRIKE)
-		tputs(attr & ATTR_STRIKE ? "\x1b[9m" : "\x1b[29m");
+		tputs(attr & ATTR_STRIKE ?    "\x1b[9m" : "\x1b[29m");
 	textAttr = attr;
 }
 
@@ -144,7 +145,7 @@ void startText(void)
 	ttystate.c_lflag &= ~ISIG; //no generar señales de INTR/QUIT/SUSP/DSUSP (comentar esta línea en debug para poder salir con Ctrl+C)
 	ttystate.c_lflag &= ~ECHO; //no imprimir los caracteres entrantes
 	ttystate.c_cc[VMIN] = 1; //recibir caracteres inmediatamente
-	tcsetattr(STDIN_FILENO, TCSANOW, &ttystate); //enviar parámetros de stdin
+	tcsetattr(STDIN_FILENO, TCSANOW, &ttystate); //enviar atributos de stdin
 	//inicializar variables
 	termBufferCount = 0;
 	textAttr = ATTR_NONE;
@@ -173,7 +174,7 @@ void endText(void)
 	"\x1b[?25h"        //showcursor
 	);
 	refresh();
-	//restaurar configuración salvada
+	//restaurar atributos de stdin salvados
 	tcsetattr(STDIN_FILENO, TCSANOW, &savedTtyState);
 }
 
@@ -204,34 +205,26 @@ int getchr(void)
 void int2str(int x, char *str)
 {
 	char buf[10];
-	unsigned char negative = 0, i = 0, minimum = 0;
+	unsigned char i = 0;
+	unsigned int ux;
 	if(x == 0)
 		*str++ = '0';
 	else
 	{
 		if(x < 0)
 		{
-			negative = 1;
-			if((unsigned int)x == 0x80000000)
-			{
-				minimum = 1;
-				x = 0x7fffffff;
-			}
-			else
-				x = -x;
-		}
-		while(x)
-		{
-			buf[i++] = (x % 10) + '0';
-			x /= 10;
-		}
-		if(negative)
 			*str++ = '-';
+			x = -x;
+		}
+		ux = (unsigned int)x;
+		while(ux)
+		{
+			buf[i++] = (ux % 10) + '0';
+			ux /= 10;
+		}
 		while(i)
 			*str++ = buf[--i];
 	}
-	if(minimum)
-		(*(str - 1))++;
 	*str = 0;
 }
 
@@ -242,7 +235,7 @@ void clear(void)
 }
 
 //pone el cursor en x,y
-void gotoxy(int x,int y)
+void gotoxy(int x, int y)
 {
 	char num[8];
 	tputs("\x1b[");

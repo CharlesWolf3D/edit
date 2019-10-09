@@ -1,7 +1,7 @@
 CC=@gcc
 CFLAGS=-std=gnu99 -MD -O2 -Wall -Wextra
 LFLAGS= -O2
-OBJSC:=edit.elf term.elf ventana.elf
+OBJSC:=main.elf tui.elf term.elf window.elf controls.elf menu.elf edit.elf
 DEPS=$(OBJSC:.elf=.d)
 RM=@rm -f
 

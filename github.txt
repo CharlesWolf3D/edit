@@ -32,3 +32,6 @@ git fetch
 
 Para descargarse los cambios integrándoos en los archivos:
 git pull origin master
+
+Para renombrar un archivo:
+git mv NOM_ANTIGUO NOM_NUEVO

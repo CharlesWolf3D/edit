@@ -1,10 +1,6 @@
 #ifndef TERM_H_
 #define TERM_H_
 
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-
 extern unsigned char pal16[48];
 extern unsigned char pal16_linux[48];
 
@@ -49,7 +45,7 @@ void int2str(int x, char *str);
 void clear(void);
 
 //pone el cursor en x,y
-void gotoxy(int x,int y);
+void gotoxy(int x, int y);
 
 //establece el color de primer plano
 void setfg(int clr);
