@@ -1,0 +1,30 @@
+Para que encuentre los certificados y no de error al conectarse en Windows:
+git config --system http.sslcainfo "C:/Archivos de programa/Git/mingw32/ssl/certs/ca-bundle.crt"
+
+Para iniciar un repositorio con archivos locales:
+(Crear carpeta para el repositorio y entrar en ella)
+git init
+git remote add origin https://NOM_USUARIO@github.com/NOM_USUARIO/NOM_REPO.git
+
+Para cambiar la URL del origin:
+git remote set-url origin https://NOM_USUARIO@github.com/NOM_USUARIO/NOM_REPO.git
+
+Para clonar un repositorio remoto existente:
+(No crear carpeta para el repositorio, ya que se creará automáticamente)
+git clone https://NOM_USUARIO@github.com/NOM_USUARIO/NOM_REPO.git
+
+Para añadir archivos:
+git add NOM_ARCHIVO
+
+Para hacer un commit a la configuración local:
+git commit -m "COMENTARIO"
+
+Para hacer un commit al repositorio remoto:
+git push origin master
+(origin es el repo con una URL configurada, y master es la rama)
+
+Para descargarse los cambios sin integrarlos en los archivos:
+git fetch
+
+Para descargarse los cambios integrándoos en los archivos:
+git pull origin master
