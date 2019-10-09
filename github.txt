@@ -13,6 +13,14 @@ Para clonar un repositorio remoto existente:
 (No crear carpeta para el repositorio, ya que se creará automáticamente)
 git clone https://NOM_USUARIO@github.com/NOM_USUARIO/NOM_REPO.git
 
+Para configurar el usuario en un único repositorio:
+git config user.email "CORREO_USUARIO"
+git config user.name "NOM_USUARIO"
+
+Para configurar el usuario globalmente:
+git config --global user.email "CORREO_USUARIO"
+git config --global user.name "NOM_USUARIO"
+
 Para añadir archivos:
 git add NOM_ARCHIVO
 
