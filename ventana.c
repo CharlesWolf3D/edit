@@ -32,30 +32,22 @@ char *scrl_right = "\u25ba"; //barra despl., flecha derecha
 char *scrl_space = "\u2591"; //barra despl., espacio
 char *scrl_thumb = "\u2588"; //barra despl., control
 
-int clr_title =       0x1a;
-int clr_menu =        0x70;
-int clr_search =      0x70;
-int clr_search_txt =  0xf0;
-int clr_search_btn =  0xf9;
-int clr_tab =         0x70;
-int clr_edit_text =   0x1f;
-int clr_edit_border = 0x1a;
-int clr_scrl_arr =    0xb2;
-int clr_scrl_space =  0x1e;
-int clr_scrl_thumb =  0x2a;
-int clr_status =      0x70;
-
+//colores de los elementos
 unsigned char colors[] =
 {
 	0x1a, //título
 	0x70, //barra de menús
-	0x74, //barra de menús, tecla
 	0x20, //barra de menús, seleccionado
-	0x24, //barra de menús, seleccionado, tecla
+	0x74, //barra de menús, tecla
+	0x24, //barra de menús, tecla, seleccionado
+	0x78, //barra de menús, deshabilitado
+	0x27, //barra de menús, deshabilitado, seleccionado
 	0x70, //menú
+	0x2f, //menú, seleccionado
 	0x74, //menú, tecla
-	0x20, //menú, seleccionado
-	0x24, //menú, seleccionado, tecla
+	0x2c, //menú, tecla, seleccionado
+	0x78, //menú, deshabilitado
+	0x27, //menú, deshabilitado, seleccionado
 	0x70, //barra de búsqueda
 	0x80, //barra de pestañas
 	0xf1, //pestaña
@@ -68,17 +60,22 @@ unsigned char colors[] =
 	0x3f  //barra de estado
 };
 
+//constantes para los colores de los elementos
 enum
 {
 	CLR_TITLE,
 	CLR_MENUBAR,
-	CLR_MENUBAR_KEY,
 	CLR_MENUBAR_SEL,
-	CLR_MENUBAR_SEL_KEY,
+	CLR_MENUBAR_KEY,
+	CLR_MENUBAR_KEY_SEL,
+	CLR_MENUBAR_DIS,
+	CLR_MENUBAR_DIS_SEL,
 	CLR_MENU,
-	CLR_MENU_KEY,
 	CLR_MENU_SEL,
-	CLR_MENU_SELKEY,
+	CLR_MENU_KEY,
+	CLR_MENU_KEY_SEL,
+	CLR_MENU_DIS,
+	CLR_MENU_DIS_SEL,
 	CLR_SEARCHBAR,
 	CLR_TABBAR,
 	CLR_TABBTN,
@@ -89,6 +86,198 @@ enum
 	CLR_EDIT_SC_SPACE,
 	CLR_EDIT_SC_THUMB,
 	CLR_STATUSBAR
+};
+
+//teclas de acceso rápido
+//bits 0..7:   byte de carácter recibido
+//bit 8:       mayúsculas
+//bit 9:       control
+//bit 10:      alt
+//bits 16..23: número de tecla de edición (byte de carácter es 0)
+#define HK_NONE   0x00000000     //sin tecla rápida
+#define HK_CHMASK 0x000000ff     //máscara para el byte de carácter
+#define HK_C      0x00000100     //Ctrl
+#define HK_A      0x00000200     //Alt
+#define HK_S      0x00000400     //Mayús
+#define HK_CA     (HK_C | HK_A)  //Ctrl+Alt
+#define HK_CS     (HK_C | HK_S)  //Ctrl+Mayús
+#define HK_AS     (HK_A | HK_S)  //Alt+Mayús
+#define HK_CAS    (HK_CA | HK_S) //Ctrl+Alt+Mayús
+#define HK_F1     0x00010000     //F1
+#define HK_F2     0x00020000     //F2
+#define HK_F3     0x00030000     //F3
+#define HK_F4     0x00040000     //F4
+#define HK_F5     0x00050000     //F5
+#define HK_F6     0x00060000     //F6
+#define HK_F7     0x00070000     //F7
+#define HK_F8     0x00080000     //F8
+#define HK_F9     0x00090000     //F9
+#define HK_F10    0x000a0000     //F10
+#define HK_F11    0x000b0000     //F11
+#define HK_F12    0x000c0000     //F12
+#define HK_INS    0x000d0000     //Insertar
+#define HK_DEL    0x000e0000     //Suprimir
+#define HK_HOME   0x000f0000     //Inicio
+#define HK_END    0x00100000     //Fin
+#define HK_PGUP   0x00110000     //Retroceder página
+#define HK_PGDN   0x00120000     //Avanzar página
+#define HK_UP     0x00130000     //Arriba
+#define HK_DOWN   0x00140000     //Abajo
+#define HK_LEFT   0x00150000     //Izquierda
+#define HK_RIGHT  0x00160000     //Derecha
+#define HK_ENTER  0x00170000     //Intro
+#define HK_BKSP   0x00180000     //Retroceso
+#define HK_TAB    0x00190000     //Tabulador
+#define HK_ESC    0x001a0000     //Escape
+#define HK_KMASK  0x00ff0000     //máscara para la tecla de edición
+
+//nombres de las teclas modificadoras
+#define HK_KEY_NUMMODS 3
+char *modkeynames[HK_KEY_NUMMODS] = {"Ctrl", "Alt", "Mayús"};
+//nombres de las teclas de acceso rápido (((HK_* >> 16) & 0xff) - 1)
+#define HK_KEY_NUMKEYS 26
+char *keynames[HK_KEY_NUMKEYS] =
+{
+	"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+	"Ins", "Supr", "Inicio", "Fin", "RePág", "AvPág",
+	"Arriba", "Abajo", "Izquierda", "Derecha",
+	"Intro", "Retroceso", "Tab", "Escape"
+};
+
+//identificadores para elementos de menú
+enum
+{
+	MNID_NONE,
+	MNID_SAVE,
+	MNID_SAVEAS,
+	MNID_SAVECOPY,
+	MNID_RENAME,
+	MNID_CLOSE,
+	MNID_UNDO,
+	MNID_REDO,
+	MNID_CUT,
+	MNID_COPY,
+	MNID_PASTE,
+	MNID_DELETE,
+	MNID_SPACES,
+	MNID_TABS,
+	MNID_NEWLS,
+	MNID_ALLCHARS,
+	MNID_CTXUNDO,
+	MNID_CTXREDO,
+	MNID_CTXCUT,
+	MNID_CTXCOPY,
+	MNID_CTXPASTE,
+	MNID_CTXDELETE
+};
+
+//opciones para elementos de menú
+#define MNFL_NORM 0x00000000 //sin opciones
+#define MNFL_DIS  0x00000001 //deshabilitar
+#define MNFL_INV  0x00000002 //no visible
+#define MNFL_CHK  0x00000004 //con icono de verificación
+#define MNFL_OPT  0x00000008 //con icono de opción
+#define MNFL_NOHK 0x00000010 //no responder a la tecla de acceso rápido
+
+//elemento de definición de menú
+typedef struct
+{
+	char *caption;                 //el & indica el carácter enfatizado, cada tab al principio es un nivel de anidación
+	unsigned int hk;               //tecla de acceso rápido
+	unsigned int id;               //identificador para modificar el elemento
+	unsigned int flags;            //opciones
+	void (*func)(unsigned int id); //callback
+} menudef_t;
+
+//menú principal
+menudef_t menudefs[] =
+{  //Texto                                Tecla rápida       ID             Opciones   Función
+	{"&Archivo",                                    HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Nuevo",                          HK_C   |      'N', MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Abrir...",                       HK_C   |      'O', MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Guardar",                        HK_C   |      'S', MNID_SAVE,     MNFL_NORM, NULL},
+	{"	Guardar &como...",                HK_CS  |      'S', MNID_SAVEAS,   MNFL_NORM, NULL},
+	{"	Guardar copia co&mo...",          HK_CA  |      'S', MNID_SAVECOPY, MNFL_NORM, NULL},
+	{"	&Renombrar...",                               HK_F2, MNID_RENAME,   MNFL_NORM, NULL},
+	{"	Ce&rrar",                         HK_C   |    HK_F4, MNID_CLOSE,    MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Salir",                          HK_A   |    HK_F4, MNID_NONE,     MNFL_NORM, NULL},
+	{"&Edición",                                    HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Deshacer",                       HK_C   |      'Z', MNID_UNDO,     MNFL_NORM, NULL},
+	{"	&Rehacer",                        HK_C   |      'Y', MNID_REDO,     MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	C&ortar",                         HK_C   |      'X', MNID_CUT,      MNFL_NORM, NULL},
+	{"	&Copiar",                         HK_C   |      'C', MNID_COPY,     MNFL_NORM, NULL},
+	{"	&Pegar",                          HK_C   |      'V', MNID_PASTE,    MNFL_NORM, NULL},
+	{"	&Eliminar",                                  HK_DEL, MNID_DELETE,   MNFL_NOHK, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	Seleccionar &todo",               HK_C   |      'A', MNID_NONE,     MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	Co&mandos",                                 HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"		&Aumentar sangría",                      HK_TAB, MNID_NONE,     MNFL_NOHK, NULL},
+	{"		&Reducir sangría",            HK_S   |   HK_TAB, MNID_NONE,     MNFL_NOHK, NULL},
+	{"		-",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"		&Borrar línea",               HK_C   |      'K', MNID_NONE,     MNFL_NORM, NULL},
+	{"		&Duplicar línea o selección", HK_C   |      'D', MNID_NONE,     MNFL_NORM, NULL},
+	{"		-",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"		&Insertar línea debajo",      HK_C   | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},
+	{"		I&nsertar línea encima",      HK_CS  | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},
+	{"		-",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"		&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, MNID_NONE,     MNFL_NORM, NULL},
+	{"		M&over líneas hacia abajo",   HK_A   |  HK_PGDN, MNID_NONE,     MNFL_NORM, NULL},
+	{"&Buscar",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Buscar...",                      HK_C   |      'F', MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Siguiente",                                  HK_F3, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Anterior",                       HK_S   |    HK_F3, MNID_NONE,     MNFL_NORM, NULL},
+	{"	S&iguiente seleccionado",         HK_C   |    HK_F3, MNID_NONE,     MNFL_NORM, NULL},
+	{"	A&nterior seleccionado",          HK_CS  |    HK_F3, MNID_NONE,     MNFL_NORM, NULL},
+	{"	Ree&mplazar...",                  HK_C   |      'H', MNID_NONE,     MNFL_NORM, NULL},
+	{"&Ver",                                        HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Espacios",                       HK_C   |      ' ', MNID_SPACES,   MNFL_NORM, NULL},
+	{"	&Tabuladores",                    HK_CS  |      ' ', MNID_TABS,     MNFL_NORM, NULL},
+	{"	&Nuevas líneas",                  HK_C   | HK_ENTER, MNID_NEWLS,    MNFL_NORM, NULL},
+	{"	T&odos los caracteres",           HK_C   |      '.', MNID_ALLCHARS, MNFL_NORM, NULL},
+	{"&Configuración",                              HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Preferencias...",                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Colores...",                               HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"Ve&ntana",                                    HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Siguiente",                      HK_C   |  HK_PGUP, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Anterior",                       HK_C   |  HK_PGDN, MNID_NONE,     MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, MNID_NONE,     MNFL_NORM, NULL},
+	{"A&yuda",                                      HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Temas de ayuda",                             HK_F1, MNID_NONE,     MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Acerca de...",                   HK_A   |    HK_F1, MNID_NONE,     MNFL_NORM, NULL},
+	{NULL,                                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL}
+};
+
+//menú contextual
+menudef_t contextmenudefs[] =
+{  //Texto                            Tecla rápida       ID              Opciones   Función
+	{"&Deshacer",                     HK_C   |      'Z', MNID_CTXUNDO,   MNFL_NOHK, NULL},
+	{"&Rehacer",                      HK_C   |      'Y', MNID_CTXREDO,   MNFL_NOHK, NULL},
+	{"-",                                       HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"C&ortar",                       HK_C   |      'X', MNID_CTXCUT,    MNFL_NOHK, NULL},
+	{"&Copiar",                       HK_C   |      'C', MNID_CTXCOPY,   MNFL_NOHK, NULL},
+	{"&Pegar",                        HK_C   |      'V', MNID_CTXPASTE,  MNFL_NOHK, NULL},
+	{"&Eliminar",                                HK_DEL, MNID_CTXDELETE, MNFL_NOHK, NULL},
+	{"-",                                       HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"Seleccionar &todo",             HK_C   |      'A', MNID_NONE,      MNFL_NOHK, NULL},
+	{"-",                                       HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"Co&mandos",                               HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"	&Aumentar sangría",                      HK_TAB, MNID_NONE,      MNFL_NOHK, NULL},
+	{"	&Reducir sangría",            HK_S   |   HK_TAB, MNID_NONE,      MNFL_NOHK, NULL},
+	{"	-",                                     HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"	&Borrar línea",               HK_C   |      'K', MNID_NONE,      MNFL_NORM, NULL},
+	{"	&Duplicar línea o selección", HK_C   |      'D', MNID_NONE,      MNFL_NORM, NULL},
+	{"	-",                                     HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"	&Insertar línea debajo",      HK_C   | HK_ENTER, MNID_NONE,      MNFL_NORM, NULL},
+	{"	I&nsertar línea encima",      HK_CS  | HK_ENTER, MNID_NONE,      MNFL_NORM, NULL},
+	{"	-",                                     HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"	&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, MNID_NONE,      MNFL_NORM, NULL},
+	{"	M&over líneas hacia abajo",   HK_A   |  HK_PGDN, MNID_NONE,      MNFL_NORM, NULL},
+	{NULL,                                      HK_NONE, MNID_NONE,      MNFL_NORM, NULL}
 };
 
 //inicializa la ventana del editor
