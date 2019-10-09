@@ -7,6 +7,9 @@
 #include "menu.h"
 #include "edit.h"
 
+//colores de los elementos
+extern unsigned char colors[];
+
 //constantes para los colores de los elementos
 enum
 {
@@ -24,8 +27,13 @@ enum
 	CLR_MENU_DIS,
 	CLR_MENU_DIS_SEL,
 	CLR_SEARCHBAR,
+	CLR_SEARCHBAR_TXT,
+	CLR_SEARCHBAR_DEL,
+	CLR_SEARCHBAR_BTN,
 	CLR_TABBAR,
-	CLR_TABBTN,
+	CLR_TABBAR_ACTIVE,
+	CLR_TABBAR_INACTIVE,
+	CLR_TABBAR_CLOSE,
 	CLR_EDIT_TEXT,
 	CLR_EDIT_TEXT_SEL,
 	CLR_EDIT_BORDER,
@@ -33,6 +41,48 @@ enum
 	CLR_EDIT_SC_SPACE,
 	CLR_EDIT_SC_THUMB,
 	CLR_STATUSBAR
+};
+
+//caracteres gráficos
+extern char *gchars[];
+
+//constantes para los caracrteres gráficos
+enum
+{
+	GCH_BOX1_C1,
+	GCH_BOX1_C2,
+	GCH_BOX1_C3,
+	GCH_BOX1_C4,
+	GCH_BOX1_TOP,
+	GCH_BOX1_BOTTOM,
+	GCH_BOX1_LEFT,
+	GCH_BOX1_RIGHT,
+	GCH_BOX1_XBOTTOM,
+	GCH_BOX1_XTOP,
+	GCH_BOX1_XRIGHT,
+	GCH_BOX1_XLEFT,
+	GCH_BOX2_C1,
+	GCH_BOX2_C2,
+	GCH_BOX2_C3,
+	GCH_BOX2_C4,
+	GCH_BOX2_TOP,
+	GCH_BOX2_BOTTOM,
+	GCH_BOX2_LEFT,
+	GCH_BOX2_RIGHT,
+	GCH_BOX2_XBOTTOM,
+	GCH_BOX2_XTOP,
+	GCH_BOX2_XRIGHT,
+	GCH_BOX2_XLEFT,
+	GCH_SCRL_UP,
+	GCH_SCRL_DOWN,
+	GCH_SCRL_LEFT,
+	GCH_SCRL_RIGHT,
+	GCH_SCRL_SPACE,
+	GCH_SCRL_THUMB,
+	GCH_MENU_CHK,
+	GCH_MENU_OPT,
+	GCH_PROG_EMPTY,
+	GCH_PROG_FULL
 };
 
 //teclas de acceso rápido
@@ -106,22 +156,6 @@ extern char wndShowStatus;
 #define POSLOCATION_RTITLE   5 //barra de título, derecha
 #define POSLOCATION_MENU     6 //barra de menú
 extern char wndPosLocation;
-
-extern char *c1;         //arriba izquierda
-extern char *c2;         //arriba derecha
-extern char *c3;         //abajo izquierda
-extern char *c4;         //abajo derecha
-extern char *top;        //arriba
-extern char *bottom;     //abajo
-extern char *left;       //izquierda
-extern char *right;      //derecha
-extern char *sh;         //sombra
-extern char *scrl_up;    //barra despl., flecha arriba
-extern char *scrl_down;  //barra despl., flecha abajo
-extern char *scrl_left;  //barra despl., flecha izquierda
-extern char *scrl_right; //barra despl., flecha derecha
-extern char *scrl_space; //barra despl., espacio
-extern char *scrl_thumb; //barra despl., control
 
 //inicializa la ventana del editor
 void wndInit(void);

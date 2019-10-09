@@ -2,6 +2,11 @@
 #include "tui.h"
 #include "term.h"
 
+////TODO:
+////2 búferes
+////dibujar controles
+////eventos de controles
+
 int wndW, wndH;
 
 //mostrar título
@@ -14,26 +19,6 @@ char wndShowTabs = SHOWTABS_ACTIVE;
 char wndShowStatus = SHOWSTATUS_ACTIVE;
 //ubicación de la posición
 char wndPosLocation = POSLOCATION_LSTATUS;
-
-char *c1 =         "\u2554"; //arriba izquierda
-char *c2 =         "\u2557"; //arriba derecha
-char *c3 =         "\u255a"; //abajo izquierda
-char *c4 =         "\u255d"; //abajo derecha
-char *top =        "\u2550"; //arriba
-char *bottom =     "\u2550"; //abajo
-char *left =       "\u2551"; //izquierda
-char *right =      "\u2551"; //derecha
-char *sh =         "\u2591"; //sombra
-
-char *scrl_up =    "\u25b2"; //barra despl., flecha arriba
-char *scrl_down =  "\u25bc"; //barra despl., flecha abajo
-char *scrl_left =  "\u25c4"; //barra despl., flecha izquierda
-char *scrl_right = "\u25ba"; //barra despl., flecha derecha
-char *scrl_space = "\u2591"; //barra despl., espacio
-char *scrl_thumb = "\u2588"; //barra despl., control
-
-char *menu_chk =   "\u25a0"; //menú, icono de verificación
-char *menu_opt =   "\u2022"; //menú, icono de opción
 
 //colores de los elementos
 unsigned char colors[] =
@@ -52,8 +37,13 @@ unsigned char colors[] =
 	0x78, //menú, deshabilitado
 	0x27, //menú, deshabilitado, seleccionado
 	0x70, //barra de búsqueda
+	0xf0, //barra de búsqueda, texto
+	0xf4, //barra de búsqueda, borrar
+	0x3b, //barra de búsqueda, botón
 	0x80, //barra de pestañas
-	0xf1, //pestaña
+	0xb0, //pestaña activa
+	0x70, //pestaña inactiva
+	0xcf, //botón de cerrar pestaña
 	0x17, //editor, texto
 	0x71, //editor, texto seleccionado
 	0x1a, //editor, borde
@@ -61,6 +51,45 @@ unsigned char colors[] =
 	0x0f, //editor, barra, espacio
 	0xb0, //editor, barra, control
 	0x3f  //barra de estado
+};
+
+//caracteres gráficos
+char *gchars[] =
+{
+	"\u250c", //caja1, arriba izquierda
+	"\u2510", //caja1, arriba derecha
+	"\u2514", //caja1, abajo izquierda
+	"\u2518", //caja1, abajo derecha
+	"\u2500", //caja1, arriba
+	"\u2500", //caja1, abajo
+	"\u2502", //caja1, izquierda
+	"\u2502", //caja1, derecha
+	"\u252c", //caja1, T abajo
+	"\u2534", //caja1, T arriba
+	"\u251c", //caja1, T derecha
+	"\u2524", //caja1, T izquierda
+	"\u2554", //caja2, arriba izquierda
+	"\u2557", //caja2, arriba derecha
+	"\u255a", //caja2, abajo izquierda
+	"\u255d", //caja2, abajo derecha
+	"\u2550", //caja2, arriba
+	"\u2550", //caja2, abajo
+	"\u2551", //caja2, izquierda
+	"\u2551", //caja2, derecha
+	"\u2566", //caja2, T abajo
+	"\u2569", //caja2, T arriba
+	"\u2560", //caja2, T derecha
+	"\u2562", //caja2, T izquierda
+	"\u25b2", //barra despl., flecha arriba
+	"\u25bc", //barra despl., flecha abajo
+	"\u25c4", //barra despl., flecha izquierda
+	"\u25ba", //barra despl., flecha derecha
+	"\u2591", //barra despl., espacio
+	"\u2588", //barra despl., control
+	"\u25a0", //menú, icono de verificación
+	"\u2022", //menú, icono de opción
+	"\u2591", //progreso, vacío
+	"\u2588"  //progreso, lleno
 };
 
 //nombres de las teclas modificadoras
@@ -257,7 +286,7 @@ void wndRedraw(void)
 		titleH++;
 		for(int i = 0; i < titleW; i++)
 			cellPrint(buffer, i+titleX, titleY, wndW, wndH, " ", colors[CLR_TITLE]);
-		cellPrint(buffer, titleX + 2, titleY, wndW, wndH, "Editor de texto", colors[CLR_TITLE]);
+		cellPrint(buffer, titleX + 1/*(titleW - strlen("Editor de texto")) / 2*/, titleY, wndW, wndH, "Editor de texto", colors[CLR_TITLE]);
 	}
 	menuY = titleY + titleH;
 	//barra de menús
@@ -269,9 +298,27 @@ void wndRedraw(void)
 	if(wndShowSearchBar != SHOWSEARCHBAR_NONE)
 	{
 		searchH++;
+		//barra
 		for(int i = 0; i < searchW; i++)
 			cellPrint(buffer, searchX + i, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR]);
-		cellPrint(buffer, searchX, searchY, wndW, wndH, "Búsqueda", colors[CLR_SEARCHBAR]);
+		//caja de texto de búsqueda
+		for(int i = 0; i < 16; i++)
+			cellPrint(buffer, searchX + i + 1, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+		//botón borrar
+		cellPrint(buffer, searchX + 17, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		//botón buscar anterior
+		cellPrint(buffer, searchX + 21, searchY, wndW, wndH, " <B ", colors[CLR_SEARCHBAR_BTN]);
+		//botón buscar siguiente
+		cellPrint(buffer, searchX + 26, searchY, wndW, wndH, " B> ", colors[CLR_SEARCHBAR_BTN]);
+		//separador
+		cellPrint(buffer, searchX + 31, searchY, wndW, wndH, "|", colors[CLR_SEARCHBAR]);
+		//caja de texto de ir
+		for(int i = 0; i < 8; i++)
+			cellPrint(buffer, searchX + i + 33, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+		//botón borrar
+		cellPrint(buffer, searchX + 41, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		//botón ir
+		cellPrint(buffer, searchX + 45, searchY, wndW, wndH, " Ir ", colors[CLR_SEARCHBAR_BTN]);
 	}
 	tabY = searchY + searchH;
 	//barra de pestañas
@@ -280,7 +327,12 @@ void wndRedraw(void)
 		tabH++;
 		for(int i = 0; i < tabW; i++)
 			cellPrint(buffer, tabX + i, tabY, wndW, wndH, " ", colors[CLR_TABBAR]);
-		cellPrint(buffer, tabX, tabY, wndW, wndH, " ArchivoUno.txt  FicheroDos.c  DocumentoTres.xml ", colors[CLR_TABBAR]);
+		cellPrint(buffer, tabX +  0, tabY, wndW, wndH, " ArchivoUno.txt     ", colors[CLR_TABBAR_INACTIVE]);
+		cellPrint(buffer, tabX + 16, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+		cellPrint(buffer, tabX + 20, tabY, wndW, wndH, " FicheroDos.c     ", colors[CLR_TABBAR_ACTIVE]);
+		cellPrint(buffer, tabX + 34, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+		cellPrint(buffer, tabX + 38, tabY, wndW, wndH, " DocumentoTres.xml     ", colors[CLR_TABBAR_INACTIVE]);
+		cellPrint(buffer, tabX + 57, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
 	}
 	editY = tabY + tabH;
 	//barra de estado
@@ -299,16 +351,16 @@ void wndRedraw(void)
 		for(int i = 0; i < editW - 1; i++)
 			cellPrint(buffer, editX + i, editY + j, wndW, wndH, " ", colors[CLR_EDIT_TEXT]);
 		//espacio de barra de desplazamiento vertical
-		cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, scrl_space, colors[CLR_EDIT_SC_SPACE]);
+		cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
 	}
-	cellPrint(buffer, editX + editW - 1, editY, wndW, wndH, scrl_up, colors[CLR_EDIT_SC_ARR]); //flecha arriba
-	cellPrint(buffer, editX + editW - 1, editY + editH - 2, wndW, wndH, scrl_down, colors[CLR_EDIT_SC_ARR]); //flecha abajo
+	cellPrint(buffer, editX + editW - 1, editY, wndW, wndH, gchars[GCH_SCRL_UP], colors[CLR_EDIT_SC_ARR]); //flecha arriba
+	cellPrint(buffer, editX + editW - 1, editY + editH - 2, wndW, wndH, gchars[GCH_SCRL_DOWN], colors[CLR_EDIT_SC_ARR]); //flecha abajo
 	//espacio de barra de desplazamiento horizontal
 	for(int i = 0; i < editW - 3; i++)
-		cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, scrl_space, colors[CLR_EDIT_SC_SPACE]);
-	cellPrint(buffer, editX, editY + editH - 1, wndW, wndH, scrl_left, colors[CLR_EDIT_SC_ARR]); //flecha izquierda
-	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, scrl_right, colors[CLR_EDIT_SC_ARR]); //flecha derecha
-	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, c4, colors[CLR_EDIT_BORDER]); //borde abajo derecha
+		cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
+	cellPrint(buffer, editX, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLR_EDIT_SC_ARR]); //flecha izquierda
+	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_EDIT_SC_ARR]); //flecha derecha
+	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, gchars[GCH_BOX2_C4], colors[CLR_EDIT_BORDER]); //borde abajo derecha
 	//borrar pantalla
 	setfb(7, 0);
 	clear();
