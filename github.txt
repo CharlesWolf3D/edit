@@ -25,18 +25,18 @@ Para hacer un commit (de los archivos modificados) a la configuración local:
 (Vuelve a añadir automáticamente los que estén en la lista de añadidos y hayan sido modificados)
 git commit -a -m "COMENTARIO"
 
-Para hacer un commit al repositorio remoto:
+Para hacer un commit de la configuración local al repositorio remoto:
 git push origin master
 (origin es el repo con una URL configurada, y master es la rama)
 
 Para descargarse los cambios sin integrarlos en los archivos:
 git fetch
 
-Para descargarse los cambios integrándoos en los archivos:
+Para descargarse los cambios integrándolos en los archivos:
 git pull origin master
 
 Para renombrar un archivo:
 git mv NOM_ANTIGUO NOM_NUEVO
 
-Para poner imágenes en README.md
+Para poner imágenes en README.md:
 ![TEXTO_ALT](URL "TEXTO_TOOLTIP")
