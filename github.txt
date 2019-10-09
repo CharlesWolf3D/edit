@@ -16,8 +16,12 @@ git clone https://NOM_USUARIO@github.com/NOM_USUARIO/NOM_REPO.git
 Para añadir archivos:
 git add NOM_ARCHIVO
 
-Para hacer un commit a la configuración local:
+Para hacer un commit (sólo de los archivos deseados) a la configuración local:
+git add NOM_ARCHIVO
 git commit -m "COMENTARIO"
+
+Para hacer un commit (de los archivos modificados) a la configuración local:
+git commit -a -m "COMENTARIO"
 
 Para hacer un commit al repositorio remoto:
 git push origin master
