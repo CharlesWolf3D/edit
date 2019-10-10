@@ -41,14 +41,16 @@ unsigned char colors[] =
 	0xf4, //barra de búsqueda, borrar
 	0x3b, //barra de búsqueda, botón
 	0x80, //barra de pestañas
-	0xb0, //pestaña activa
-	0x70, //pestaña inactiva
-	0xcf, //botón de cerrar pestaña
+	0xb0, //barra de pestañas, pestaña activa
+	0x70, //barra de pestañas, pestaña inactiva
+	0xcf, //barra de pestañas, botón cerrar
+	0xf1, //barra de pestañas, flecha habilitada
+	0x78, //barra de pestañas, flecha deshabilitada
 	0x17, //editor, texto
 	0x71, //editor, texto seleccionado
 	0x1a, //editor, borde
 	0xb3, //editor, barra, flecha
-	0x0f, //editor, barra, espacio
+	0x17, //editor, barra, espacio
 	0xb0, //editor, barra, control
 	0x3f  //barra de estado
 };
@@ -167,6 +169,60 @@ void utf32toutf8(char *dest, unsigned int src)
 	*dest = 0;
 }
 
+unsigned int utf8toutf32(char *str, int *offset)
+{
+	unsigned int code;
+	int numread = 0, num = 1;
+	if((*str & 0x80) == 0)
+	{
+		code = *str;
+	}
+	else
+	{
+		if((*str & 0xe0) == 0xc0)
+		{
+			code = *str & 0x1f;
+			numread = 1;
+		}
+		else
+		{
+			if((*str & 0xf0) == 0xe0)
+			{
+				code = *str & 0x0f;
+				numread = 2;
+			}
+			else
+			{
+				if((*str & 0xf8) == 0xf0)
+				{
+					code = *str & 0x07;
+					numread = 3;
+				}
+				else
+				{
+					code = '_';
+				}
+			}
+		}
+		num += numread;
+		while(numread)
+		{
+			str++;
+			if((*str & 0xc0) != 0x80)
+			{
+				code = '_';
+				break;
+			}
+			code <<= 6;
+			code |= *str & 0x3f;
+			numread--;
+		}
+	}
+	if(offset)
+		*offset = num;
+	return(code);
+}
+
 //imprime texto en un búfer de celdas
 //cell=puntero al array de celdas, deberá haber w*h celdas
 //x=coordenada x
@@ -178,65 +234,26 @@ void utf32toutf8(char *dest, unsigned int src)
 void cellPrint(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned char clr)
 {
 	unsigned int code;
-	int numread;
-	if(y >= h)
+	int offset;
+	if(y < 0 || y >= h)
 		return;
+	while(x < 0 && *str)
+	{
+		utf8toutf32(str, &offset);
+		str += offset;
+		x++;
+	}
 	buffer += x + y * w;
-	w -= x;
 	while(*str)
 	{
-		if(w == 0)
+		if(x >= w)
 			return;
-		w--;
-		numread = 0;
-		if((*str & 0x80) == 0)
-		{
-			code = *str;
-		}
-		else
-		{
-			if((*str & 0xe0) == 0xc0)
-			{
-				code = *str & 0x1f;
-				numread = 1;
-			}
-			else
-			{
-				if((*str & 0xf0) == 0xe0)
-				{
-					code = *str & 0x0f;
-					numread = 2;
-				}
-				else
-				{
-					if((*str & 0xf8) == 0xf0)
-					{
-						code = *str & 0x07;
-						numread = 3;
-					}
-					else
-					{
-						code = '_';
-					}
-				}
-			}
-			while(numread)
-			{
-				str++;
-				if((*str & 0xc0) != 0x80)
-				{
-					code = '_';
-					break;
-				}
-				code <<= 6;
-				code |= *str & 0x3f;
-				numread--;
-			}
-		}
+		code = utf8toutf32(str, &offset);
+		str += offset;
 		buffer->chr = code;
 		buffer->clr = clr;
 		buffer++;
-		str++;
+		x++;
 	}
 }
 
@@ -286,7 +303,7 @@ void wndRedraw(void)
 		titleH++;
 		for(int i = 0; i < titleW; i++)
 			cellPrint(buffer, i+titleX, titleY, wndW, wndH, " ", colors[CLR_TITLE]);
-		cellPrint(buffer, titleX + 1/*(titleW - strlen("Editor de texto")) / 2*/, titleY, wndW, wndH, "Editor de texto", colors[CLR_TITLE]);
+		cellPrint(buffer, /*titleX + 1*/(titleW - (int)strlen("Editor de texto")) / 2, titleY, wndW, wndH, "Editor de texto", colors[CLR_TITLE]);
 	}
 	menuY = titleY + titleH;
 	//barra de menús
@@ -325,14 +342,25 @@ void wndRedraw(void)
 	if(wndShowTabs != SHOWTABS_NONE)
 	{
 		tabH++;
+		//barra
 		for(int i = 0; i < tabW; i++)
 			cellPrint(buffer, tabX + i, tabY, wndW, wndH, " ", colors[CLR_TABBAR]);
-		cellPrint(buffer, tabX +  0, tabY, wndW, wndH, " ArchivoUno.txt     ", colors[CLR_TABBAR_INACTIVE]);
-		cellPrint(buffer, tabX + 16, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
-		cellPrint(buffer, tabX + 20, tabY, wndW, wndH, " FicheroDos.c     ", colors[CLR_TABBAR_ACTIVE]);
-		cellPrint(buffer, tabX + 34, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
-		cellPrint(buffer, tabX + 38, tabY, wndW, wndH, " DocumentoTres.xml     ", colors[CLR_TABBAR_INACTIVE]);
-		cellPrint(buffer, tabX + 57, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+		//flechas
+		cellPrint(buffer, tabX, tabY, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLR_TABBAR_ARROW]);
+		cellPrint(buffer, tabX + tabW - 1, tabY, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_TABBAR_ARROW_DIS]);
+		int tab_x = 1;
+		//pestaña 1
+		cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, " ArchivoUno.txt     ", colors[CLR_TABBAR_INACTIVE]);
+		tab_x += strlen(" ArchivoUno.txt     ");
+		cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+		//pestaña 2
+		cellPrint(buffer, tabX + tab_x, tabY, wndW, wndH, " FicheroDos.c     ", colors[CLR_TABBAR_ACTIVE]);
+		tab_x += strlen(" FicheroDos.c     ");
+		cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+		//pestaña 3
+		cellPrint(buffer, tabX + tab_x, tabY, wndW, wndH, " DocumentoTres.xml     ", colors[CLR_TABBAR_INACTIVE]);
+		tab_x += strlen(" DocumentoTres.xml     ");
+		cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
 	}
 	editY = tabY + tabH;
 	//barra de estado
