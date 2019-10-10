@@ -167,21 +167,53 @@ Posición: izquierda del titulo, derecha del titulo, derecha del menú, barra de
 int main(int argc, char *argv[])
 {
 	int oldw = -1, oldh = -1;
+	int ch;
+	int finish = 0;
+	char str[64];
 	wndInit();
-	while(1)
+	while(!finish)
 	{
 		if(kbhit())
 		{
-			if(getchr() == 27)
+			ch = getchr();
+			switch(ch)
+			{
+			case 'q':
+				finish = 1;
 				break;
+			case 'w':
+				clear();
+				refresh();
+				break;
+			default:
+				int2hex2(ch,str);
+				tputs("Char ");
+				tputs(str);
+				switch(ch)
+				{
+				case 13:
+				case 10:
+				case 9:
+				case 27:
+				case 0:
+					break;
+				default:
+					tputs(" (");
+					str[0]=ch;str[1]=0;
+					tputs(str);
+					tputs(")");
+				}
+				tputs("\n\r");
+				refresh();
+			}
 		}
-		getterminalsize(&wndW, &wndH);
+		/*getterminalsize(&wndW, &wndH);
 		if(oldw != wndW || oldh != wndH)
 		{
 			oldw = wndW;
 			oldh = wndH;
 			wndRedraw();
-		}
+		}*/
 		usleep(50 * 1000);
 	}
 	wndEnd();

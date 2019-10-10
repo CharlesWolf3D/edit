@@ -29,13 +29,13 @@ unsigned char colors[] =
 	0x74, //barra de menús, tecla
 	0x24, //barra de menús, tecla, seleccionado
 	0x78, //barra de menús, deshabilitado
-	0x27, //barra de menús, deshabilitado, seleccionado
+	0x28, //barra de menús, deshabilitado, seleccionado
 	0x70, //menú
-	0x2f, //menú, seleccionado
-	0x74, //menú, tecla
-	0x2c, //menú, tecla, seleccionado
+	0x1f, //menú, seleccionado
+	0x71, //menú, tecla
+	0x1b, //menú, tecla, seleccionado
 	0x78, //menú, deshabilitado
-	0x27, //menú, deshabilitado, seleccionado
+	0x18, //menú, deshabilitado, seleccionado
 	0x70, //barra de búsqueda
 	0xf0, //barra de búsqueda, texto
 	0xf4, //barra de búsqueda, borrar
@@ -115,7 +115,7 @@ void wndInit(void)
 	clear();
 	refresh();
 	getterminalsize(&wndW, &wndH);
-	wndRedraw();
+	//wndRedraw();
 }
 
 //termina la ventana del editor
@@ -134,20 +134,29 @@ typedef struct
 } cell_t;
 
 //convierte un punto de código UTF-32 en una cadena UTF-8
-void utf32toutf8(char *dest, unsigned int src)
+//dest=cadena donde se escribirá el punto de código UTF-8
+//src=punto de código UTF-32
+//devuelve la longitud de la cadena sin el terminador nulo (de 0 a 4)
+//en la cadena se escribirán entre 1 y 5 bytes (incluyendo el terminador nulo)
+//si src está fuera de rango, se devolverá el punto de código 0xfffd (carácter de reemplazo)
+int UTF32_UTF8(char *dest, unsigned int src)
 {
 	if(src < 0x80)
 	{
-		*dest++ = src;
-		*dest = 0;
-		return;
+		*dest = src;
+		if(src)
+		{
+			dest[1] = 0;
+			return(1);
+		}
+		return(0);
 	}
 	if(src < 0x800)
 	{
 		*dest++ = 0xc0 | (src >> 6);
 		*dest++ = 0x80 | (src & 0x3f);
 		*dest = 0;
-		return;
+		return(2);
 	}
 	if(src < 0x10000)
 	{
@@ -155,7 +164,7 @@ void utf32toutf8(char *dest, unsigned int src)
 		*dest++ = 0x80 | ((src >> 6) & 0x3f);
 		*dest++ = 0x80 | (src & 0x3f);
 		*dest = 0;
-		return;
+		return(3);
 	}
 	if(src < 0x110000)
 	{
@@ -164,12 +173,17 @@ void utf32toutf8(char *dest, unsigned int src)
 		*dest++ = 0x80 | ((src >> 6) & 0x3f);
 		*dest++ = 0x80 | (src & 0x3f);
 		*dest = 0;
-		return;
+		return(4);
 	}
-	*dest = 0;
+	return(UTF32_UTF8(dest, 0xfffd));
 }
 
-unsigned int utf8toutf32(char *str, int *offset)
+//convierte un punto de código UTF-8 en UTF-32
+//str=cadena UTF-8 de la cual se obtendrá el primer punto de código
+//offset=aquí se devolverá el número de bytes que avanzar para llegar al inicio del siguiente punto de código en la cadena
+//devuelve el punto de código en UTF-32
+//las secuencias de bytes no válidas serán devueltas como 0xfffd (carácter de reemplazo)
+unsigned int UTF8_UTF32(char *str, int *offset)
 {
 	unsigned int code;
 	int numread = 0, num = 1;
@@ -200,19 +214,19 @@ unsigned int utf8toutf32(char *str, int *offset)
 				}
 				else
 				{
-					code = '_';
+					code = 0xfffd;
 				}
 			}
 		}
-		num += numread;
 		while(numread)
 		{
 			str++;
 			if((*str & 0xc0) != 0x80)
 			{
-				code = '_';
+				code = 0xfffd;
 				break;
 			}
+			num++;
 			code <<= 6;
 			code |= *str & 0x3f;
 			numread--;
@@ -223,8 +237,20 @@ unsigned int utf8toutf32(char *str, int *offset)
 	return(code);
 }
 
+//devuelve el número de puntos de código UTF-8 que tiene una cadena
+int strlen_cp(char *str)
+{
+	int offset, r = 0;
+	while(UTF8_UTF32(str, &offset))
+	{
+		r++;
+		str += offset;
+	}
+	return(r);
+}
+
 //imprime texto en un búfer de celdas
-//cell=puntero al array de celdas, deberá haber w*h celdas
+//buffer=puntero al array de celdas, deberá haber w*h celdas
 //x=coordenada x
 //y=coordenada y
 //w=ancho del búfer
@@ -239,7 +265,7 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned c
 		return;
 	while(x < 0 && *str)
 	{
-		utf8toutf32(str, &offset);
+		UTF8_UTF32(str, &offset);
 		str += offset;
 		x++;
 	}
@@ -248,7 +274,7 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned c
 	{
 		if(x >= w)
 			return;
-		code = utf8toutf32(str, &offset);
+		code = UTF8_UTF32(str, &offset);
 		str += offset;
 		buffer->chr = code;
 		buffer->clr = clr;
@@ -256,6 +282,119 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned c
 		x++;
 	}
 }
+
+//imprime el texto de un menú
+//buffer=puntero al array de celdas, deberá haber w*h celdas
+//x=coordenada x
+//y=coordenada y
+//w=ancho del búfer
+//h=alto del búfer
+//str=puntero a la cadena
+//textClr=color del texto
+//keyClr=color del carácter enfatizado
+//devuelve la longitud en puntos de código del texto sin el ampersand
+int printmn(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned char textClr, unsigned char keyClr)
+{
+	unsigned int code;
+	int offset, len = 0;
+	unsigned char clr = textClr;
+	while(x < 0 && *str)
+	{
+		if(UTF8_UTF32(str, &offset) != '&')
+		{
+			len++;
+			x++;
+			clr = textClr;
+		}
+		else
+			clr = keyClr;
+		str += offset;
+	}
+	buffer += x + y * w;
+	while(*str)
+	{
+		code = UTF8_UTF32(str, &offset);
+		str += offset;
+		if(code  != '&')
+		{
+			if((x < w) && (y >= 0) && (y < h))
+			{
+				buffer->chr = code;
+				buffer->clr = clr;
+				buffer++;
+				len++;
+				clr = textClr;
+			}
+			x++;
+		}
+		else
+			clr = keyClr;
+	}
+	return(len);
+}
+
+//menú principal
+menudef_t menudefs_test[] =////
+{  //Texto                                Tecla rápida       ID             Opciones   Función
+	{"&Archivo",                                    HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Nuevo",                          HK_C   |      'N', 0,             MNFL_NORM, NULL},
+	{"	&Abrir...",                       HK_C   |      'O', 0,             MNFL_NORM, NULL},
+	{"	&Guardar",                        HK_C   |      'S', 0,             MNFL_NORM, NULL},
+	{"	Guardar &como...",                HK_CS  |      'S', 0,             MNFL_NORM, NULL},
+	{"	Guardar copia co&mo...",          HK_CA  |      'S', 0,             MNFL_NORM, NULL},
+	{"	&Renombrar...",                               HK_F2, 0,             MNFL_NORM, NULL},
+	{"	Ce&rrar",                         HK_C   |    HK_F4, 0,             MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Salir",                          HK_A   |    HK_F4, 0,             MNFL_NORM, NULL},
+	{"&Edición",                                    HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Deshacer",                       HK_C   |      'Z', 0,             MNFL_NORM, NULL},
+	{"	&Rehacer",                        HK_C   |      'Y', 0,             MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	C&ortar",                         HK_C   |      'X', 0,             MNFL_NORM, NULL},
+	{"	&Copiar",                         HK_C   |      'C', 0,             MNFL_NORM, NULL},
+	{"	&Pegar",                          HK_C   |      'V', 0,             MNFL_NORM, NULL},
+	{"	&Eliminar",                                  HK_DEL, 0,             MNFL_NOHK, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	Seleccionar &todo",               HK_C   |      'A', 0,             MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	Co&mandos",                                 HK_NONE, 0,             MNFL_NORM, NULL},
+	{"		&Aumentar sangría",                      HK_TAB, 0,             MNFL_NOHK, NULL},
+	{"		&Reducir sangría",            HK_S   |   HK_TAB, 0,             MNFL_NOHK, NULL},
+	{"		-",                                     HK_NONE, 0,             MNFL_NORM, NULL},
+	{"		&Borrar línea",               HK_C   |      'K', 0,             MNFL_NORM, NULL},
+	{"		&Duplicar línea o selección", HK_C   |      'D', 0,             MNFL_NORM, NULL},
+	{"		-",                                     HK_NONE, 0,             MNFL_NORM, NULL},
+	{"		&Insertar línea debajo",      HK_C   | HK_ENTER, 0,             MNFL_NORM, NULL},
+	{"		I&nsertar línea encima",      HK_CS  | HK_ENTER, 0,             MNFL_NORM, NULL},
+	{"		-",                                     HK_NONE, 0,             MNFL_NORM, NULL},
+	{"		&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, 0,             MNFL_NORM, NULL},
+	{"		M&over líneas hacia abajo",   HK_A   |  HK_PGDN, 0,             MNFL_NORM, NULL},
+	{"&Buscar",                                     HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Buscar...",                      HK_C   |      'F', 0,             MNFL_NORM, NULL},
+	{"	&Siguiente",                                  HK_F3, 0,             MNFL_NORM, NULL},
+	{"	&Anterior",                       HK_S   |    HK_F3, 0,             MNFL_NORM, NULL},
+	{"	S&iguiente seleccionado",         HK_C   |    HK_F3, 0,             MNFL_NORM, NULL},
+	{"	A&nterior seleccionado",          HK_CS  |    HK_F3, 0,             MNFL_NORM, NULL},
+	{"	Ree&mplazar...",                  HK_C   |      'H', 0,             MNFL_NORM, NULL},
+	{"&Ver",                                        HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Espacios",                       HK_C   |      ' ', 0,             MNFL_NORM, NULL},
+	{"	&Tabuladores",                    HK_CS  |      ' ', 0,             MNFL_NORM, NULL},
+	{"	&Nuevas líneas",                  HK_C   | HK_ENTER, 0,             MNFL_NORM, NULL},
+	{"	T&odos los caracteres",           HK_C   |      '.', 0,             MNFL_NORM, NULL},
+	{"&Configuración",                              HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Preferencias...",                          HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Colores...",                               HK_NONE, 0,             MNFL_NORM, NULL},
+	{"Ve&ntana",                                    HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Siguiente",                      HK_C   |  HK_PGUP, 0,             MNFL_NORM, NULL},
+	{"	&Anterior",                       HK_C   |  HK_PGDN, 0,             MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, 0,             MNFL_NORM, NULL},
+	{"A&yuda",                                      HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Temas de ayuda",                             HK_F1, 0,             MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Acerca de...",                   HK_A   |    HK_F1, 0,             MNFL_NORM, NULL},
+	{NULL,                                          HK_NONE, 0,             MNFL_NORM, NULL}
+};
 
 //redibuja la ventana del programa
 //las dimensiones vienen dadas por wndW y wndH
@@ -303,13 +442,29 @@ void wndRedraw(void)
 		titleH++;
 		for(int i = 0; i < titleW; i++)
 			cellPrint(buffer, i+titleX, titleY, wndW, wndH, " ", colors[CLR_TITLE]);
-		cellPrint(buffer, /*titleX + 1*/(titleW - (int)strlen("Editor de texto")) / 2, titleY, wndW, wndH, "Editor de texto", colors[CLR_TITLE]);
+		cellPrint(buffer, /*titleX + 1*/(titleW - (int)strlen_cp("Editor de texto")) / 2, titleY, wndW, wndH, "Editor de texto", colors[CLR_TITLE]);
 	}
 	menuY = titleY + titleH;
 	//barra de menús
 	for(int i = 0; i < menuW; i++)
 		cellPrint(buffer, menuX + i, menuY, wndW, wndH, " ", colors[CLR_MENUBAR]);
-	cellPrint(buffer, menuX, menuY, wndW, wndH, " Archivo  Edición  Buscar  Ver  Configuración  Ventana  Ayuda", colors[CLR_MENUBAR]);
+	int mnid = 0;
+	for(int i = 0; menudefs_test[i].caption; i++)
+	{
+		if(menudefs_test[i].caption[0] == 9)
+			continue;
+		unsigned char c_a = CLR_MENUBAR;
+		unsigned char c_b = CLR_MENUBAR_KEY;
+		if(mnid==1){c_a++;c_b++;}
+		if(mnid==2){c_a+=4;c_b=c_a;}
+		if(mnid==3){c_a+=5;c_b=c_a;}
+		c_a = colors[c_a];
+		c_b = colors[c_b];
+		menuX += printmn(buffer, menuX, menuY, wndW, wndH, " ", c_a, c_b);
+		menuX += printmn(buffer, menuX, menuY, wndW, wndH, menudefs_test[i].caption, c_a, c_b);
+		menuX += printmn(buffer, menuX, menuY, wndW, wndH, " ", c_a, c_b);
+		mnid++;
+	}
 	searchY = menuY + menuH;
 	//barra de búsqueda
 	if(wndShowSearchBar != SHOWSEARCHBAR_NONE)
@@ -318,24 +473,33 @@ void wndRedraw(void)
 		//barra
 		for(int i = 0; i < searchW; i++)
 			cellPrint(buffer, searchX + i, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR]);
+		int search_x = 1;
 		//caja de texto de búsqueda
 		for(int i = 0; i < 16; i++)
-			cellPrint(buffer, searchX + i + 1, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+			cellPrint(buffer, searchX + search_x + i, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+		search_x += 16;
 		//botón borrar
-		cellPrint(buffer, searchX + 17, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		search_x += strlen_cp("<X ") + 1;
 		//botón buscar anterior
-		cellPrint(buffer, searchX + 21, searchY, wndW, wndH, " <B ", colors[CLR_SEARCHBAR_BTN]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " <B ", colors[CLR_SEARCHBAR_BTN]);
+		search_x += strlen_cp(" <B ") + 1;
 		//botón buscar siguiente
-		cellPrint(buffer, searchX + 26, searchY, wndW, wndH, " B> ", colors[CLR_SEARCHBAR_BTN]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " B> ", colors[CLR_SEARCHBAR_BTN]);
+		search_x += strlen_cp(" B> ") + 1;
 		//separador
-		cellPrint(buffer, searchX + 31, searchY, wndW, wndH, "|", colors[CLR_SEARCHBAR]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "|", colors[CLR_SEARCHBAR]);
+		search_x += strlen_cp("|") + 1;
 		//caja de texto de ir
 		for(int i = 0; i < 8; i++)
-			cellPrint(buffer, searchX + i + 33, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+			cellPrint(buffer, searchX + i + search_x, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+		search_x += 8;
 		//botón borrar
-		cellPrint(buffer, searchX + 41, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		search_x += strlen_cp("<X ") + 1;
 		//botón ir
-		cellPrint(buffer, searchX + 45, searchY, wndW, wndH, " Ir ", colors[CLR_SEARCHBAR_BTN]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " Ir ", colors[CLR_SEARCHBAR_BTN]);
+		search_x += strlen_cp(" Ir ") + 1;
 	}
 	tabY = searchY + searchH;
 	//barra de pestañas
@@ -345,22 +509,25 @@ void wndRedraw(void)
 		//barra
 		for(int i = 0; i < tabW; i++)
 			cellPrint(buffer, tabX + i, tabY, wndW, wndH, " ", colors[CLR_TABBAR]);
+		int tab_x = 3;
+		//pestañas
+		for(int i = 0; i < 4; i++)
+		{
+			char *list[]={" ArchivoUno.txt     "," FicheroDos.c     "," DocumentoTres.xml     ", " Edit.exe     "};
+			cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, list[i], colors[i==1?CLR_TABBAR_ACTIVE:CLR_TABBAR_INACTIVE]);
+			tab_x += strlen_cp(list[i]);
+			cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+			if(i != 3)
+			{
+				cellPrint(buffer, tabX + tab_x, tabY, wndW, wndH, "|", colors[CLR_TABBAR]);
+				tab_x += 1;
+			}
+		}
 		//flechas
-		cellPrint(buffer, tabX, tabY, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLR_TABBAR_ARROW]);
-		cellPrint(buffer, tabX + tabW - 1, tabY, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_TABBAR_ARROW_DIS]);
-		int tab_x = 1;
-		//pestaña 1
-		cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, " ArchivoUno.txt     ", colors[CLR_TABBAR_INACTIVE]);
-		tab_x += strlen(" ArchivoUno.txt     ");
-		cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
-		//pestaña 2
-		cellPrint(buffer, tabX + tab_x, tabY, wndW, wndH, " FicheroDos.c     ", colors[CLR_TABBAR_ACTIVE]);
-		tab_x += strlen(" FicheroDos.c     ");
-		cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
-		//pestaña 3
-		cellPrint(buffer, tabX + tab_x, tabY, wndW, wndH, " DocumentoTres.xml     ", colors[CLR_TABBAR_INACTIVE]);
-		tab_x += strlen(" DocumentoTres.xml     ");
-		cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+		cellPrint(buffer, tabX, tabY, wndW, wndH, "[ ]", colors[CLR_TABBAR_ARROW]);
+		cellPrint(buffer, tabX + 1, tabY, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLR_TABBAR_ARROW]);
+		cellPrint(buffer, tabX + tabW - 3, tabY, wndW, wndH, "[ ]", colors[CLR_TABBAR_ARROW_DIS]);
+		cellPrint(buffer, tabX + tabW - 2, tabY, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_TABBAR_ARROW_DIS]);
 	}
 	editY = tabY + tabH;
 	//barra de estado
@@ -400,7 +567,7 @@ void wndRedraw(void)
 		for(int i = 0; i < wndW; i++)
 		{
 			setcolor(buffer[index].clr);
-			utf32toutf8(str, buffer[index].chr);
+			UTF32_UTF8(str, buffer[index].chr);
 			if(str[0] == 0)
 				tputs(" ");
 			else

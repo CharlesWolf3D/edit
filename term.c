@@ -9,14 +9,14 @@
 unsigned char pal16[48] =
 {
 	  0,   0,   0,
-	  0,   0, 128,
-	  0, 128,   0,
-	  0, 128, 128,
-	128,   0,   0,
-	128,   0, 128,
-	128, 128,   0,
-	192, 192, 192,
-	128, 128, 128,
+	  0,   0, 160,
+	  0, 160,   0,
+	  0, 160, 160,
+	160,   0,   0,
+	160,   0, 160,
+	160, 160,   0,
+	216, 216, 216,
+	160, 160, 160,
 	  0,   0, 255,
 	  0, 255,   0,
 	  0, 255, 255,
@@ -108,7 +108,7 @@ void setattr(unsigned char attr)
 //convierte un número entero en una cadena en base hexadecimal, utilizando
 //siempre 2 dígitos
 static char hexdigits [16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-static inline void int2hex2(int x, char *str)
+/*static inline*/ void int2hex2(int x, char *str)
 {
 	str[0] = hexdigits[(x >> 4) & 0xf];
 	str[1] = hexdigits[(x) & 0xf];
@@ -142,9 +142,13 @@ void startText(void)
 	tcgetattr(STDIN_FILENO, &ttystate);      //obtener atributos de stdin
 	tcgetattr(STDIN_FILENO, &savedTtyState); //
 	ttystate.c_lflag &= ~ICANON; //no esperar a nueva línea para recibir caracteres
-	ttystate.c_lflag &= ~ISIG; //no generar señales de INTR/QUIT/SUSP/DSUSP (comentar esta línea en debug para poder salir con Ctrl+C)
-	ttystate.c_lflag &= ~ECHO; //no imprimir los caracteres entrantes
-	ttystate.c_cc[VMIN] = 1; //recibir caracteres inmediatamente
+	ttystate.c_lflag &= ~ISIG;   //no generar señales de INTR/QUIT/SUSP/DSUSP (comentar esta línea en debug para poder salir con Ctrl+C)
+	ttystate.c_lflag &= ~IEXTEN; //no tratar de forma especial Ctrl+V
+	ttystate.c_lflag &= ~ECHO;   //no imprimir los caracteres entrantes
+	ttystate.c_iflag &= ~IXON;   //no tratar de forma especial Ctrl+S y Ctrl+Q
+	ttystate.c_iflag &= ~ICRNL;  //no tratar de forma especial Ctrl+M y Ctrl+J
+	ttystate.c_oflag &= ~OPOST;  //no modificar fin de línea
+	ttystate.c_cc[VMIN] = 1;     //recibir caracteres inmediatamente
 	tcsetattr(STDIN_FILENO, TCSANOW, &ttystate); //enviar atributos de stdin
 	//inicializar variables
 	termBufferCount = 0;

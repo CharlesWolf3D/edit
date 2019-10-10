@@ -1,0 +1,74 @@
+Tecla      Norm            Ctrl            Alt           Mayús           Ctrl+Alt        Ctrl+Mayús      Alt+mayús       Ctrl+Alt+Mayús
+A          61              01              1b 61         41              1b 01           01                               
+B          62              02              1b 62         42              1b 02                                            
+C          63              03              1b 63         43              1b 03                                            
+D          64              04              1b 64         44              1b 04                                            
+E          65              05              1b 65         45              1b 05                                            
+F          66              06              1b 66         46              1b 06                                            
+G          67              07              1b 67         47              1b 07                                            
+H          68              08              1b 68         48              1b 08                                            
+I          69              09              1b 69         49              1b 09                                            
+J          6a              0a              1b 6a         4a              1b 0a                                            
+K          6b              0b              1b 6b         4b              1b 0b                                            
+L          6c              0c              1b 6c         4c              1b 0c                                            
+M          6d              0d              1b 6d         4d              1b 0d                                            
+N          6e              0e              1b 6e         4e              1b 0e                                            
+O          6f              0f              1b 6f         4f              1b 0f                                            
+P          70              10              1b 70         50              1b 10                                            
+Q          71              11              1b 71         51              1b 11                                            
+R          72              12              1b 72         52              1b 12                                            
+S          73              13              1b 73         53              1b 13                                            
+T          74              14              1b 74         54              1b 14                                            
+U          75              15              1b 75         55              1b 15                                            
+V          76              16              1b 76         56              1b 16                                            
+W          77              17              1b 77         57              1b 17                                            
+X          78              18              1b 78         58              1b 18                                            
+Y          79              19              1b 79         59              1b 19                                            
+Z          7a              1a              1b 7a         5a              1b 1a                                            
+0          30              27 30           1b 30                         1b 30                                            
+1          31              27 31           1b 31                         1b 31                                            
+2          32              27 32           1b 32                         00                                               
+3          33              27 33           1b 33                         1b                                               
+4          34              27 34           1b 34                         1c                                               
+5          35              27 35           1b 35                         1d                                               
+6          36              27 36           1b 36                         1e                                               
+7          37              27 37           1b 37                         1f                                               
+8          38              27 38           1b 38                         7f                                               
+9          39              27 39           1b 39                         1b 39                                            
++          2b                                                                                                             
+-          2d                                                                                                             
+*          2a                                                                                                             
+/          2f                                                                                                             
+.          2e                              1b 2e                                                                          
+,          2c                              1b 2c                                                                          
+F1                                                                                                                        
+F2         1b 4f 51                                                                                                       
+F3         1b 4f 52                                                                                                       
+F4         1b 4f 53                                                                                                       
+F5         1b 5b 31 35 7e                                                                                                 
+F6         1b 5b 31 37 7e                                                                                                 
+F7         1b 5b 31 38 7e                                                                                                 
+F8         1b 5b 31 39 7e                                                                                                 
+F9         1b 5b 32 30 7e                                                                                                 
+F10                                                                                                                       
+F11                                                                                                                       
+F12        1b 5b 32 34 7e                                                                                                 
+Arriba     1b 5b 41                                                                                                       
+Abajo      1b 5b 42                                                                                                       
+Izquierda  1b 5b 44                                                                                                       
+Derecha    1b 5b 43                                                                                                       
+Intro      0d                                                                                                             
+Retroceso  7f                                                                                                             
+Tab        09                                                                                                             
+Insertar   1b 5b 32 7e                                                                                                    
+Suprimir   1b 5b 33 7e                                                                                                    
+Inicio                                                                                                                    
+Fin                                                                                                                       
+RePág      1b 5b 35 7e                                                                                                    
+AvPág      1b 5b 36 7e                                                                                                    
+
+Varios inicio: {27, '[', '1', '~'}, {27, '[', '7', '~'}, {27, '[', 'H'}, {27, 'O', 'H'}
+Varios fin:    {27, '[', '4', '~'}, {27, '[', '8', '~'}, {27, '[', 'F'}, {27, 'O', 'F'}
+
+Mayús+keypad se comporta como Mayús+edit
+Ctrl y Alt no cambian keypad
