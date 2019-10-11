@@ -1,74 +1,110 @@
-Tecla      Norm            Ctrl            Alt           Mayús           Ctrl+Alt        Ctrl+Mayús      Alt+mayús       Ctrl+Alt+Mayús
-A          61              01              1b 61         41              1b 01           01                               
-B          62              02              1b 62         42              1b 02                                            
-C          63              03              1b 63         43              1b 03                                            
-D          64              04              1b 64         44              1b 04                                            
-E          65              05              1b 65         45              1b 05                                            
-F          66              06              1b 66         46              1b 06                                            
-G          67              07              1b 67         47              1b 07                                            
-H          68              08              1b 68         48              1b 08                                            
-I          69              09              1b 69         49              1b 09                                            
-J          6a              0a              1b 6a         4a              1b 0a                                            
-K          6b              0b              1b 6b         4b              1b 0b                                            
-L          6c              0c              1b 6c         4c              1b 0c                                            
-M          6d              0d              1b 6d         4d              1b 0d                                            
-N          6e              0e              1b 6e         4e              1b 0e                                            
-O          6f              0f              1b 6f         4f              1b 0f                                            
-P          70              10              1b 70         50              1b 10                                            
-Q          71              11              1b 71         51              1b 11                                            
-R          72              12              1b 72         52              1b 12                                            
-S          73              13              1b 73         53              1b 13                                            
-T          74              14              1b 74         54              1b 14                                            
-U          75              15              1b 75         55              1b 15                                            
-V          76              16              1b 76         56              1b 16                                            
-W          77              17              1b 77         57              1b 17                                            
-X          78              18              1b 78         58              1b 18                                            
-Y          79              19              1b 79         59              1b 19                                            
-Z          7a              1a              1b 7a         5a              1b 1a                                            
-0          30              27 30           1b 30                         1b 30                                            
-1          31              27 31           1b 31                         1b 31                                            
-2          32              27 32           1b 32                         00                                               
-3          33              27 33           1b 33                         1b                                               
-4          34              27 34           1b 34                         1c                                               
-5          35              27 35           1b 35                         1d                                               
-6          36              27 36           1b 36                         1e                                               
-7          37              27 37           1b 37                         1f                                               
-8          38              27 38           1b 38                         7f                                               
-9          39              27 39           1b 39                         1b 39                                            
-+          2b                                                                                                             
--          2d                                                                                                             
-*          2a                                                                                                             
-/          2f                                                                                                             
-.          2e                              1b 2e                                                                          
-,          2c                              1b 2c                                                                          
-F1                                                                                                                        
-F2         1b 4f 51                                                                                                       
-F3         1b 4f 52                                                                                                       
-F4         1b 4f 53                                                                                                       
-F5         1b 5b 31 35 7e                                                                                                 
-F6         1b 5b 31 37 7e                                                                                                 
-F7         1b 5b 31 38 7e                                                                                                 
-F8         1b 5b 31 39 7e                                                                                                 
-F9         1b 5b 32 30 7e                                                                                                 
-F10                                                                                                                       
-F11                                                                                                                       
-F12        1b 5b 32 34 7e                                                                                                 
-Arriba     1b 5b 41                                                                                                       
-Abajo      1b 5b 42                                                                                                       
-Izquierda  1b 5b 44                                                                                                       
-Derecha    1b 5b 43                                                                                                       
-Intro      0d                                                                                                             
-Retroceso  7f                                                                                                             
-Tab        09                                                                                                             
-Insertar   1b 5b 32 7e                                                                                                    
-Suprimir   1b 5b 33 7e                                                                                                    
-Inicio                                                                                                                    
-Fin                                                                                                                       
-RePág      1b 5b 35 7e                                                                                                    
-AvPág      1b 5b 36 7e                                                                                                    
+Tecla     | Norm           | Ctrl         | Alt          | Mayús          | Ctrl+Alt       | Ctrl+Mayús     | Alt+mayús      | Ctrl+Alt+Mayús
+----------|----------------|--------------|--------------|----------------|----------------|----------------|----------------|---------------
+A         | "a"            | "\x01"       | "\x1ba"      | "A"            | "\x1b\x01"     | "\x01"         |                |  
+B         | "b"            | "\x02"       | "\x1bb"      | "B"            | "\x1b\x02"     |                |                |  
+C         | "c"            | "\x03"       | "\x1bc"      | "C"            | "\x1b\x03"     |                |                |  
+D         | "d"            | "\x04"       | "\x1bd"      | "D"            | "\x1b\x04"     |                |                |  
+E         | "e"            | "\x05"       | "\x1be"      | "E"            | "\x1b\x05"     |                |                |  
+F         | "f"            | "\x06"       | "\x1bf"      | "F"            | "\x1b\x06"     |                |                |  
+G         | "g"            | "\x07"       | "\x1bg"      | "G"            | "\x1b\x07"     |                |                |  
+H         | "h"            | "\x08"       | "\x1bh"      | "H"            | "\x1b\x08"     |                |                |  
+I         | "i"            | "\x09"       | "\x1bi"      | "I"            | "\x1b\x09"     |                |                |  
+J         | "j"            | "\x0a"       | "\x1bj"      | "J"            | "\x1b\x0a"     |                |                |  
+K         | "k"            | "\x0b"       | "\x1bk"      | "K"            | "\x1b\x0b"     |                |                |  
+L         | "l"            | "\x0c"       | "\x1bl"      | "L"            | "\x1b\x0c"     |                |                |  
+M         | "m"            | "\x0d"       | "\x1bm"      | "M"            | "\x1b\x0d"     |                |                |  
+N         | "n"            | "\x0e"       | "\x1bn"      | "N"            | "\x1b\x0e"     |                |                |  
+O         | "o"            | "\x0f"       | "\x1bo"      | "O"            | "\x1b\x0f"     |                |                |  
+P         | "p"            | "\x10"       | "\x1bp"      | "P"            | "\x1b\x10"     |                |                |  
+Q         | "q"            | "\x11"       | "\x1bq"      | "Q"            | "\x1b\x11"     |                |                |  
+R         | "r"            | "\x12"       | "\x1br"      | "R"            | "\x1b\x12"     |                |                |  
+S         | "s"            | "\x13"       | "\x1bs"      | "S"            | "\x1b\x13"     |                |                |  
+T         | "t"            | "\x14"       | "\x1bt"      | "T"            | "\x1b\x14"     |                |                |  
+U         | "u"            | "\x15"       | "\x1bu"      | "U"            | "\x1b\x15"     |                |                |  
+V         | "v"            | "\x16"       | "\x1bv"      | "V"            | "\x1b\x16"     |                |                |  
+W         | "w"            | "\x17"       | "\x1bw"      | "W"            | "\x1b\x17"     |                |                |  
+X         | "x"            | "\x18"       | "\x1bx"      | "X"            | "\x1b\x18"     |                |                |  
+Y         | "y"            | "\x19"       | "\x1by"      | "Y"            | "\x1b\x19"     |                |                |  
+Z         | "z"            | "\x1a"       | "\x1bz"      | "Z"            | "\x1b\x1a"     |                |                |  
+0         | "0"            | [P Zoom]     | "\x1b0"      | -              | "\x1b0"        |                |                |  
+1         | "1"            | "1"          | "\x1b1"      | -              | "\x1b1"        |                |                |  
+2         | "2"            | "\x00"       | "\x1b2"      | -              | "\x00"         |                |                |  
+3         | "3"            | "\x1b"       | "\x1b3"      | -              | "\x1b"         |                |                |  
+4         | "4"            | "\x1c"       | "\x1b4"      | -              | "\x1c"         |                |                |  
+5         | "5"            | "\x1d"       | "\x1b5"      | -              | "\x1d"         |                |                |  
+6         | "6"            | "\x1e"       | "\x1b6"      | -              | "\x1e"         |                |                |  
+7         | "7"            | "\x1f"       | "\x1b7"      | -              | "\x1f"         |                |                |  
+8         | "8"            | "\x7f"       | "\x1b8"      | -              | "\x7f"         |                |                |  
+9         | "9"            | "\x39"       | "\x1b9"      | -              | "\x1b9"        |                |                |  
++         | "+"            | [P Zoom +]   | "\x1b+"      | -              |                |                |                |  
+-         | "-"            | [P Zoom -]   | "\x1b-"      | -              |                |                |                |  
+*         | "*"            | "*"          | "\x1b*"      | "\x1b*"        |                |                |                |  
+/         | "/"            | "/"          | "\x1b/"      | "\x1b/"        |                |                |                |  
+.         | "."            | "."          | "\x1b."      | -              |                |                |                |  
+,         | ","            | ","          | "\x1b,"      | -              |                |                |                |  
+Esc       | "\x1b"         | "\x1b"       | [L Sig.apl.] | "\x1b"         |                |                |                |  
+F1        | "\x1bOP"       | [P]          | [L Inicio]   | "\x1bO1;2P"    |                |                |                |  
+F2        | "\x1bOQ"       | "\x1bO1;5Q"  | [L Ejecutar] | "\x1bO1;2Q"    |                |                |                |  
+F3        | "\x1bOR"       | "\x1bO1;5R"  | "\x1bO1;3R"  | "\x1bO1;2R"    |                |                |                |  
+F4        | "\x1bOS"       | "\x1bO1;5S"  | [L Cerrar]   | "\x1bO1;2S"    |                |                |                |  
+F5        | "\x1b[15~"     | "\x1b[15;5~" | [L]          | "\x1b[15;2~"   |                |                |                |  
+F6        | "\x1b[17~"     | "\x1b[17;5~" | [L Borde]    | "\x1b[17;2~"   |                |                |                |  
+F7        | "\x1b[18~"     | "\x1b[18;5~" | [L Mover]    | "\x1b[18;2~"   |                |                |                |  
+F8        | "\x1b[19~"     | "\x1b[19;5~" | [L Tamaño]   | "\x1b[19;2~"   |                |                |                |  
+F9        | "\x1b[20~"     | "\x1b[20;5~" | [L Min]      | "\x1b[20;2~"   |                |                |                |  
+F10       | [P Menú]       | "\x1b[21;5~" | [L Max]      | "\x1b[21;2~"   |                |                |                |  
+F11       | [P Pant.comp.] | "\x1b[23;5~" | "\x1b[23;3~" | "\x1b[23;2~"   |                |                |                |  
+F12       | "\x1b[24~"     | "\x1b[24;5~" | "\x1b[24;3~" | "\x1b[24;2~"   |                |                |                |  
+Arriba    | "\x1b[A"       | "\x1b[1;5A"  | "\x1b[1;3A"  | "\x1b[1;2A"    |                |                |                |  
+Abajo     | "\x1b[B"       | "\x1b[1;5B"  | "\x1b[1;3B"  | "\x1b[1;2B"    |                |                |                |  
+Izquierda | "\x1b[D"       | "\x1b[1;5D"  | "\x1b[1;3D"  | "\x1b[1;2D"    |                |                |                |  
+Derecha   | "\x1b[C"       | "\x1b[1;5C"  | "\x1b[1;3C"  | "\x1b[1;2C"    |                |                |                |  
+Intro     | "\x0d"         | "\x0a"       | "\x1b\x0a"   | "\x0d"         |                |                |                |  
+Retroceso | "\x7f"         | "\x7f"       | "\x1b\x7f"   | "\x7f"         |                |                |                |  
+Tab       | "\x09"         | "\x09"       | [L Cambiar]  | "\x1b[Z"       |                |                |                |  
+Insertar  | "\x1b[2~"      | [P]          | "\x1b[2;3~"  | [P]            |                |                |                |  
+Suprimir  | "\x1b[3~"      | "\x1b[3;5~"  | "\x1b[3;3~"  | "\x1b[3;2~"    |                |                |                |  
+Inicio    | (Ver abajo)    | (Ver abajo)  | (Ver abajo)  | [P Despl.ini.] |                |                |                |  
+Fin       | (Ver abajo)    | (Ver abajo)  | (Ver abajo)  | [P Despl.fin]  |                |                |                |  
+RePág     | "\x1b[5~"      | "\x1b[5;5~"  | "\x1b[5;3~"  | [P Pg.ant.]    |                |                |                |  
+AvPág     | "\x1b[6~"      | "\x1b[6;5~"  | "\x1b[6;3~"  | [P Pg.sig.]    |                |                |                |  
 
-Varios inicio: {27, '[', '1', '~'}, {27, '[', '7', '~'}, {27, '[', 'H'}, {27, 'O', 'H'}
-Varios fin:    {27, '[', '4', '~'}, {27, '[', '8', '~'}, {27, '[', 'F'}, {27, 'O', 'F'}
+Varios inicio: "\x1b[1~", "\x1b[7~", "\x1b[H", "\x1bOH"
+Varios fin:    "\x1b[4~", "\x1b[8~", "\x1b[F", "\x1bOF"
 
-Mayús+keypad se comporta como Mayús+edit
-Ctrl y Alt no cambian keypad
+Si Bloq. Mayús. está activado, las letras se invierten (tecla genera A,B,C,... y Mayús+tecla genera a,b,c...)
+Mayús+keypad se comporta como Mayús+flechas
+Ctrl y Alt no cambian keypad, Inicio, ni Fin
+
+Teclas interceptadas por la terminal:
+Alt+letra, si hay un menú con esa letra
+F1, ayuda (terminal de gnome la intercepta, terminator no)
+F10, menú
+F11, pantalla completa
+Ctrl+0, restablecer zoom
+Ctrl+F1
+Ctrl+(+), zoom +
+Ctrl+(-), zoom -
+Ctrl+KP+
+Ctrl+KP-
+Ctrl+Ins
+Ctrl+AvPág (terminator la intercepta, terminal de gnome no)
+Ctrl+RePág (terminator la intercepta, terminal de gnome no)
+Mayús+Ins
+Mayús+Inicio, desplazar al inicio
+Mayús+Fin, desplazar al fin
+Mayús+RePág, desplazar página arriba
+Mayús+AvPág, desplazar página abajo
+
+Teclas interceptadas por Linux:
+Alt+Tab, cambiar de aplicación
+Alt+Esc, siguiente aplicación
+Alt+F1, menú inicio
+Alt+F2, ejecutar
+Alt+F4, cerrar aplicación
+Alt+F5
+Alt+F6, resalta el borde de la ventana
+Alt+F7, mover ventana
+Alt+F8, redimensionar ventana
+Alt+F9, minimizar ventana
+Alt+F10, maximizar/restaurar ventana
