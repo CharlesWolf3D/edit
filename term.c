@@ -146,8 +146,8 @@ void startText(void)
 	ttystate.c_lflag &= ~IEXTEN; //no tratar de forma especial Ctrl+V
 	ttystate.c_lflag &= ~ECHO;   //no imprimir los caracteres entrantes
 	ttystate.c_iflag &= ~IXON;   //no tratar de forma especial Ctrl+S y Ctrl+Q
-	ttystate.c_iflag &= ~ICRNL;  //no tratar de forma especial Ctrl+M y Ctrl+J
-	ttystate.c_oflag &= ~OPOST;  //no modificar fin de línea
+	ttystate.c_iflag &= ~ICRNL;  //no transformar 13 en 10 para entrada
+	ttystate.c_oflag &= ~OPOST;  //no transformar "\n" en "\n\r" para salida
 	ttystate.c_cc[VMIN] = 1;     //recibir caracteres inmediatamente
 	tcsetattr(STDIN_FILENO, TCSANOW, &ttystate); //enviar atributos de stdin
 	//inicializar variables

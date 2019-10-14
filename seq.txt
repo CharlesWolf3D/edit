@@ -84,9 +84,10 @@ F11                     pantalla completa
 Ctrl+0                  restablecer zoom
 Ctrl+(+)                zoom +
 Ctrl+(-)                zoom -
+Ctrl+F1                 tecla interceptada
 Ctrl+AvPág              (terminator la intercepta, terminal de gnome no)
 Ctrl+RePág              (terminator la intercepta, terminal de gnome no)
-Mayús+F10               muestra el menú contextual (la tecla también se recibe)
+Mayús+F10               menú contextual (la tecla también se recibe en terminator, no en gnome terminal)
 Mayús+Inicio            desplazar al inicio
 Mayús+Fin               desplazar al fin
 Mayús+RePág             desplazar página arriba
