@@ -367,13 +367,13 @@ unsigned int getKey(void)
 	if(ch == 0x09)return(HK_TAB); //Tab (o Ctrl[+Mayús]+I)
 	if(ch == 0x0a)return(HK_C | HK_ENTER); //Ctrl+Intro (o Ctrl[+Mayús]+J)
 	if(ch == 0x0d)return(HK_ENTER); //Intro (o Ctrl[+Mayús]+M)
-	if(ch >= 0x01 && ch <= 0x1a)return(HK_C | (ch + 'a' - 1)); //Ctrl[+Mayús]+Letra, excluyendo I, J, y M
+	if(ch >= 0x01 && ch <= 0x1a)return(HK_C | (ch + 'A' - 1)); //Ctrl[+Mayús]+Letra, excluyendo I, J, y M
 	if(ch == 0x1b)
 	{
 		if(!kbhit())return(HK_ESC); //Esc (o Ctrl+3)
 		ch = getchr();
 		if(ch == 0x0a)return(HK_A | HK_ENTER); //[Ctrl+]Alt+[Mayús]Intro (o Ctrl+Alt[+Mayús]+J)
-		if(ch >= 0x01 && ch <= 0x1a)return(HK_CA | (ch + 'a' - 1)); //Ctrl+Alt[+Mayús]+Letra, excluyendo J
+		if(ch >= 0x01 && ch <= 0x1a)return(HK_CA | (ch + 'A' - 1)); //Ctrl+Alt[+Mayús]+Letra, excluyendo J
 		if(ch == '[')
 		{
 			unsigned int key = HK_NONE, mod = HK_NONE, num, num2, pos;
@@ -537,9 +537,9 @@ unsigned int getKey(void)
 		if(ch >= '0' && ch <= '9')
 			return(HK_A | ch); //Alt+Número
 		if(ch >= 'A' && ch <= 'Z')
-			return(HK_A | (ch + ('a' - 'A'))); //Alt[+Mayús]+Letra
-		if(ch >= 'a' && ch <= 'z')
 			return(HK_A | ch); //Alt[+Mayús]+Letra
+		if(ch >= 'a' && ch <= 'z')
+			return(HK_A | (ch - ('a' - 'A'))); //Alt[+Mayús]+Letra
 		if(ch == 0x7f)
 			return(HK_A | HK_BKSP); //[Ctrl+]Alt+[Mayús+]Retroceso
 		return(HK_A | ch); //Alt+Carácter
