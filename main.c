@@ -175,6 +175,7 @@ int main(int argc, char *argv[])
 	{
 		if(kbhit())
 		{
+			#if 0
 			ch = getchr();
 			switch(ch)
 			{
@@ -206,7 +207,46 @@ int main(int argc, char *argv[])
 				tputs("\n\r");
 				refresh();
 			}
+			#endif
+			unsigned int key = getKey();
+			if(key == HK_ESC)finish = 1;
+			if(key&HK_C)tputs("Ctrl+");
+			if(key&HK_A)tputs("Alt+");
+			if(key&HK_S)tputs("Mayús+");
+			unsigned char chr = (key & HK_KMASK) >> 16;
+			if(chr)
+			{
+				chr--;
+				char*names[]={"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","Ins","Supr","Inicio","Fin","RePág","AvPág","Arriba","Abajo","Izquierda","Derecha","Intro","Retroceso","Tab","Esc"};
+				tputs(names[chr]);
+			}
+			else
+			{
+				chr = key & HK_CHMASK;
+				if(chr >= 32 && chr <= 126)
+				{
+					if(chr == 32)
+						tputs("Espacio");
+					else
+					{
+						str[0] = chr;
+						str[1] = 0;
+						tputs(str);
+					}
+				}
+				else
+				{
+					tputs("<");
+					int2str(chr, str);
+					tputs(str);
+					tputs(">");
+				}
+			}
+			tputs("\n\r");
+			refresh();
 		}
+		else
+			usleep(50 * 1000);
 		/*getterminalsize(&wndW, &wndH);
 		if(oldw != wndW || oldh != wndH)
 		{
@@ -214,7 +254,6 @@ int main(int argc, char *argv[])
 			oldh = wndH;
 			wndRedraw();
 		}*/
-		usleep(50 * 1000);
 	}
 	wndEnd();
 	return(0);

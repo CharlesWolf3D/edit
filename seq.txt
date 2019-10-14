@@ -1,73 +1,73 @@
-Tecla     | Norm           | Ctrl         | Alt          | Mayús          | Ctrl+Alt       | Ctrl+Mayús     | Alt+mayús      | Ctrl+Alt+Mayús
-----------|----------------|--------------|--------------|----------------|----------------|----------------|----------------|---------------
-A         | "a"            | "\x01"       | "\x1ba"      | "A"            | "\x1b\x01"     | "\x01"         |                |  
-B         | "b"            | "\x02"       | "\x1bb"      | "B"            | "\x1b\x02"     |                |                |  
-C         | "c"            | "\x03"       | "\x1bc"      | "C"            | "\x1b\x03"     |                |                |  
-D         | "d"            | "\x04"       | "\x1bd"      | "D"            | "\x1b\x04"     |                |                |  
-E         | "e"            | "\x05"       | "\x1be"      | "E"            | "\x1b\x05"     |                |                |  
-F         | "f"            | "\x06"       | "\x1bf"      | "F"            | "\x1b\x06"     |                |                |  
-G         | "g"            | "\x07"       | "\x1bg"      | "G"            | "\x1b\x07"     |                |                |  
-H         | "h"            | "\x08"       | "\x1bh"      | "H"            | "\x1b\x08"     |                |                |  
-I         | "i"            | "\x09"       | "\x1bi"      | "I"            | "\x1b\x09"     |                |                |  
-J         | "j"            | "\x0a"       | "\x1bj"      | "J"            | "\x1b\x0a"     |                |                |  
-K         | "k"            | "\x0b"       | "\x1bk"      | "K"            | "\x1b\x0b"     |                |                |  
-L         | "l"            | "\x0c"       | "\x1bl"      | "L"            | "\x1b\x0c"     |                |                |  
-M         | "m"            | "\x0d"       | "\x1bm"      | "M"            | "\x1b\x0d"     |                |                |  
-N         | "n"            | "\x0e"       | "\x1bn"      | "N"            | "\x1b\x0e"     |                |                |  
-O         | "o"            | "\x0f"       | "\x1bo"      | "O"            | "\x1b\x0f"     |                |                |  
-P         | "p"            | "\x10"       | "\x1bp"      | "P"            | "\x1b\x10"     |                |                |  
-Q         | "q"            | "\x11"       | "\x1bq"      | "Q"            | "\x1b\x11"     |                |                |  
-R         | "r"            | "\x12"       | "\x1br"      | "R"            | "\x1b\x12"     |                |                |  
-S         | "s"            | "\x13"       | "\x1bs"      | "S"            | "\x1b\x13"     |                |                |  
-T         | "t"            | "\x14"       | "\x1bt"      | "T"            | "\x1b\x14"     |                |                |  
-U         | "u"            | "\x15"       | "\x1bu"      | "U"            | "\x1b\x15"     |                |                |  
-V         | "v"            | "\x16"       | "\x1bv"      | "V"            | "\x1b\x16"     |                |                |  
-W         | "w"            | "\x17"       | "\x1bw"      | "W"            | "\x1b\x17"     |                |                |  
-X         | "x"            | "\x18"       | "\x1bx"      | "X"            | "\x1b\x18"     |                |                |  
-Y         | "y"            | "\x19"       | "\x1by"      | "Y"            | "\x1b\x19"     |                |                |  
-Z         | "z"            | "\x1a"       | "\x1bz"      | "Z"            | "\x1b\x1a"     |                |                |  
-0         | "0"            | [P Zoom]     | "\x1b0"      | -              | "\x1b0"        |                |                |  
-1         | "1"            | "1"          | "\x1b1"      | -              | "\x1b1"        |                |                |  
-2         | "2"            | "\x00"       | "\x1b2"      | -              | "\x00"         |                |                |  
-3         | "3"            | "\x1b"       | "\x1b3"      | -              | "\x1b"         |                |                |  
-4         | "4"            | "\x1c"       | "\x1b4"      | -              | "\x1c"         |                |                |  
-5         | "5"            | "\x1d"       | "\x1b5"      | -              | "\x1d"         |                |                |  
-6         | "6"            | "\x1e"       | "\x1b6"      | -              | "\x1e"         |                |                |  
-7         | "7"            | "\x1f"       | "\x1b7"      | -              | "\x1f"         |                |                |  
-8         | "8"            | "\x7f"       | "\x1b8"      | -              | "\x7f"         |                |                |  
-9         | "9"            | "\x39"       | "\x1b9"      | -              | "\x1b9"        |                |                |  
-+         | "+"            | [P Zoom +]   | "\x1b+"      | -              |                |                |                |  
--         | "-"            | [P Zoom -]   | "\x1b-"      | -              |                |                |                |  
-*         | "*"            | "*"          | "\x1b*"      | "\x1b*"        |                |                |                |  
-/         | "/"            | "/"          | "\x1b/"      | "\x1b/"        |                |                |                |  
-.         | "."            | "."          | "\x1b."      | -              |                |                |                |  
-,         | ","            | ","          | "\x1b,"      | -              |                |                |                |  
-Esc       | "\x1b"         | "\x1b"       | [L Sig.apl.] | "\x1b"         |                |                |                |  
-F1        | "\x1bOP"       | [P]          | [L Inicio]   | "\x1bO1;2P"    |                |                |                |  
-F2        | "\x1bOQ"       | "\x1bO1;5Q"  | [L Ejecutar] | "\x1bO1;2Q"    |                |                |                |  
-F3        | "\x1bOR"       | "\x1bO1;5R"  | "\x1bO1;3R"  | "\x1bO1;2R"    |                |                |                |  
-F4        | "\x1bOS"       | "\x1bO1;5S"  | [L Cerrar]   | "\x1bO1;2S"    |                |                |                |  
-F5        | "\x1b[15~"     | "\x1b[15;5~" | [L]          | "\x1b[15;2~"   |                |                |                |  
-F6        | "\x1b[17~"     | "\x1b[17;5~" | [L Borde]    | "\x1b[17;2~"   |                |                |                |  
-F7        | "\x1b[18~"     | "\x1b[18;5~" | [L Mover]    | "\x1b[18;2~"   |                |                |                |  
-F8        | "\x1b[19~"     | "\x1b[19;5~" | [L Tamaño]   | "\x1b[19;2~"   |                |                |                |  
-F9        | "\x1b[20~"     | "\x1b[20;5~" | [L Min]      | "\x1b[20;2~"   |                |                |                |  
-F10       | [P Menú]       | "\x1b[21;5~" | [L Max]      | "\x1b[21;2~"   |                |                |                |  
-F11       | [P Pant.comp.] | "\x1b[23;5~" | "\x1b[23;3~" | "\x1b[23;2~"   |                |                |                |  
-F12       | "\x1b[24~"     | "\x1b[24;5~" | "\x1b[24;3~" | "\x1b[24;2~"   |                |                |                |  
-Arriba    | "\x1b[A"       | "\x1b[1;5A"  | "\x1b[1;3A"  | "\x1b[1;2A"    |                |                |                |  
-Abajo     | "\x1b[B"       | "\x1b[1;5B"  | "\x1b[1;3B"  | "\x1b[1;2B"    |                |                |                |  
-Izquierda | "\x1b[D"       | "\x1b[1;5D"  | "\x1b[1;3D"  | "\x1b[1;2D"    |                |                |                |  
-Derecha   | "\x1b[C"       | "\x1b[1;5C"  | "\x1b[1;3C"  | "\x1b[1;2C"    |                |                |                |  
-Intro     | "\x0d"         | "\x0a"       | "\x1b\x0a"   | "\x0d"         |                |                |                |  
-Retroceso | "\x7f"         | "\x7f"       | "\x1b\x7f"   | "\x7f"         |                |                |                |  
-Tab       | "\x09"         | "\x09"       | [L Cambiar]  | "\x1b[Z"       |                |                |                |  
-Insertar  | "\x1b[2~"      | [P]          | "\x1b[2;3~"  | [P]            |                |                |                |  
-Suprimir  | "\x1b[3~"      | "\x1b[3;5~"  | "\x1b[3;3~"  | "\x1b[3;2~"    |                |                |                |  
-Inicio    | (Ver abajo)    | (Ver abajo)  | (Ver abajo)  | [P Despl.ini.] |                |                |                |  
-Fin       | (Ver abajo)    | (Ver abajo)  | (Ver abajo)  | [P Despl.fin]  |                |                |                |  
-RePág     | "\x1b[5~"      | "\x1b[5;5~"  | "\x1b[5;3~"  | [P Pg.ant.]    |                |                |                |  
-AvPág     | "\x1b[6~"      | "\x1b[6;5~"  | "\x1b[6;3~"  | [P Pg.sig.]    |                |                |                |  
+Tecla     | Norm           | Ctrl         | Alt          | Mayús          | Ctrl+Alt    | Ctrl+Mayús     | Alt+mayús      | Ctrl+Alt+Mayús
+----------|----------------|--------------|--------------|----------------|-------------|----------------|----------------|---------------
+A         | "a"            | "\x01"       | "\x1ba"      | "A"            | "\x1b\x01"  | "\x01"         | "\x1bA"        | "\x1b\x01"
+B         | "b"            | "\x02"       | "\x1bb"      | "B"            | "\x1b\x02"  | "\x02"         | "\x1bB"        | "\x1b\x02"
+C         | "c"            | "\x03"       | "\x1bc"      | "C"            | "\x1b\x03"  | "\x03"         | "\x1bC"        | "\x1b\x03"
+D         | "d"            | "\x04"       | "\x1bd"      | "D"            | [L Escrit.] | "\x04"         | "\x1bD"        | "\x1b\x04"
+E         | "e"            | "\x05"       | "\x1be"      | "E"            | "\x1b\x05"  | [P Ventana]    | "\x1bE"        | "\x1b\x05"
+F         | "f"            | "\x06"       | "\x1bf"      | "F"            | "\x1b\x06"  | [P Buscar]     | "\x1bF"        | "\x1b\x06"
+G         | "g"            | "\x07"       | "\x1bg"      | "G"            | "\x1b\x07"  | [P Borrar]     | "\x1bG"        | "\x1b\x07"
+H         | "h"            | "\x08"       | "\x1bh"      | "H"            | "\x1b\x08"  | "\x08"         | "\x1bH"        | "\x1b\x08"
+I         | "i"            | "\x09"       | "\x1bi"      | "I"            | "\x1b\x09"  | [P Ventana]    | "\x1bI"        | "\x1b\x09"
+J         | "j"            | "\x0a"       | "\x1bj"      | "J"            | "\x1b\x0a"  | "\x0a"         | "\x1bJ"        | "\x1b\x0a"
+K         | "k"            | "\x0b"       | "\x1bk"      | "K"            | "\x1b\x0b"  | "\x0b"         | "\x1bK"        | "\x1b\x0b"
+L         | "l"            | "\x0c"       | "\x1bl"      | "L"            | [L Bloq.]   | "\x0c"         | "\x1bL"        | "\x1b\x0c"
+M         | "m"            | "\x0d"       | "\x1bm"      | "M"            | "\x1b\x0d"  | "\x0d"         | "\x1bM"        | "\x1b\x0d"
+N         | "n"            | "\x0e"       | "\x1bn"      | "N"            | "\x1b\x0e"  | [P Ventana]    | "\x1bN"        | "\x1b\x0e"
+O         | "o"            | "\x0f"       | "\x1bo"      | "O"            | "\x1b\x0f"  | [P Ventana]    | "\x1bO"        | "\x1b\x0f"
+P         | "p"            | "\x10"       | "\x1bp"      | "P"            | "\x1b\x10"  | [P Ventana]    | "\x1bP"        | "\x1b\x10"
+Q         | "q"            | "\x11"       | "\x1bq"      | "Q"            | "\x1b\x11"  | [P Salir]      | "\x1bQ"        | "\x1b\x11"
+R         | "r"            | "\x12"       | "\x1br"      | "R"            | "\x1b\x12"  | -              | "\x1bR"        | "\x1b\x12"
+S         | "s"            | "\x13"       | "\x1bs"      | "S"            | "\x1b\x13"  | [P Despl.]     | "\x1bS"        | "\x1b\x13"
+T         | "t"            | "\x14"       | "\x1bt"      | "T"            | "\x1b\x14"  | [P Pestaña]    | "\x1bT"        | "\x1b\x14"
+U         | "u"            | "\x15"       | "\x1bu"      | "U"            | "\x1b\x15"  | [P Tecla]      | "\x1bU"        | "\x1b\x15"
+V         | "v"            | "\x16"       | "\x1bv"      | "V"            | "\x1b\x16"  | [P Pegar]      | "\x1bV"        | "\x1b\x16"
+W         | "w"            | "\x17"       | "\x1bw"      | "W"            | "\x1b\x17"  | [P Salir]      | "\x1bW"        | "\x1b\x17"
+X         | "x"            | "\x18"       | "\x1bx"      | "X"            | "\x1b\x18"  | -              | "\x1bX"        | "\x1b\x18"
+Y         | "y"            | "\x19"       | "\x1by"      | "Y"            | "\x1b\x19"  | "\x19"         | "\x1bY"        | "\x1b\x19"
+Z         | "z"            | "\x1a"       | "\x1bz"      | "Z"            | "\x1b\x1a"  | -              | "\x1bZ"        | "\x1b\x1a"
+0         | "0"            | [P Zoom]     | "\x1b0"      | "="            | "\x1b0"     | "="            | "\x1b="        | "\x1b="
+1         | "1"            | "1"          | "\x1b1"      | "!"            | "\x1b1"     | "!"            | "\x1b!"        | "\x1b!"
+2         | "2"            | "\x00"       | "\x1b2"      | "\""           | "\x00"      | "\""           | "\x1b\""       | "\x1b\""
+3         | "3"            | "\x1b"       | "\x1b3"      | "\xc2\xb7"     | "\x1b"      | "\xc2\xb7"     | "\x1b\xc2\xb7" | "\x1b\xc2\xb7"
+4         | "4"            | "\x1c"       | "\x1b4"      | "$"            | "\x1c"      | "$"            | "\x1b$"        | "\x1b$"
+5         | "5"            | "\x1d"       | "\x1b5"      | "%"            | "\x1d"      | "%"            | "\x1b%"        | "\x1b%"
+6         | "6"            | "\x1e"       | "\x1b6"      | "&"            | "\x1e"      | "&"            | "\x1b&"        | "\x1b&"
+7         | "7"            | "\x1f"       | "\x1b7"      | "/"            | "\x1f"      | "\x1f"         | "\x1b/"        | "\x1b/"
+8         | "8"            | "\x7f"       | "\x1b8"      | "("            | "\x7f"      | "("            | "\x1b("        | "\x1b("
+9         | "9"            | "\x39"       | "\x1b9"      | ")"            | "\x1b9"     | ")"            | "\x1b)"        | "\x1b)"
++         | "+"            | [P Zoom +]   | "+"          | -              | -           | -              | -              | -
+-         | "-"            | [P Zoom -]   | "-"          | -              | -           | -              | -              | -
+*         | "*"            | "*"          | "*"          | "*"            | -           | "*"            | "*"            | "*"
+/         | "/"            | "/"          | "/"          | "/"            | -           | "/"            | "/"            | "/"
+.         | "."            | "."          | "\x1b."      | ":"            | "\x1b."     | ":"            | "\x1b:"        | "\x1b:"
+,         | ","            | ","          | "\x1b,"      | ";"            | "\x1b,"     | ";"            | "\x1b;"        | "\x1b;"
+Esc       | "\x1b"         | "\x1b"       | [L Sig.apl.] | "\x1b"         | [Salir VM]  | "\x1b"         | [L Cambiar]    | [L Cambiar]
+F1        | "\x1bOP"       | [P]          | [L Inicio]   | "\x1bO1;2P"    | [L Consola] | "\x1bO1;6P"    | "\x1bO1;4P"    | "\x1bO1;8P"
+F2        | "\x1bOQ"       | "\x1bO1;5Q"  | [L Ejecutar] | "\x1bO1;2Q"    | [L Consola] | "\x1bO1;6Q"    | "\x1bO1;4Q"    | "\x1bO1;8Q"
+F3        | "\x1bOR"       | "\x1bO1;5R"  | "\x1bO1;3R"  | "\x1bO1;2R"    | [L Consola] | "\x1bO1;6R"    | "\x1bO1;4R"    | "\x1bO1;8R"
+F4        | "\x1bOS"       | "\x1bO1;5S"  | [L Cerrar]   | "\x1bO1;2S"    | [L Consola] | "\x1bO1;6S"    | "\x1bO1;4S"    | "\x1bO1;8S"
+F5        | "\x1b[15~"     | "\x1b[15;5~" | [L Ventana]  | "\x1b[15;2~"   | [L Consola] | "\x1b[15;6~"   | "\x1b[15;4~"   | "\x1b[15;8~"
+F6        | "\x1b[17~"     | "\x1b[17;5~" | [L Borde]    | "\x1b[17;2~"   | [L Consola] | "\x1b[17;6~"   | [L Borde]      | "\x1b[17;8~"
+F7        | "\x1b[18~"     | "\x1b[18;5~" | [L Mover]    | "\x1b[18;2~"   | [L Consola] | "\x1b[18;6~"   | "\x1b[18;4~"   | "\x1b[18;8~"
+F8        | "\x1b[19~"     | "\x1b[19;5~" | [L Tamaño]   | "\x1b[19;2~"   | [L Consola] | "\x1b[19;6~"   | "\x1b[19;4~"   | "\x1b[19;8~"
+F9        | "\x1b[20~"     | "\x1b[20;5~" | [L Min]      | "\x1b[20;2~"   | [L Consola] | "\x1b[20;6~"   | "\x1b[20;4~"   | "\x1b[20;8~"
+F10       | [P Menú]       | "\x1b[21;5~" | [L Max]      | "\x1b[21;2~"   | [L Consola] | "\x1b[21;6~"   | "\x1b[21;4~"   | "\x1b[21;8~"
+F11       | [P Pant.comp.] | "\x1b[23;5~" | "\x1b[23;3~" | "\x1b[23;2~"   | [L Consola] | "\x1b[23;6~"   | "\x1b[23;4~"   | "\x1b[23;8~"
+F12       | "\x1b[24~"     | "\x1b[24;5~" | "\x1b[24;3~" | "\x1b[24;2~"   | [L Consola] | "\x1b[24;6~"   | "\x1b[24;4~"   | "\x1b[24;8~"
+Arriba    | "\x1b[A"       | "\x1b[1;5A"  | "\x1b[1;3A"  | "\x1b[1;2A"    | [L Escrit.] | -              | "\x1b[1;4A"    | [L Escrit.]
+Abajo     | "\x1b[B"       | "\x1b[1;5B"  | "\x1b[1;3B"  | "\x1b[1;2B"    | [L Escrit.] | -              | "\x1b[1;4B"    | [L Escrit.]
+Izquierda | "\x1b[D"       | "\x1b[1;5D"  | "\x1b[1;3D"  | "\x1b[1;2D"    | [L Escrit.] | -              | "\x1b[1;4D"    | [L Escrit.]
+Derecha   | "\x1b[C"       | "\x1b[1;5C"  | "\x1b[1;3C"  | "\x1b[1;2C"    | [L Escrit.] | -              | "\x1b[1;4C"    | [L Escrit.]
+Intro     | "\x0d"         | "\x0a"       | "\x1b\x0a"   | "\x0d"         | "\x1b\x0a"  | "\x0a"         | "\x1b\x0a"     | "\x1b\x0a"
+Retroceso | "\x7f"         | "\x7f"       | "\x1b\x7f"   | "\x7f"         | [L Cerrar]  | "\x7f"         | "\x1b\x7f"     | "\x1b\x7f"
+Tab       | "\x09"         | "\x09"       | [L Cambiar]  | "\x1b[Z"       | [L Cambiar] | -              | [L Cambiar]    | [L Cambiar]
+Insertar  | "\x1b[2~"      | [P]          | "\x1b[2;3~"  | [P]            | [L Apagar]  | [P Pegar]      | -              | [L Pegar]
+Suprimir  | "\x1b[3~"      | "\x1b[3;5~"  | "\x1b[3;3~"  | "\x1b[3;2~"    | [Sistema]   | "\x1b[3;6~"    | "\x1b[3;4~"    | "\x1b[3;8~"
+Inicio    | (Ver abajo)    | (Ver abajo)  | (Ver abajo)  | [P Despl.ini.] | (Ver abajo) | [P Despl.]     | [P Despl.]     | [P Despl.]
+Fin       | (Ver abajo)    | (Ver abajo)  | (Ver abajo)  | [P Despl.fin]  | (Ver abajo) | [P Despl.]     | [P Despl.]     | [P Despl.]
+RePág     | "\x1b[5~"      | "\x1b[5;5~"  | "\x1b[5;3~"  | [P Pg.ant.]    | "\x1b[5;7~" | -              | -              | -
+AvPág     | "\x1b[6~"      | "\x1b[6;5~"  | "\x1b[6;3~"  | [P Pg.sig.]    | "\x1b[6;7~" | -              | -              | -
 
 Varios inicio: "\x1b[1~", "\x1b[7~", "\x1b[H", "\x1bOH"
 Varios fin:    "\x1b[4~", "\x1b[8~", "\x1b[F", "\x1bOF"
@@ -77,34 +77,321 @@ Mayús+keypad se comporta como Mayús+flechas
 Ctrl y Alt no cambian keypad, Inicio, ni Fin
 
 Teclas interceptadas por la terminal:
-Alt+letra, si hay un menú con esa letra
-F1, ayuda (terminal de gnome la intercepta, terminator no)
-F10, menú
-F11, pantalla completa
-Ctrl+0, restablecer zoom
-Ctrl+F1
-Ctrl+(+), zoom +
-Ctrl+(-), zoom -
-Ctrl+KP+
-Ctrl+KP-
-Ctrl+Ins
-Ctrl+AvPág (terminator la intercepta, terminal de gnome no)
-Ctrl+RePág (terminator la intercepta, terminal de gnome no)
-Mayús+Ins
-Mayús+Inicio, desplazar al inicio
-Mayús+Fin, desplazar al fin
-Mayús+RePág, desplazar página arriba
-Mayús+AvPág, desplazar página abajo
+Alt+letra               si hay un menú con esa letra
+F1                      ayuda (terminal de gnome la intercepta, terminator no)
+F10                     menú
+F11                     pantalla completa
+Ctrl+0                  restablecer zoom
+Ctrl+(+)                zoom +
+Ctrl+(-)                zoom -
+Ctrl+AvPág              (terminator la intercepta, terminal de gnome no)
+Ctrl+RePág              (terminator la intercepta, terminal de gnome no)
+Mayús+Inicio            desplazar al inicio
+Mayús+Fin               desplazar al fin
+Mayús+RePág             desplazar página arriba
+Mayús+AvPág             desplazar página abajo
+Ctrl+Mayús+E            nueva división a la derecha
+Ctrl+Mayús+F            buscar
+Ctrl+Mayús+G            borrar pantalla
+Ctrl+Mayús+I            nueva ventana
+Ctrl+Mayús+N            ventana siguiente
+Ctrl+Mayús+O            nueva división abajo
+Ctrl+Mayús+P            ventana anterior
+Ctrl+Mayús+Q            salir del programa
+Ctrl+Mayús+S            barra de desplazamiento
+Ctrl+Mayús+T            nueva pestaña
+Ctrl+Mayús+U            tecla
+Ctrl+Mayús+V            pegar texto
+Ctrl+Mayús+W            salir del programa
+Ctrl+Mayús+Ins          pegar
+Ctrl+Mayús+Inicio       desplazamiento
+Ctrl+Mayús+Fin          desplazamiento
 
 Teclas interceptadas por Linux:
-Alt+Tab, cambiar de aplicación
-Alt+Esc, siguiente aplicación
-Alt+F1, menú inicio
-Alt+F2, ejecutar
-Alt+F4, cerrar aplicación
-Alt+F5
-Alt+F6, resalta el borde de la ventana
-Alt+F7, mover ventana
-Alt+F8, redimensionar ventana
-Alt+F9, minimizar ventana
-Alt+F10, maximizar/restaurar ventana
+Alt+Tab                 cambiar de aplicación
+Alt+Esc                 siguiente aplicación
+Alt+F1                  menú inicio
+Alt+F2                  ejecutar
+Alt+F4                  cerrar aplicación
+Alt+F5                  restaurar tamaño
+Alt+F6                  resalta el borde de la ventana
+Alt+F7                  mover ventana
+Alt+F8                  redimensionar ventana
+Alt+F9                  minimizar ventana
+Alt+F10                 maximizar/restaurar ventana
+Ctrl+Alt+D              mostrar escritorio
+Ctrl+Alt+L              bloquear sesión
+Ctrl+Alt+Esc            salir de la máquina virtual
+Ctrl+Alt+Función        cambiar de consola
+Ctrl+Alt+Flechas        cambiar escritorio
+Ctrl+Alt+Retroceso      cerrar sesión
+Ctrl+Alt+Tab            cambiar de aplicación
+Ctrl+Alt+Ins            apagar sistema
+Ctrl+Alt+Supr           sistema
+Alt+Mayús+Esc           cambiar de aplicación
+Alt+Mayús+F6            borde de ventana
+Alt+Mayús+Tab           cambiar de aplicación
+Alt+Mayús+Inicio        desplazamiento
+Alt+Mayús+Fin           desplazamiento
+Ctrl+Alt+Mayús+Esc      cambiar de aplicación
+Ctrl+Alt+Mayús+Flechas  mover ventana a otro escritorio
+Ctrl+Alt+Mayús+Tab      cambiar de aplicación
+Ctrl+Alt+Mayús+Ins      pegar
+Ctrl+Alt+Mayús+Inicio   desplazamiento
+Ctrl+Alt+Mayús+Fin      desplazamiento
+
+Teclas interceptadas por Windows:
+Alt+Mayús+P             log touchpad
+Ctrl+Alt+Mayús+L        log touchpad
+
+Lista de teclas:
+
+"\x01"       Ctrl[+Mayús]+A
+"\x02"       Ctrl[+Mayús]+B
+"\x03"       Ctrl[+Mayús]+C
+"\x04"       Ctrl[+Mayús]+D
+"\x05"       Ctrl[+Mayús]+E
+"\x06"       Ctrl[+Mayús]+F
+"\x07"       Ctrl[+Mayús]+G
+"\x08"       Ctrl[+Mayús]+H
+"\x09"       [Ctrl+]Tab, Ctrl[+Mayús]+I
+"\x0a"       Ctrl[+Mayús]+Intro, Ctrl[+Mayús]+J
+"\x0b"       Ctrl[+Mayús]+K
+"\x0c"       Ctrl[+Mayús]+L
+"\x0d"       [Mayús+]Intro, Ctrl[+Mayús]+M
+"\x0e"       Ctrl[+Mayús]+N
+"\x0f"       Ctrl[+Mayús]+O
+"\x10"       Ctrl[+Mayús]+P
+"\x11"       Ctrl[+Mayús]+Q
+"\x12"       Ctrl[+Mayús]+R
+"\x13"       Ctrl[+Mayús]+S
+"\x14"       Ctrl[+Mayús]+T
+"\x15"       Ctrl[+Mayús]+U
+"\x16"       Ctrl[+Mayús]+V
+"\x17"       Ctrl[+Mayús]+W
+"\x18"       Ctrl[+Mayús]+X
+"\x19"       Ctrl[+Mayús]+Y
+"\x1a"       Ctrl[+Mayús]+Z
+"\x1b"       Esc
+"\x1b\x01"   Ctrl+Alt[+Mayús]+A
+"\x1b\x02"   Ctrl+Alt[+Mayús]+B
+"\x1b\x03"   Ctrl+Alt[+Mayús]+C
+"\x1b\x04"   Ctrl+Alt[+Mayús]+D
+"\x1b\x05"   Ctrl+Alt[+Mayús]+E
+"\x1b\x06"   Ctrl+Alt[+Mayús]+F
+"\x1b\x07"   Ctrl+Alt[+Mayús]+G
+"\x1b\x08"   Ctrl+Alt[+Mayús]+H
+"\x1b\x09"   Ctrl+Alt[+Mayús]+I
+"\x1b\x0a"   [Ctrl+]Alt[+Mayús]+Intro, Ctrl+Alt[+Mayús]+J
+"\x1b\x0b"   Ctrl+Alt[+Mayús]+K
+"\x1b\x0c"   Ctrl+Alt[+Mayús]+L
+"\x1b\x0d"   Ctrl+Alt[+Mayús]+M
+"\x1b\x0e"   Ctrl+Alt[+Mayús]+N
+"\x1b\x0f"   Ctrl+Alt[+Mayús]+O
+"\x1b\x10"   Ctrl+Alt[+Mayús]+P
+"\x1b\x11"   Ctrl+Alt[+Mayús]+Q
+"\x1b\x12"   Ctrl+Alt[+Mayús]+R
+"\x1b\x13"   Ctrl+Alt[+Mayús]+S
+"\x1b\x14"   Ctrl+Alt[+Mayús]+T
+"\x1b\x15"   Ctrl+Alt[+Mayús]+U
+"\x1b\x16"   Ctrl+Alt[+Mayús]+V
+"\x1b\x17"   Ctrl+Alt[+Mayús]+W
+"\x1b\x18"   Ctrl+Alt[+Mayús]+X
+"\x1b\x19"   Ctrl+Alt[+Mayús]+Y
+"\x1b\x1a"   Ctrl+Alt[+Mayús]+Z
+"\x1b,"      [Ctrl+]Alt+,
+"\x1b."      [Ctrl+]Alt+.
+"\x1b[1;2A"  Mayús+Arriba
+"\x1b[1;2B"  Mayús+Abajo
+"\x1b[1;2C"  Mayús+Derecha
+"\x1b[1;2D"  Mayús+Izquierda
+"\x1b[1;3A"  Alt+Arriba
+"\x1b[1;3B"  Alt+Abajo
+"\x1b[1;3C"  Alt+Derecha
+"\x1b[1;3D"  Alt+Izquierda
+"\x1b[1;4A"  Alt+Mayús+Arriba
+"\x1b[1;4B"  Alt+Mayús+Abajo
+"\x1b[1;4C"  Alt+Mayús+Derecha
+"\x1b[1;4D"  Alt+Mayús+Izquierda
+"\x1b[1;5A"  Ctrl+Arriba
+"\x1b[1;5B"  Ctrl+Abajo
+"\x1b[1;5C"  Ctrl+Derecha
+"\x1b[1;5D"  Ctrl+Izquierda
+"\x1b[15;2~" Mayús+F5
+"\x1b[15;3~" Alt+F5
+"\x1b[15;4~" Alt+Mayús+F5
+"\x1b[15;5~" Ctrl+F5
+"\x1b[15;6~" Ctrl+Mayús+F5
+"\x1b[15;8~" Ctrl+Alt+Mayús+F5
+"\x1b[15~"   F5
+"\x1b[17;2~" Mayús+F6
+"\x1b[17;3~" Alt+F6
+"\x1b[17;4~" Alt+Mayús+F6
+"\x1b[17;5~" Ctrl+F6
+"\x1b[17;6~" Ctrl+Mayús+F6
+"\x1b[17;8~" Ctrl+Alt+Mayús+F6
+"\x1b[17~"   F6
+"\x1b[18;2~" Mayús+F7
+"\x1b[18;3~" Alt+F7
+"\x1b[18;4~" Alt+Mayús+F7
+"\x1b[18;5~" Ctrl+F7
+"\x1b[18;6~" Ctrl+Mayús+F7
+"\x1b[18;8~" Ctrl+Alt+Mayús+F7
+"\x1b[18~"   F7
+"\x1b[19;2~" Mayús+F8
+"\x1b[19;3~" Alt+F8
+"\x1b[19;4~" Alt+Mayús+F8
+"\x1b[19;5~" Ctrl+F8
+"\x1b[19;6~" Ctrl+Mayús+F8
+"\x1b[19;8~" Ctrl+Alt+Mayús+F8
+"\x1b[19~"   F8
+"\x1b[1~"    Inicio
+"\x1b[2;3~"  Alt+Ins
+"\x1b[20;2~" Mayús+F9
+"\x1b[20;3~" Alt+F9
+"\x1b[20;4~" Alt+Mayús+F9
+"\x1b[20;5~" Ctrl+F9
+"\x1b[20;6~" Ctrl+Mayús+F9
+"\x1b[20;8~" Ctrl+Alt+Mayús+F9
+"\x1b[20~"   F9
+"\x1b[21;2~" Mayús+F10
+"\x1b[21;3~" Alt+F10
+"\x1b[21;4~" Alt+Mayús+F10
+"\x1b[21;5~" Ctrl+F10
+"\x1b[21;6~" Ctrl+Mayús+F10
+"\x1b[21;8~" Ctrl+Alt+Mayús+F10
+"\x1b[21~"   F10
+"\x1b[23;2~" Mayús+F11
+"\x1b[23;3~" Alt+F11
+"\x1b[23;4~" Alt+Mayús+F11
+"\x1b[23;5~" Ctrl+F11
+"\x1b[23;6~" Ctrl+Mayús+F11
+"\x1b[23;8~" Ctrl+Alt+Mayús+F11
+"\x1b[23~"   F11
+"\x1b[24;2~" Mayús+F12
+"\x1b[24;3~" Alt+F12
+"\x1b[24;4~" Alt+Mayús+F12
+"\x1b[24;5~" Ctrl+F12
+"\x1b[24;6~" Ctrl+Mayús+F12
+"\x1b[24;8~" Ctrl+Alt+Mayús+F12
+"\x1b[24~"   F12
+"\x1b[2~"    Ins
+"\x1b[3;2~"  Mayús+Supr
+"\x1b[3;3~"  Alt+Supr
+"\x1b[3;4~"  Alt+Mayús+Supr
+"\x1b[3;5~"  Ctrl+Supr
+"\x1b[3;6~"  Ctrl+Mayús+Supr
+"\x1b[3;8~"  Ctrl+Alt+Mayús+Supr
+"\x1b[3~"    Supr
+"\x1b[4~"    Fin
+"\x1b[5;3~"  Alt+RePág
+"\x1b[5;5~"  Ctrl+RePág
+"\x1b[5;7~"  Ctrl+Alt+RePág
+"\x1b[5~"    RePág
+"\x1b[6;3~"  Alt+AvPág
+"\x1b[6;5~"  Ctrl+AvPág
+"\x1b[6;7~"  Ctrl+Alt+AvPág
+"\x1b[6~"    AvPág
+"\x1b[7~"    Inicio
+"\x1b[8~"    Fin
+"\x1b[A"     Arriba
+"\x1b[B"     Abajo
+"\x1b[C"     Derecha
+"\x1b[D"     Izquierda
+"\x1b[F"     Fin
+"\x1b[H"     Inicio
+"\x1b[Z"     Mayús+Tab
+"\x1b0"      Alt+0
+"\x1b1"      Alt+1
+"\x1b2"      Alt+2
+"\x1b3"      Alt+3
+"\x1b4"      Alt+4
+"\x1b5"      Alt+5
+"\x1b6"      Alt+6
+"\x1b7"      Alt+7
+"\x1b8"      Alt+8
+"\x1b9"      Alt+9
+"\x1bA"      Alt+Mayús+A
+"\x1bB"      Alt+Mayús+B
+"\x1bC"      Alt+Mayús+C
+"\x1bD"      Alt+Mayús+D
+"\x1bE"      Alt+Mayús+E
+"\x1bF"      Alt+Mayús+F
+"\x1bG"      Alt+Mayús+G
+"\x1bH"      Alt+Mayús+H
+"\x1bI"      Alt+Mayús+I
+"\x1bJ"      Alt+Mayús+J
+"\x1bK"      Alt+Mayús+K
+"\x1bL"      Alt+Mayús+L
+"\x1bM"      Alt+Mayús+M
+"\x1bN"      Alt+Mayús+N
+"\x1bO"      Alt+Mayús+O
+"\x1bO1;2P"  Mayús+F1
+"\x1bO1;2Q"  Mayús+F2
+"\x1bO1;2R"  Mayús+F3
+"\x1bO1;2S"  Mayús+F4
+"\x1bO1;3P"  Alt+F1
+"\x1bO1;3Q"  Alt+F2
+"\x1bO1;3R"  Alt+F3
+"\x1bO1;3S"  Alt+F4
+"\x1bO1;4P"  Alt+Mayús+F1
+"\x1bO1;4Q"  Alt+Mayús+F2
+"\x1bO1;4R"  Alt+Mayús+F3
+"\x1bO1;4S"  Alt+Mayús+F4
+"\x1bO1;5P"  Ctrl+F1
+"\x1bO1;5Q"  Ctrl+F2
+"\x1bO1;5R"  Ctrl+F3
+"\x1bO1;5S"  Ctrl+F4
+"\x1bO1;6P"  Ctrl+Mayús+F1
+"\x1bO1;6Q"  Ctrl+Mayús+F2
+"\x1bO1;6R"  Ctrl+Mayús+F3
+"\x1bO1;6S"  Ctrl+Mayús+F4
+"\x1bO1;8P"  Ctrl+Alt+Mayús+F1
+"\x1bO1;8Q"  Ctrl+Alt+Mayús+F2
+"\x1bO1;8R"  Ctrl+Alt+Mayús+F3
+"\x1bO1;8S"  Ctrl+Alt+Mayús+F4
+"\x1bOF"     Fin
+"\x1bOH"     Inicio
+"\x1bOP"     F1
+"\x1bOQ"     F2
+"\x1bOR"     F3
+"\x1bOS"     F4
+"\x1bP"      Alt+Mayús+P
+"\x1bQ"      Alt+Mayús+Q
+"\x1bR"      Alt+Mayús+R
+"\x1bS"      Alt+Mayús+S
+"\x1bT"      Alt+Mayús+T
+"\x1bU"      Alt+Mayús+U
+"\x1bV"      Alt+Mayús+V
+"\x1bW"      Alt+Mayús+W
+"\x1bX"      Alt+Mayús+X
+"\x1bY"      Alt+Mayús+Y
+"\x1bZ"      Alt+Mayús+Z
+"\x1ba"      Alt+A
+"\x1bb"      Alt+B
+"\x1bc"      Alt+C
+"\x1bd"      Alt+D
+"\x1be"      Alt+E
+"\x1bf"      Alt+F
+"\x1bg"      Alt+G
+"\x1bh"      Alt+H
+"\x1bi"      Alt+I
+"\x1bj"      Alt+J
+"\x1bk"      Alt+K
+"\x1bl"      Alt+L
+"\x1bm"      Alt+M
+"\x1bn"      Alt+N
+"\x1bo"      Alt+O
+"\x1bp"      Alt+P
+"\x1bq"      Alt+Q
+"\x1br"      Alt+R
+"\x1bs"      Alt+S
+"\x1bt"      Alt+T
+"\x1bu"      Alt+U
+"\x1bv"      Alt+V
+"\x1bw"      Alt+W
+"\x1bx"      Alt+X
+"\x1by"      Alt+Y
+"\x1bz"      Alt+Z
+"\x1b\x7f"   [Ctrl+]Alt+[Mayús+]Retroceso
+"\x7f"       [Ctrl+][Mayús+]Retroceso
