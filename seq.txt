@@ -79,13 +79,14 @@ Ctrl y Alt no cambian keypad, Inicio, ni Fin
 Teclas interceptadas por la terminal:
 Alt+letra               si hay un menú con esa letra
 F1                      ayuda (terminal de gnome la intercepta, terminator no)
-F10                     menú
+F10                     menú (terminal de gnome)
 F11                     pantalla completa
 Ctrl+0                  restablecer zoom
 Ctrl+(+)                zoom +
 Ctrl+(-)                zoom -
 Ctrl+AvPág              (terminator la intercepta, terminal de gnome no)
 Ctrl+RePág              (terminator la intercepta, terminal de gnome no)
+Mayús+F10               muestra el menú contextual (la tecla también se recibe)
 Mayús+Inicio            desplazar al inicio
 Mayús+Fin               desplazar al fin
 Mayús+RePág             desplazar página arriba

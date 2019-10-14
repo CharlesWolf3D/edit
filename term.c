@@ -496,8 +496,6 @@ unsigned int getKey(void)
 				if(ch == '1')
 				{
 					if(!kbhit())return(0);
-					if(getchr() != '1')return(0);
-					if(!kbhit())return(0);
 					if(getchr() != ';')return(0);
 					if(!kbhit())return(0);
 					unsigned int mod;
@@ -513,8 +511,7 @@ unsigned int getKey(void)
 					case '8': mod = HK_CAS; break; //mod=Ctrl+Alt+Mayús
 					default: return(0);
 					}
-					if(!kbhit())
-						return(0);
+					if(!kbhit())return(0);
 					ch = getchr();
 					switch(ch)
 					{

@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
 				tputs("\n\r");
 				refresh();
 			}
-			#endif
+			#else
 			unsigned int key = getKey();
 			if(key == HK_ESC)finish = 1;
 			if(key&HK_C)tputs("Ctrl+");
@@ -244,6 +244,7 @@ int main(int argc, char *argv[])
 			}
 			tputs("\n\r");
 			refresh();
+			#endif
 		}
 		else
 			usleep(50 * 1000);
