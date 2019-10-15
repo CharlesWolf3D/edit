@@ -543,5 +543,5 @@ unsigned int getKey(void)
 	if(ch == 0x7f)return(HK_BKSP); //[Ctrl+][Mayús+]Retroceso
 	if(ch <= 0 || ch >= 255)return(0);
 	if(ch == 31)return(HK_CA | '-'); //Ctrl+Alt+-
-	return(ch); //Crácter
+	return(ch); //Carácter
 }
