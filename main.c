@@ -169,82 +169,92 @@ int main(int argc, char *argv[])
 	int oldw = -1, oldh = -1;
 	int ch;
 	int finish = 0;
+	int modo = 0;
 	char str[64];
 	wndInit();
 	while(!finish)
 	{
 		if(kbhit())
 		{
-			#if 0
-			ch = getchr();
-			switch(ch)
+			if(modo==0)
 			{
-			case 'q':
-				finish = 1;
-				break;
-			case 'w':
-				clear();
-				refresh();
-				break;
-			default:
-				int2hex2(ch,str);
-				tputs("Char ");
-				tputs(str);
+				ch = getchr();
 				switch(ch)
 				{
-				case 13:
-				case 10:
-				case 9:
-				case 27:
-				case 0:
+				case 'q':
+					finish = 1;
+					break;
+				case 'w':
+					clear();
+					refresh();
+					break;
+				case 'z':
+					modo = 1;
+					tputs("Entrando en modo procesado.\n\r");
+					refresh();
 					break;
 				default:
-					tputs(" (");
-					str[0]=ch;str[1]=0;
+					int2hex2(ch,str);
+					tputs("Char ");
 					tputs(str);
-					tputs(")");
+					switch(ch)
+					{
+					case 13:
+					case 10:
+					case 9:
+					case 27:
+					case 0:
+						break;
+					default:
+						tputs(" (");
+						str[0]=ch;str[1]=0;
+						tputs(str);
+						tputs(")");
+					}
+					tputs("\n\r");
+					refresh();
+				}
+			}
+			else
+			{
+				unsigned int key = getKey();
+				if(key == HK_ESC)finish = 1;
+				if(key == 'z' || key == 'Z'){tputs("Entrando en modo sin procesar.\n\r");modo = 0;}
+				if(key&HK_C)tputs("Ctrl+");
+				if(key&HK_A)tputs("Alt+");
+				if(key&HK_S)tputs("Mayús+");
+				unsigned char chr = (key & HK_KMASK) >> 16;
+				if(chr)
+				{
+					chr--;
+					char*names[]={"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","Ins","Supr","Inicio","Fin","RePág","AvPág","Arriba","Abajo","Izquierda","Derecha","Intro","Retroceso","Tab","Esc"};
+					tputs(names[chr]);
+				}
+				else
+				{
+					chr = key & HK_CHMASK;
+					if(chr >= 32 && chr <= 126)
+					{
+						if(chr == 32)
+							tputs("Espacio");
+						else
+						{
+							str[0] = chr;
+							str[1] = 0;
+							tputs(str);
+						}
+					}
+					else
+					{
+						tputs("<");
+						int2str(chr, str);
+						tputs(str);
+						tputs(">");
+					}
 				}
 				tputs("\n\r");
 				refresh();
 			}
-			#else
-			unsigned int key = getKey();
-			if(key == HK_ESC)finish = 1;
-			if(key&HK_C)tputs("Ctrl+");
-			if(key&HK_A)tputs("Alt+");
-			if(key&HK_S)tputs("Mayús+");
-			unsigned char chr = (key & HK_KMASK) >> 16;
-			if(chr)
-			{
-				chr--;
-				char*names[]={"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","Ins","Supr","Inicio","Fin","RePág","AvPág","Arriba","Abajo","Izquierda","Derecha","Intro","Retroceso","Tab","Esc"};
-				tputs(names[chr]);
-			}
-			else
-			{
-				chr = key & HK_CHMASK;
-				if(chr >= 32 && chr <= 126)
-				{
-					if(chr == 32)
-						tputs("Espacio");
-					else
-					{
-						str[0] = chr;
-						str[1] = 0;
-						tputs(str);
-					}
-				}
-				else
-				{
-					tputs("<");
-					int2str(chr, str);
-					tputs(str);
-					tputs(">");
-				}
-			}
-			tputs("\n\r");
-			refresh();
-			#endif
 		}
 		else
 			usleep(50 * 1000);

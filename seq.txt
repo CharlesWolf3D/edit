@@ -36,8 +36,8 @@ Z         | "z"            | "\x1a"       | "\x1bz"      | "Z"            | "\x1
 7         | "7"            | "\x1f"       | "\x1b7"      | "/"            | "\x1f"      | "\x1f"         | "\x1b/"        | "\x1b/"
 8         | "8"            | "\x7f"       | "\x1b8"      | "("            | "\x7f"      | "("            | "\x1b("        | "\x1b("
 9         | "9"            | "\x39"       | "\x1b9"      | ")"            | "\x1b9"     | ")"            | "\x1b)"        | "\x1b)"
-+         | "+"            | [P Zoom +]   | "+"          | -              | -           | -              | -              | -
--         | "-"            | [P Zoom -]   | "-"          | -              | -           | -              | -              | -
++         | "+"            | [P Zoom +]   | "\x1b+"      | -              | "\x1b+"     | -              | -              | -
+-         | "-"            | [P Zoom -]   | "\x1b-"      | -              | "\x1f"      | -              | -              | "\x1b\x1f"
 *         | "*"            | "*"          | "*"          | "*"            | -           | "*"            | "*"            | "*"
 /         | "/"            | "/"          | "/"          | "/"            | -           | "/"            | "/"            | "/"
 .         | "."            | "."          | "\x1b."      | ":"            | "\x1b."     | ":"            | "\x1b:"        | "\x1b:"
@@ -201,7 +201,10 @@ Lista de teclas:
 "\x1b\x18"   Ctrl+Alt[+Mayús]+X
 "\x1b\x19"   Ctrl+Alt[+Mayús]+Y
 "\x1b\x1a"   Ctrl+Alt[+Mayús]+Z
+"\x1b\x1f"   Ctrl+Alt+Mayús+- ////
+"\x1b+"      [Ctrl+]Alt++ ////
 "\x1b,"      [Ctrl+]Alt+,
+"\x1b-"      [Ctrl+]Alt+- ////
 "\x1b."      [Ctrl+]Alt+.
 "\x1b[1;2A"  Mayús+Arriba
 "\x1b[1;2B"  Mayús+Abajo
@@ -396,4 +399,5 @@ Lista de teclas:
 "\x1by"      Alt+Y
 "\x1bz"      Alt+Z
 "\x1b\x7f"   [Ctrl+]Alt+[Mayús+]Retroceso
+"\x1f"       Ctrl+Alt+- ////
 "\x7f"       [Ctrl+][Mayús+]Retroceso
