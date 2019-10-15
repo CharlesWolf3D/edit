@@ -36,19 +36,19 @@ menudef_t menudefs[] =
 	{"	&Nuevo",                          HK_C   |      'N', MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Abrir...",                       HK_C   |      'O', MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Guardar",                        HK_C   |      'S', MNID_SAVE,     MNFL_NORM, NULL},
-	{"	Guardar &como...",                HK_CS  |      'S', MNID_SAVEAS,   MNFL_NORM, NULL},
+	{"	Guardar &como...",                HK_CS  |      'S', MNID_SAVEAS,   MNFL_NORM, NULL},////poner ALT+S
 	{"	Guardar copia co&mo...",          HK_CA  |      'S', MNID_SAVECOPY, MNFL_NORM, NULL},
 	{"	&Renombrar...",                               HK_F2, MNID_RENAME,   MNFL_NORM, NULL},
 	{"	Ce&rrar",                         HK_C   |    HK_F4, MNID_CLOSE,    MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Salir",                          HK_A   |    HK_F4, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Salir",                          HK_A   |    HK_F4, MNID_NONE,     MNFL_NORM, NULL},////poner Ctrl+Q o Alt+X
 	{"&Edición",                                    HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Deshacer",                       HK_C   |      'Z', MNID_UNDO,     MNFL_NORM, NULL},
 	{"	&Rehacer",                        HK_C   |      'Y', MNID_REDO,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	C&ortar",                         HK_C   |      'X', MNID_CUT,      MNFL_NORM, NULL},
-	{"	&Copiar",                         HK_C   |      'C', MNID_COPY,     MNFL_NORM, NULL},
-	{"	&Pegar",                          HK_C   |      'V', MNID_PASTE,    MNFL_NORM, NULL},
+	{"	&Copiar",                         HK_C   |      'C', MNID_COPY,     MNFL_NORM, NULL},////funciona, pero no Ctrl+Ins
+	{"	&Pegar",                          HK_C   |      'V', MNID_PASTE,    MNFL_NORM, NULL},////funciona, pero no Mayús+Ins
 	{"	&Eliminar",                                  HK_DEL, MNID_DELETE,   MNFL_NOHK, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	Seleccionar &todo",               HK_C   |      'A', MNID_NONE,     MNFL_NORM, NULL},
@@ -61,7 +61,7 @@ menudef_t menudefs[] =
 	{"		&Duplicar línea o selección", HK_C   |      'D', MNID_NONE,     MNFL_NORM, NULL},
 	{"		-",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"		&Insertar línea debajo",      HK_C   | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},
-	{"		I&nsertar línea encima",      HK_CS  | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},
+	{"		I&nsertar línea encima",      HK_CS  | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},////poner Alt+Intro
 	{"		-",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"		&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, MNID_NONE,     MNFL_NORM, NULL},
 	{"		M&over líneas hacia abajo",   HK_A   |  HK_PGDN, MNID_NONE,     MNFL_NORM, NULL},
@@ -73,22 +73,22 @@ menudef_t menudefs[] =
 	{"	A&nterior seleccionado",          HK_CS  |    HK_F3, MNID_NONE,     MNFL_NORM, NULL},
 	{"	Ree&mplazar...",                  HK_C   |      'H', MNID_NONE,     MNFL_NORM, NULL},
 	{"&Ver",                                        HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Espacios",                       HK_C   |      ' ', MNID_SPACES,   MNFL_NORM, NULL},
-	{"	&Tabuladores",                    HK_CS  |      ' ', MNID_TABS,     MNFL_NORM, NULL},
+	{"	&Espacios",                       HK_C   |      ' ', MNID_SPACES,   MNFL_NORM, NULL},////no funciona
+	{"	&Tabuladores",                    HK_CS  |   HK_TAB, MNID_TABS,     MNFL_NORM, NULL},////no funciona
 	{"	&Nuevas líneas",                  HK_C   | HK_ENTER, MNID_NEWLS,    MNFL_NORM, NULL},
-	{"	T&odos los caracteres",           HK_C   |      '.', MNID_ALLCHARS, MNFL_NORM, NULL},
+	{"	T&odos los caracteres",           HK_C   |      '.', MNID_ALLCHARS, MNFL_NORM, NULL},////no funciona
 	{"&Configuración",                              HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Preferencias...",                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Colores...",                               HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"Ve&ntana",                                    HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Siguiente",                      HK_C   |  HK_PGUP, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Anterior",                       HK_C   |  HK_PGDN, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Siguiente",                      HK_C   |  HK_PGUP, MNID_NONE,     MNFL_NORM, NULL},////poner Alt+RePág
+	{"	&Anterior",                       HK_C   |  HK_PGDN, MNID_NONE,     MNFL_NORM, NULL},////poner Alt+AvPág
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, MNID_NONE,     MNFL_NORM, NULL},////no funciona
 	{"A&yuda",                                      HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Temas de ayuda",                             HK_F1, MNID_NONE,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Acerca de...",                   HK_A   |    HK_F1, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Acerca de...",                   HK_A   |    HK_F1, MNID_NONE,     MNFL_NORM, NULL},////poner Mayús+F1
 	{NULL,                                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL}
 };
 
@@ -170,42 +170,29 @@ int main(int argc, char *argv[])
 	int ch;
 	int finish = 0;
 	int modo = 0;
+	int redraw = 0;
 	char str[64];
+	unsigned int key;
 	wndInit();
 	while(!finish)
 	{
 		if(kbhit())
 		{
-			if(modo==0)
+			switch(modo)
 			{
+			case 0:
 				ch = getchr();
 				switch(ch)
 				{
-				case 'q':
-					finish = 1;
-					break;
-				case 'w':
-					clear();
-					refresh();
-					break;
-				case 'z':
-					modo = 1;
-					tputs("Entrando en modo procesado.\n\r");
-					refresh();
-					break;
+				case 'q': finish = 1; break;
+				case 'w': clear(); refresh(); break;
+				case ' ': tputs("Entrando en modo procesado.\n\r"); refresh(); modo = 1; break;
 				default:
 					int2hex2(ch,str);
 					tputs("Char ");
 					tputs(str);
-					switch(ch)
+					if(ch >= 32)
 					{
-					case 13:
-					case 10:
-					case 9:
-					case 27:
-					case 0:
-						break;
-					default:
 						tputs(" (");
 						str[0]=ch;str[1]=0;
 						tputs(str);
@@ -214,15 +201,14 @@ int main(int argc, char *argv[])
 					tputs("\n\r");
 					refresh();
 				}
-			}
-			else
-			{
-				unsigned int key = getKey();
+			break;
+			case 1:
+				key = getKey();
 				if(key == HK_ESC)finish = 1;
-				if(key == 'z' || key == 'Z'){tputs("Entrando en modo sin procesar.\n\r");modo = 0;}
-				if(key&HK_C)tputs("Ctrl+");
-				if(key&HK_A)tputs("Alt+");
-				if(key&HK_S)tputs("Mayús+");
+				if(key == ' '){redraw = 1; modo = 2;}
+				if(key & HK_C)tputs("Ctrl+");
+				if(key & HK_A)tputs("Alt+");
+				if(key & HK_S)tputs("Mayús+");
 				unsigned char chr = (key & HK_KMASK) >> 16;
 				if(chr)
 				{
@@ -254,17 +240,27 @@ int main(int argc, char *argv[])
 				}
 				tputs("\n\r");
 				refresh();
+			break;
+			case 2:
+				key = getKey();
+				if(key == HK_ESC)finish = 1;
+				if(key == ' '){resetcolor(); clear(); tputs("Entrando en modo sin procesar.\n\r"); refresh(); modo = 0;}
+			break;
 			}
 		}
 		else
 			usleep(50 * 1000);
-		/*getterminalsize(&wndW, &wndH);
-		if(oldw != wndW || oldh != wndH)
+		if(modo == 2)
 		{
-			oldw = wndW;
-			oldh = wndH;
-			wndRedraw();
-		}*/
+			getterminalsize(&wndW, &wndH);
+			if(oldw != wndW || oldh != wndH || redraw)
+			{
+				oldw = wndW;
+				oldh = wndH;
+				redraw = 0;
+				wndRedraw();
+			}
+		}
 	}
 	wndEnd();
 	return(0);
