@@ -29,6 +29,87 @@ enum
 	MNID_CTXDELETE
 };
 
+/*
+Combinaciones de teclas:
+
+Combinación:         | Descripción:                                              | Jodido | Alternativa si está jodido
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Flechas              | Mover cursor                                              |        | 
+Mayús+Flechas        | Mover cursor seleccionando                                |        | 
+Ctrl+Flechas         | Mover cursor a siguiente palabra o párrafo                |        | 
+Ctrl+Mayús+Flechas   | Mover cursor a siguiente palabra o párrafo seleccionando  | Sí     | Alt+WSAD
+Alt+Flechas          | Desplazar vista                                           | Sí     | Alt+IKJL
+Alt+Mayús+Flechas    | Selección en bloque                                       |        | 
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Ins                  | Modo insertar                                             |        | 
+Supr                 | Eliminar carácter a la derecha                            |        | 
+Retroceso            | Eliminar carácter a la izquierda                          |        | 
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Inicio               | Ir al principio de la línea                               |        | 
+Fin                  | Ir al final de la línea                                   |        | 
+RePág                | Ir a la página anterior                                   |        | 
+AvPág                | Ir a la página siguiente                                  |        | 
+Mayús+Inicio         | Ir al principio de la línea seleccionando                 | Sí     | Alt+,
+Mayús+Fin            | Ir al final de la línea seleccionando                     | Sí     | Alt+.
+Mayús+RePág          | Ir a la página anterior seleccionando                     | Sí     | Alt+N
+Mayús+AvPág          | Ir a la página siguiente seleccionando                    | Sí     | Alt+M
+Ctrl+Inicio          | Ir al principio del documento                             | Sí     | Alt+RePág
+Ctrl+Fin             | Ir al final del documento                                 | Sí     | Alt+AvPág
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Ctrl+N               | Archivo -> Nuevo                                          |        | 
+Ctrl+O               | Archivo -> Abrir...                                       |        | 
+Ctrl+S               | Archivo -> Guardar                                        |        | 
+Ctrl+Mayús+S         | Archivo -> Guardar como...                                | Sí     | Alt+S
+Ctrl+Alt+S           | Archivo -> Guardar copia como...                          |        | 
+F2                   | Archivo -> Renombrar...                                   |        | 
+Ctrl+F4              | Archivo -> Cerrar                                         |        | 
+Alt+F4               | Archivo -> Salir                                          | Sí     | Ctrl+Q
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Ctrl+Z               | Edición -> Deshacer                                       |        | 
+Ctrl+Y               | Edición -> Rehacer                                        |        | 
+Ctrl+X               | Edición -> Cortar                                         |        | 
+Ctrl+C               | Edición -> Copiar                                         |        | 
+Ctrl+V               | Edición -> Pegar                                          |        | 
+Ctrl+A               | Edición -> Seleccionar todo                               |        | 
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Tab                  | Edición -> Comandos -> Aumentar sangría                   |        | 
+Mayús+Tab            | Edición -> Comandos -> Reducir sangría                    |        | 
+Ctrl+K               | Edición -> Comandos -> Borrar línea                       |        | 
+Ctrl+D               | Edición -> Comandos -> Duplicar línea o selección         |        | 
+Ctrl+Intro           | Edición -> Comandos -> Insertar línea debajo              |        | 
+Ctrl+Mayús+Intro     | Edición -> Comandos -> Insertar línea encima              | Sí     | Alt+Intro
+Alt+RePág            | Edición -> Comandos -> Mover líneas hacia arriba          |        | 
+Alt+AvPág            | Edición -> Comandos -> Mover líneas hacia abajo           |        | 
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Ctrl+F               | Buscar -> Buscar...                                       |        | 
+F3                   | Buscar -> Siguiente                                       |        | 
+Mayús+F3             | Buscar -> Anterior                                        |        | 
+Ctrl+F3              | Buscar -> Siguiente Seleccionado                          |        | 
+Ctrl+Mayús+F3        | Buscar -> Anterior Seleccionado                           |        | 
+Ctrl+H               | Buscar -> Reemplazar...                                   |        | 
+---------------------|-----------------------------------------------------------|--------|----------------------------
+Ctrl+Espacio         | Ver -> Espacios                                           | Sí     | Ajo y agua
+Ctrl+Mayús+Tab       | Ver -> Tabuladores                                        | Sí     | Ajo y agua
+Ctrl+Intro           | Ver -> Nuevas líneas                                      |        | 
+Ctrl+.               | Ver -> Todos los caracteres                               | Sí     | Ajo y agua
+---------------------|-----------------------------------------------------------|--------|----------------------------
+F6                   | Ventana -> Siguiente ventana                              |        | 
+Mayús+F6             | Ventana -> Ventana anterior                               |        | 
+Ctrl+F6              | Ventana -> Siguiente división                             |        | 
+Ctrl+Mayús+F6        | Ventana -> División Anterior                              |        | 
+Ctrl+AvPág           | Ventana -> Siguiente pestaña                              | Sí     | Ctrl+F12
+Ctrl+RePág           | Ventana -> Pestaña anterior                               | Sí     | Ctrl+F11
+---------------------|-----------------------------------------------------------|--------|----------------------------
+F1                   | Ayuda -> Temas de ayuda                                   | Sí     | Mayús+F1
+Alt+F1               | Ayuda -> Acerca de...                                     | Sí     | Mayús+F1
+
+Para abrir un menú con el teclado:
+	Pulsar F4, seleccionar con las flechas, pulsar Intro.
+	Pulsar F4, seleccionar y abrir con la letra del menú.
+Ya que Alt+Letra no funciona porque algunas letras se utilizan en otros comandos.
+
+*/
+
 //menú principal
 menudef_t menudefs[] =
 {  //Texto                                Tecla rápida       ID             Opciones   Función
@@ -36,12 +117,12 @@ menudef_t menudefs[] =
 	{"	&Nuevo",                          HK_C   |      'N', MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Abrir...",                       HK_C   |      'O', MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Guardar",                        HK_C   |      'S', MNID_SAVE,     MNFL_NORM, NULL},
-	{"	Guardar &como...",                HK_CS  |      'S', MNID_SAVEAS,   MNFL_NORM, NULL},////poner ALT+S
+	{"	Guardar &como...",                HK_A   |      'S', MNID_SAVEAS,   MNFL_NORM, NULL},
 	{"	Guardar copia co&mo...",          HK_CA  |      'S', MNID_SAVECOPY, MNFL_NORM, NULL},
 	{"	&Renombrar...",                               HK_F2, MNID_RENAME,   MNFL_NORM, NULL},
 	{"	Ce&rrar",                         HK_C   |    HK_F4, MNID_CLOSE,    MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Salir",                          HK_A   |    HK_F4, MNID_NONE,     MNFL_NORM, NULL},////poner Ctrl+Q o Alt+X
+	{"	&Salir",                          HK_C   |      'Q', MNID_NONE,     MNFL_NORM, NULL},
 	{"&Edición",                                    HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Deshacer",                       HK_C   |      'Z', MNID_UNDO,     MNFL_NORM, NULL},
 	{"	&Rehacer",                        HK_C   |      'Y', MNID_REDO,     MNFL_NORM, NULL},
@@ -50,6 +131,8 @@ menudef_t menudefs[] =
 	{"	&Copiar",                         HK_C   |      'C', MNID_COPY,     MNFL_NORM, NULL},////funciona, pero no Ctrl+Ins
 	{"	&Pegar",                          HK_C   |      'V', MNID_PASTE,    MNFL_NORM, NULL},////funciona, pero no Mayús+Ins
 	{"	&Eliminar",                                  HK_DEL, MNID_DELETE,   MNFL_NOHK, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Reemplazar caracteres",                     HK_INS, MNID_DELETE,   MNFL_NOHK, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	Seleccionar &todo",               HK_C   |      'A', MNID_NONE,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
@@ -61,7 +144,7 @@ menudef_t menudefs[] =
 	{"		&Duplicar línea o selección", HK_C   |      'D', MNID_NONE,     MNFL_NORM, NULL},
 	{"		-",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"		&Insertar línea debajo",      HK_C   | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},
-	{"		I&nsertar línea encima",      HK_CS  | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},////poner Alt+Intro
+	{"		I&nsertar línea encima",      HK_A   | HK_ENTER, MNID_NONE,     MNFL_NORM, NULL},
 	{"		-",                                     HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"		&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, MNID_NONE,     MNFL_NORM, NULL},
 	{"		M&over líneas hacia abajo",   HK_A   |  HK_PGDN, MNID_NONE,     MNFL_NORM, NULL},
@@ -73,22 +156,28 @@ menudef_t menudefs[] =
 	{"	A&nterior seleccionado",          HK_CS  |    HK_F3, MNID_NONE,     MNFL_NORM, NULL},
 	{"	Ree&mplazar...",                  HK_C   |      'H', MNID_NONE,     MNFL_NORM, NULL},
 	{"&Ver",                                        HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Espacios",                       HK_C   |      ' ', MNID_SPACES,   MNFL_NORM, NULL},////no funciona
-	{"	&Tabuladores",                    HK_CS  |   HK_TAB, MNID_TABS,     MNFL_NORM, NULL},////no funciona
-	{"	&Nuevas líneas",                  HK_C   | HK_ENTER, MNID_NEWLS,    MNFL_NORM, NULL},
-	{"	T&odos los caracteres",           HK_C   |      '.', MNID_ALLCHARS, MNFL_NORM, NULL},////no funciona
+	{"	&Espacios",                                 HK_NONE, MNID_SPACES,   MNFL_NORM, NULL},////no funciona
+	{"	&Tabuladores",                              HK_NONE, MNID_TABS,     MNFL_NORM, NULL},////no funciona
+	{"	&Nuevas líneas",                            HK_NONE, MNID_NEWLS,    MNFL_NORM, NULL},
+	{"	T&odos los caracteres",                     HK_NONE, MNID_ALLCHARS, MNFL_NORM, NULL},////no funciona
 	{"&Configuración",                              HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Preferencias...",                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Colores...",                               HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"Ve&ntana",                                    HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Siguiente",                      HK_C   |  HK_PGUP, MNID_NONE,     MNFL_NORM, NULL},////poner Alt+RePág
-	{"	&Anterior",                       HK_C   |  HK_PGDN, MNID_NONE,     MNFL_NORM, NULL},////poner Alt+AvPág
+	{"	&Siguiente ventana",                          HK_F6, MNID_NONE,     MNFL_NORM, NULL},
+	{"	Ventana &anterior",               HK_S   |    HK_F6, MNID_NONE,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, MNID_NONE,     MNFL_NORM, NULL},////no funciona
+	{"	S&iguiente división",             HK_C   |    HK_F6, MNID_NONE,     MNFL_NORM, NULL},
+	{"	División a&nterior",              HK_CS  |    HK_F6, MNID_NONE,     MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	Si&guiente pestaña",              HK_C   |   HK_F12, MNID_NONE,     MNFL_NORM, NULL},
+	{"	Pestaña an&terior",               HK_C   |   HK_F11, MNID_NONE,     MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, MNID_NONE,     MNFL_NORM, NULL},
 	{"A&yuda",                                      HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Temas de ayuda",                             HK_F1, MNID_NONE,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Acerca de...",                   HK_A   |    HK_F1, MNID_NONE,     MNFL_NORM, NULL},////poner Mayús+F1
+	{"	&Acerca de...",                   HK_S   |    HK_F1, MNID_NONE,     MNFL_NORM, NULL},
 	{NULL,                                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL}
 };
 
@@ -121,27 +210,17 @@ menudef_t contextmenudefs[] =
 };
 
 /*
-modos:
-normal, editor enfocado
-normal, barra de búsqueda enfocada
-menú seleccionado
-mostrando cuadro de diálogo
-	abrir
-	guardar como
-	renombrar
-	buscar
-	reemplazar
-	preferencias
-	colores
-	lista de ventanas
-	temas de ayuda
-	acerca de
-	error
-		al guardar
-	error+diálogo
-		al abrir
-		al guardar como
-		al renombrar
+hacer:
+tui.c
+	2 búferes
+	dibujar controles
+	eventos de controles
+ratón (term.c)
+control etiqueta (controls.c)
+control texto (controls.c)
+control botón (controls.c)
+control editor (edit.c)
+control menú (menu.c)
 
 --Titulo------------------------------------------------------------------------
 -Archivo--Edición--Buscar--Ver--Configuración--Ventana--Ayuda-------------------
@@ -194,7 +273,7 @@ int main(int argc, char *argv[])
 					if(ch >= 32)
 					{
 						tputs(" (");
-						str[0]=ch;str[1]=0;
+						str[0] = ch; str[1] = 0;
 						tputs(str);
 						tputs(")");
 					}

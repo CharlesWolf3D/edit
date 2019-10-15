@@ -21,6 +21,10 @@ Para configurar el usuario globalmente:
 git config --global user.email "CORREO_USUARIO"
 git config --global user.name "NOM_USUARIO"
 
+Para cambiar el editor de mensajes de commit a nano:
+(Poner --global entre "config" y "core.editor" para que sea global y no sólo en éste repositorio)
+git config core.editor "nano"
+
 Para añadir archivos:
 git add NOM_ARCHIVO
 

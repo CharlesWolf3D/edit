@@ -105,10 +105,10 @@ void setattr(unsigned char attr)
 	textAttr = attr;
 }
 
+static char hexdigits [16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 //convierte un número entero en una cadena en base hexadecimal, utilizando
 //siempre 2 dígitos
-static char hexdigits [16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-/*static inline*/ void int2hex2(int x, char *str)
+void int2hex2(int x, char *str)
 {
 	str[0] = hexdigits[(x >> 4) & 0xf];
 	str[1] = hexdigits[(x) & 0xf];

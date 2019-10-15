@@ -65,6 +65,10 @@ void refresh(void);
 //establece los atributos de los caracteres que se van a escribir
 void setattr(unsigned char attr);
 
+//convierte un número entero en una cadena en base hexadecimal, utilizando
+//siempre 2 dígitos
+void int2hex2(int x, char *str);
+
 //establece los 16 colores de la paleta
 void setpal(unsigned char *pal);
 
