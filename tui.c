@@ -49,9 +49,9 @@ unsigned char colors[] =
 	0x17, //editor, texto
 	0x71, //editor, texto seleccionado
 	0x1a, //editor, borde
-	0xb3, //editor, barra, flecha
+	0x07, //editor, barra, flecha
 	0x17, //editor, barra, espacio
-	0xb0, //editor, barra, control
+	0x07, //editor, barra, control
 	0x3f  //barra de estado
 };
 
@@ -544,13 +544,19 @@ void wndRedraw(void)
 		for(int i = 0; i < editW - 1; i++)
 			cellPrint(buffer, editX + i, editY + j, wndW, wndH, " ", colors[CLR_EDIT_TEXT]);
 		//espacio de barra de desplazamiento vertical
-		cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
+		if(j < editH / 4)
+			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLR_EDIT_SC_THUMB]);
+		else
+			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
 	}
 	cellPrint(buffer, editX + editW - 1, editY, wndW, wndH, gchars[GCH_SCRL_UP], colors[CLR_EDIT_SC_ARR]); //flecha arriba
 	cellPrint(buffer, editX + editW - 1, editY + editH - 2, wndW, wndH, gchars[GCH_SCRL_DOWN], colors[CLR_EDIT_SC_ARR]); //flecha abajo
 	//espacio de barra de desplazamiento horizontal
 	for(int i = 0; i < editW - 3; i++)
-		cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
+		if(i < editW / 4)
+			cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLR_EDIT_SC_THUMB]);
+		else
+			cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
 	cellPrint(buffer, editX, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLR_EDIT_SC_ARR]); //flecha izquierda
 	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_EDIT_SC_ARR]); //flecha derecha
 	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, gchars[GCH_BOX2_C4], colors[CLR_EDIT_BORDER]); //borde abajo derecha

@@ -32,7 +32,7 @@ enum
 /*
 Combinaciones de teclas:
 
-Combinación:         | Descripción:                                              | Jodido | Alternativa si está jodido
+Combinación          | Descripción                                               | Jodido | Alternativa si está jodido
 ---------------------|-----------------------------------------------------------|--------|----------------------------
 Flechas              | Mover cursor                                              |        | 
 Mayús+Flechas        | Mover cursor seleccionando                                |        | 
