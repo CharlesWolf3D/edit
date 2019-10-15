@@ -87,6 +87,11 @@ enum
 	GCH_PROG_FULL
 };
 
+#define HK_KEY_NUMMODS 3
+extern char *modkeynames[HK_KEY_NUMMODS]; //nombres de las teclas modificadoras
+#define HK_KEY_NUMKEYS 26
+extern char *keynames[HK_KEY_NUMKEYS]; //nombres de las teclas de acceso rápido (((HK_* >> 16) & 0xff) - 1)
+
 extern int wndW, wndH; //dimensiones de la ventana
 
 //mostrar título

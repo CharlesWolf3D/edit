@@ -213,8 +213,7 @@ int main(int argc, char *argv[])
 				if(chr)
 				{
 					chr--;
-					char*names[]={"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","Ins","Supr","Inicio","Fin","RePág","AvPág","Arriba","Abajo","Izquierda","Derecha","Intro","Retroceso","Tab","Esc"};
-					tputs(names[chr]);
+					tputs(keynames[chr]);
 				}
 				else
 				{
@@ -249,7 +248,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		else
-			usleep(50 * 1000);
+			usleep(20 * 1000); //20=>50Hz, 16=>60Hz
 		if(modo == 2)
 		{
 			getterminalsize(&wndW, &wndH);
