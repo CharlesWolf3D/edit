@@ -128,8 +128,8 @@ menudef_t menudefs[] =
 	{"	&Rehacer",                        HK_C   |      'Y', MNID_REDO,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	C&ortar",                         HK_C   |      'X', MNID_CUT,      MNFL_NORM, NULL},
-	{"	&Copiar",                         HK_C   |      'C', MNID_COPY,     MNFL_NORM, NULL},////funciona, pero no Ctrl+Ins
-	{"	&Pegar",                          HK_C   |      'V', MNID_PASTE,    MNFL_NORM, NULL},////funciona, pero no Mayús+Ins
+	{"	&Copiar",                         HK_C   |      'C', MNID_COPY,     MNFL_NORM, NULL},//funciona, pero no Ctrl+Ins
+	{"	&Pegar",                          HK_C   |      'V', MNID_PASTE,    MNFL_NORM, NULL},//funciona, pero no Mayús+Ins
 	{"	&Eliminar",                                  HK_DEL, MNID_DELETE,   MNFL_NOHK, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Reemplazar caracteres",                     HK_INS, MNID_DELETE,   MNFL_NOHK, NULL},
@@ -156,10 +156,10 @@ menudef_t menudefs[] =
 	{"	A&nterior seleccionado",          HK_CS  |    HK_F3, MNID_NONE,     MNFL_NORM, NULL},
 	{"	Ree&mplazar...",                  HK_C   |      'H', MNID_NONE,     MNFL_NORM, NULL},
 	{"&Ver",                                        HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Espacios",                                 HK_NONE, MNID_SPACES,   MNFL_NORM, NULL},////no funciona
-	{"	&Tabuladores",                              HK_NONE, MNID_TABS,     MNFL_NORM, NULL},////no funciona
+	{"	&Espacios",                                 HK_NONE, MNID_SPACES,   MNFL_NORM, NULL},//no funciona
+	{"	&Tabuladores",                              HK_NONE, MNID_TABS,     MNFL_NORM, NULL},//no funciona
 	{"	&Nuevas líneas",                            HK_NONE, MNID_NEWLS,    MNFL_NORM, NULL},
-	{"	T&odos los caracteres",                     HK_NONE, MNID_ALLCHARS, MNFL_NORM, NULL},////no funciona
+	{"	T&odos los caracteres",                     HK_NONE, MNID_ALLCHARS, MNFL_NORM, NULL},//no funciona
 	{"&Configuración",                              HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Preferencias...",                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Colores...",                               HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
@@ -202,7 +202,7 @@ menudef_t contextmenudefs[] =
 	{"	&Duplicar línea o selección", HK_C   |      'D', MNID_NONE,      MNFL_NORM, NULL},
 	{"	-",                                     HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
 	{"	&Insertar línea debajo",      HK_C   | HK_ENTER, MNID_NONE,      MNFL_NORM, NULL},
-	{"	I&nsertar línea encima",      HK_CS  | HK_ENTER, MNID_NONE,      MNFL_NORM, NULL},
+	{"	I&nsertar línea encima",      HK_A   | HK_ENTER, MNID_NONE,      MNFL_NORM, NULL},
 	{"	-",                                     HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
 	{"	&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, MNID_NONE,      MNFL_NORM, NULL},
 	{"	M&over líneas hacia abajo",   HK_A   |  HK_PGDN, MNID_NONE,      MNFL_NORM, NULL},
