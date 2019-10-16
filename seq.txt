@@ -69,12 +69,24 @@ Fin       | (Ver abajo)    | (Ver abajo)  | (Ver abajo)  | [P Despl.fin]  | (Ver
 RePág     | "\x1b[5~"      | "\x1b[5;5~"  | "\x1b[5;3~"  | [P Pg.ant.]    | "\x1b[5;7~" | -              | -              | -
 AvPág     | "\x1b[6~"      | "\x1b[6;5~"  | "\x1b[6;3~"  | [P Pg.sig.]    | "\x1b[6;7~" | -              | -              | -
 
-Varios inicio: "\x1b[1~", "\x1b[7~", "\x1b[H", "\x1bOH"
-Varios fin:    "\x1b[4~", "\x1b[8~", "\x1b[F", "\x1bOF"
+Varios inicio: "\x1b[1~",  "\x1b[7~",  "\x1b[H",  "\x1bOH"
+Varios fin:    "\x1b[4~",  "\x1b[8~",  "\x1b[F",  "\x1bOF"
+Varios F1:     "\x1bOP",   "\x1b[P",   "\x1b[1P", "\x1b[11~"
+Varios F2:     "\x1bOQ",   "\x1b[Q",   "\x1b[1Q", "\x1b[12~"
+Varios F3:     "\x1bOR",   "\x1b[R",   "\x1b[1R", "\x1b[13~"
+Varios F4:     "\x1bOS",   "\x1b[S",   "\x1b[1S", "\x1b[14~"
 
 Si Bloq. Mayús. está activado, las letras se invierten (tecla genera A,B,C,... y Mayús+tecla genera a,b,c...)
 Mayús+keypad se comporta como Mayús+flechas
 Ctrl y Alt no cambian keypad, Inicio, ni Fin
+
+Teclas que se interpretan como otras teclas:
+Ctrl+J          Ctrl+Intro
+Ctrl+Alt+J      Alt+Intro
+Ctrl+I          Tab
+Ctrl+[Mayús+]M  Intro
+Ctrl+3          Esc
+Ctrl+8          Retroceso
 
 Teclas interceptadas por la terminal:
 Alt+letra               si hay un menú con esa letra

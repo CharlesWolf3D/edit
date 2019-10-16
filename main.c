@@ -237,6 +237,7 @@ menudef_t menudefs_wnd[] =
 hacer:
 tui.c
 	2 búferes
+	tipo de datos control
 	dibujar controles
 	eventos de controles
 ratón (term.c)
@@ -304,7 +305,7 @@ int main(int argc, char *argv[])
 					tputs("\n\r");
 					refresh();
 				}
-			break;
+				break;
 			case 1:
 				key = getKey();
 				if(key == HK_ESC)finish = 1;
@@ -342,12 +343,12 @@ int main(int argc, char *argv[])
 				}
 				tputs("\n\r");
 				refresh();
-			break;
+				break;
 			case 2:
 				key = getKey();
 				if(key == HK_ESC)finish = 1;
 				if(key == ' '){resetcolor(); clear(); tputs("Entrando en modo sin procesar.\n\r"); refresh(); modo = 0;}
-			break;
+				break;
 			}
 		}
 		else

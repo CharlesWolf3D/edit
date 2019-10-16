@@ -113,7 +113,6 @@ void wndInit(void)
 	clear();
 	refresh();
 	getterminalsize(&wndW, &wndH);
-	//wndRedraw();
 }
 
 //termina la ventana del editor
