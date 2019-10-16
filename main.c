@@ -272,6 +272,7 @@ int main(int argc, char *argv[])
 {
 	int oldw = -1, oldh = -1;
 	int ch;
+	unsigned char chr;
 	int finish = 0;
 	int modo = 0;
 	int redraw = 0;
@@ -290,10 +291,33 @@ int main(int argc, char *argv[])
 				{
 				case 'q': finish = 1; break;
 				case 'w': clear(); refresh(); break;
+				case 27:
+					clear(); refresh();
+					if(!kbhit())break; ch = getchr(); if(ch != '[')break;
+					if(!kbhit())break; ch = getchr(); if(ch != 'M')break;
+					int n1, n2, n3;
+					if(!kbhit())break; n1 = getchr();
+					if(!kbhit())break; n2 = getchr();
+					if(!kbhit())break; n3 = getchr();
+					tputs("X = "); int2str((unsigned char)(n2 - 33), str); tputs(str); tputs("\n\r");
+					tputs("Y = "); int2str((unsigned char)(n3 - 33), str); tputs(str); tputs("\n\r");
+					tputs("B = "); int2hex2(n1, str); tputs(str); tputs("\n\r");
+					char*btns[4]={"Pulsar 1","Pulsar 2","Pulsar 3","Soltar"};
+					if((n1 & 0x60) == 0x60)
+						tputs((n1 & 1) ? "Rueda abajo" : "Rueda arriba");
+					else
+						tputs(btns[n1 & 3]);
+					
+					if(n1 & 0x04)tputs(" [Mayús]");
+					if(n1 & 0x08)tputs(" [Alt]");
+					if(n1 & 0x10)tputs(" [Ctrl]");
+					tputs("\n\r");
+					refresh();
+					break;
 				case ' ': tputs("Entrando en modo procesado.\n\r"); refresh(); modo = 1; break;
 				default:
+					clear();
 					int2hex2(ch,str);
-					tputs("Char ");
 					tputs(str);
 					if(ch >= 32)
 					{
@@ -303,25 +327,34 @@ int main(int argc, char *argv[])
 						tputs(")");
 					}
 					tputs("\n\r");
+					
+					while(kbhit())
+					{
+						ch = getchr();
+						int2hex2(ch,str);
+						tputs(str);
+						if(ch >= 32)
+						{
+							tputs(" (");
+							str[0] = ch; str[1] = 0;
+							tputs(str);
+							tputs(")");
+						}
+						tputs("\n\r");
+					}
 					refresh();
 				}
 				break;
 			case 1:
 				key = getKey();
-				if(key == HK_ESC)finish = 1;
-				if(key == ' '){redraw = 1; modo = 2;}
+				chr = HK_GETC(key);
 				if(key & HK_C)tputs("Ctrl+");
 				if(key & HK_A)tputs("Alt+");
 				if(key & HK_S)tputs("Mayús+");
-				unsigned char chr = (key & HK_KMASK) >> 16;
-				if(chr)
+				if(HK_TYPEC(key))
 				{
-					chr--;
-					tputs(keynames[chr]);
-				}
-				else
-				{
-					chr = key & HK_CHMASK;
+					
+					if(chr == ' '){redraw = 1; modo = 2;}
 					if(chr >= 32 && chr <= 126)
 					{
 						if(chr == 32)
@@ -340,14 +373,36 @@ int main(int argc, char *argv[])
 						tputs(str);
 						tputs(">");
 					}
+					
+				}
+				if(HK_TYPEK(key))
+				{
+					if(chr == HK_ESC)finish = 1;
+					if(chr)
+					{
+						chr--;
+						tputs(keynames[chr]);
+					}
+				}
+				if(HK_TYPEM(key))
+				{
+					if(key & HK_M1)tputs("M1");
+					if(key & HK_M2)tputs("M2");
+					if(key & HK_M3)tputs("M3");
+					if(key & HK_WHUP)tputs("Rueda arriba");
+					if(key & HK_WHDN)tputs("Rueda abajo");
+					tputs(" X=");
+					int2str(HK_MX(key),str);tputs(str);
+					tputs(" Y=");
+					int2str(HK_MY(key),str);tputs(str);
 				}
 				tputs("\n\r");
 				refresh();
 				break;
 			case 2:
 				key = getKey();
-				if(key == HK_ESC)finish = 1;
-				if(key == ' '){resetcolor(); clear(); tputs("Entrando en modo sin procesar.\n\r"); refresh(); modo = 0;}
+				if(HK_TYPEK(key) && HK_GET(key) == HK_ESC)finish = 1;
+				if(HK_TYPEC(key) && HK_GET(key) == ' '){resetcolor(); clear(); tputs("Entrando en modo sin procesar.\n\r"); refresh(); modo = 0;}
 				break;
 			}
 		}

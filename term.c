@@ -163,6 +163,10 @@ void startText(void)
 	"\x1b[?25l"        //hidecursor
 	"\x1b%G"           //codificación en UTF-8
 	"\x1b F"           //códigos C1 de 7 bits
+	"\x1b[?1003h"////todos los eventos
+	"\x1b[?1007h"////scroll
+	"\x1b[?1004h"////enfoque
+	
 	);
 	refresh();
 }
@@ -174,6 +178,9 @@ void endText(void)
 	//enviar comandos a la terminal
 	tputs
 	(
+	"\x1b[?1004l"////
+	"\x1b[?1007l"////
+	"\x1b[?1003l"////
 	"\x1b[?7h"         //enablewrap
 	"\x1b[0m"          //setattr(ATTR_NONE)
 	"\x1b[39m\x1b[49m" //resetcolor
@@ -365,25 +372,55 @@ void getterminalsize(int *w, int *h)
 unsigned int getKey(void)
 {
 	int ch;
-	unsigned int mod = HK_NONE, num = 0, num2 = 0;
+	unsigned int mod = HK_NONE, num = 0, num2 = 0, num3;
 	int use_num = 0, use_num2 = 0;
 	ch = getchr();
-	if(ch == 0x09)return(HK_TAB);                              //Tab (o Ctrl[+Mayús]+I)
-	if(ch == 0x0a)return(HK_C | HK_ENTER);                     //Ctrl+Intro (o Ctrl[+Mayús]+J)
-	if(ch == 0x0d)return(HK_ENTER);                            //Intro (o Ctrl[+Mayús]+M)
-	if(ch >= 0x01 && ch <= 0x1a)return(HK_C | (ch + 'A' - 1)); //Ctrl[+Mayús]+Letra, excluyendo I, J, y M
+	if(ch == 0x09)return(HK_TK | HK_TAB);                              //Tab (o Ctrl[+Mayús]+I)
+	if(ch == 0x0a)return(HK_TK | HK_C | HK_ENTER);                     //Ctrl+Intro (o Ctrl[+Mayús]+J)
+	if(ch == 0x0d)return(HK_TK | HK_ENTER);                            //Intro (o Ctrl[+Mayús]+M)
+	if(ch >= 0x01 && ch <= 0x1a)return(HK_TC | HK_C | (ch + 'A' - 1)); //Ctrl[+Mayús]+Letra, excluyendo I, J, y M
 	if(ch == 0x1b)
 	{
-		if(!kbhit())return(HK_ESC); //Esc (o Ctrl+3)
+		if(!kbhit())return(HK_TK | HK_ESC); //Esc (o Ctrl+3)
 		ch = getchr();
-		if(ch == 0x1b)return(HK_ESC);                               //Esc
-		if(ch == 0x0a)return(HK_A | HK_ENTER);                      //[Ctrl+]Alt+[Mayús]Intro (o Ctrl+Alt[+Mayús]+J)
-		if(ch >= 0x01 && ch <= 0x1a)return(HK_CA | (ch + 'A' - 1)); //Ctrl+Alt[+Mayús]+Letra, excluyendo J
-		if(ch == 0x1f)return(HK_CAS | '-');                         //Ctrl+Alt+Mayús+-
+		if(ch == 0x1b)return(HK_TK | HK_ESC);                               //Esc
+		if(ch == 0x0a)return(HK_TK | HK_A | HK_ENTER);                      //[Ctrl+]Alt+[Mayús]Intro (o Ctrl+Alt[+Mayús]+J)
+		if(ch >= 0x01 && ch <= 0x1a)return(HK_TC | HK_CA | (ch + 'A' - 1)); //Ctrl+Alt[+Mayús]+Letra, excluyendo J
+		if(ch == 0x1f)return(HK_TC | HK_CAS | '-');                         //Ctrl+Alt+Mayús+-
 		if(ch == '[')
 		{
-			if(!kbhit())return(HK_A | '['); //Alt+[
+			if(!kbhit())return(HK_TC | HK_A | '['); //Alt+[
 			ch = getchr();
+			if(ch == 'M')
+			{
+				if(!kbhit())return(0);
+				num = getchr();
+				if(!kbhit())return(0);
+				num2 = getchr();
+				if(!kbhit())return(0);
+				num3 = getchr();
+				num2 = (unsigned char)(num2 - 33);
+				num3 = (unsigned char)(num3 - 33);
+				if(num & 0x04)mod |= HK_S;
+				if(num & 0x08)mod |= HK_A;
+				if(num & 0x10)mod |= HK_C;
+				int btns = 0;
+				if((num & 0x60) == 0x60)
+				{
+					if(num & 0x01)btns |= HK_WHDN;
+					else btns |= HK_WHUP;
+				}
+				else
+				{
+					switch(num & 0x03)
+					{
+						case 0: btns |= HK_M1; break;
+						case 1: btns |= HK_M3; break;
+						case 2: btns |= HK_M2; break;
+					}
+				}
+				return(HK_TM | mod | (num3 << 8) | (num2 << 16) | btns); //Ratón
+			}
 			if(ch >= '0' && ch <= '9')
 			{
 				use_num = 1;
@@ -428,24 +465,24 @@ unsigned int getKey(void)
 				}
 				switch(num)
 				{
-				case 1:  case 7: return(mod | HK_HOME); //mod+Inicio
-				case 2:  case 8: return(mod | HK_INS);  //mod+Ins
-				case 3:          return(mod | HK_DEL);  //mod+Supr
-				case 4:          return(mod | HK_END);  //mod+Fin
-				case 5:          return(mod | HK_PGUP); //mod+RePág
-				case 6:          return(mod | HK_PGDN); //mod+AvPág
-				case 11:         return(mod | HK_F1);   //mod+F1
-				case 12:         return(mod | HK_F2);   //mod+F2
-				case 13:         return(mod | HK_F3);   //mod+F3
-				case 14:         return(mod | HK_F4);   //mod+F4
-				case 15:         return(mod | HK_F5);   //mod+F5
-				case 17:         return(mod | HK_F6);   //mod+F6
-				case 18:         return(mod | HK_F7);   //mod+F7
-				case 19:         return(mod | HK_F8);   //mod+F8
-				case 20:         return(mod | HK_F9);   //mod+F9
-				case 21:         return(mod | HK_F10);  //mod+F10
-				case 23:         return(mod | HK_F11);  //mod+F11
-				case 24:         return(mod | HK_F12);  //mod+F12
+				case 1:  case 7: return(HK_TK | mod | HK_HOME); //mod+Inicio
+				case 2:  case 8: return(HK_TK | mod | HK_INS);  //mod+Ins
+				case 3:          return(HK_TK | mod | HK_DEL);  //mod+Supr
+				case 4:          return(HK_TK | mod | HK_END);  //mod+Fin
+				case 5:          return(HK_TK | mod | HK_PGUP); //mod+RePág
+				case 6:          return(HK_TK | mod | HK_PGDN); //mod+AvPág
+				case 11:         return(HK_TK | mod | HK_F1);   //mod+F1
+				case 12:         return(HK_TK | mod | HK_F2);   //mod+F2
+				case 13:         return(HK_TK | mod | HK_F3);   //mod+F3
+				case 14:         return(HK_TK | mod | HK_F4);   //mod+F4
+				case 15:         return(HK_TK | mod | HK_F5);   //mod+F5
+				case 17:         return(HK_TK | mod | HK_F6);   //mod+F6
+				case 18:         return(HK_TK | mod | HK_F7);   //mod+F7
+				case 19:         return(HK_TK | mod | HK_F8);   //mod+F8
+				case 20:         return(HK_TK | mod | HK_F9);   //mod+F9
+				case 21:         return(HK_TK | mod | HK_F10);  //mod+F10
+				case 23:         return(HK_TK | mod | HK_F11);  //mod+F11
+				case 24:         return(HK_TK | mod | HK_F12);  //mod+F12
 				}
 				return(0);
 			}
@@ -471,13 +508,13 @@ unsigned int getKey(void)
 			}
 			switch(ch)
 			{
-			case 'A': return(mod | HK_UP);    //mod+Arriba
-			case 'B': return(mod | HK_DOWN);  //mod+Abajo
-			case 'C': return(mod | HK_RIGHT); //mod+Derecha
-			case 'D': return(mod | HK_LEFT);  //mod+Izquierda
-			case 'F': return(mod | HK_END);   //mod+Fin
-			case 'H': return(mod | HK_HOME);  //mod+Inicio
-			case 'Z': return(HK_S | HK_TAB);  //Mayús+Tab
+			case 'A': return(HK_TK | mod | HK_UP);    //mod+Arriba
+			case 'B': return(HK_TK | mod | HK_DOWN);  //mod+Abajo
+			case 'C': return(HK_TK | mod | HK_RIGHT); //mod+Derecha
+			case 'D': return(HK_TK | mod | HK_LEFT);  //mod+Izquierda
+			case 'F': return(HK_TK | mod | HK_END);   //mod+Fin
+			case 'H': return(HK_TK | mod | HK_HOME);  //mod+Inicio
+			case 'Z': return(HK_TK | HK_S | HK_TAB);  //Mayús+Tab
 			}
 			return(0);
 		}
@@ -501,33 +538,33 @@ unsigned int getKey(void)
 					ch = getchr();
 					switch(ch)
 					{
-					case 'F': return(mod | HK_END);  //mod+Fin
-					case 'H': return(mod | HK_HOME); //mod+Inicio
-					case 'P': return(mod | HK_F1);   //mod+F1
-					case 'Q': return(mod | HK_F2);   //mod+F2
-					case 'R': return(mod | HK_F3);   //mod+F3
-					case 'S': return(mod | HK_F4);   //mod+F4
+					case 'F': return(HK_TK | mod | HK_END);  //mod+Fin
+					case 'H': return(HK_TK | mod | HK_HOME); //mod+Inicio
+					case 'P': return(HK_TK | mod | HK_F1);   //mod+F1
+					case 'Q': return(HK_TK | mod | HK_F2);   //mod+F2
+					case 'R': return(HK_TK | mod | HK_F3);   //mod+F3
+					case 'S': return(HK_TK | mod | HK_F4);   //mod+F4
 					default: return(0);
 					}
 				}
-				if(ch == 'F')return(HK_END);  //Fin
-				if(ch == 'H')return(HK_HOME); //Inicio
-				if(ch == 'P')return(HK_F1);   //F1
-				if(ch == 'Q')return(HK_F2);   //F2
-				if(ch == 'R')return(HK_F3);   //F3
-				if(ch == 'S')return(HK_F4);   //F4
+				if(ch == 'F')return(HK_TK | HK_END);  //Fin
+				if(ch == 'H')return(HK_TK | HK_HOME); //Inicio
+				if(ch == 'P')return(HK_TK | HK_F1);   //F1
+				if(ch == 'Q')return(HK_TK | HK_F2);   //F2
+				if(ch == 'R')return(HK_TK | HK_F3);   //F3
+				if(ch == 'S')return(HK_TK | HK_F4);   //F4
 				return(0);
 			}
 		}
-		if(ch >= '0' && ch <= '9')return(HK_A | ch);                 //Alt+Número
-		if(ch >= 'A' && ch <= 'Z')return(HK_A | ch);                 //Alt[+Mayús]+Letra
-		if(ch >= 'a' && ch <= 'z')return(HK_A | (ch - ('a' - 'A'))); //Alt[+Mayús]+Letra
-		if(ch == 0x7f)return(HK_A | HK_BKSP);                        //[Ctrl+]Alt+[Mayús+]Retroceso
-		if(ch == 31)return(HK_CAS | '-');                            //Ctrl+Alt+Mayús+-
-		return(HK_A | ch);                                           //Alt+Carácter
+		if(ch >= '0' && ch <= '9')return(HK_TC | HK_A | ch);                 //Alt+Número
+		if(ch >= 'A' && ch <= 'Z')return(HK_TC | HK_A | ch);                 //Alt[+Mayús]+Letra
+		if(ch >= 'a' && ch <= 'z')return(HK_TC | HK_A | (ch - ('a' - 'A'))); //Alt[+Mayús]+Letra
+		if(ch == 0x7f)return(HK_TK | HK_A | HK_BKSP);                        //[Ctrl+]Alt+[Mayús+]Retroceso
+		if(ch == 31)return(HK_TC | HK_CAS | '-');                            //Ctrl+Alt+Mayús+-
+		return(HK_TC | HK_A | ch);                                           //Alt+Carácter
 	}
-	if(ch == 0x1f)return(HK_CA | '-'); //Ctrl+Alt+-
-	if(ch == 0x7f)return(HK_BKSP);     //[Ctrl+][Mayús+]Retroceso
+	if(ch == 0x1f)return(HK_TC | HK_CA | '-'); //Ctrl+Alt+-
+	if(ch == 0x7f)return(HK_TK | HK_BKSP);     //[Ctrl+][Mayús+]Retroceso
 	if(ch <= 0 || ch >= 255)return(0);
-	return(ch);                        //Carácter
+	return(HK_TC | ch);                        //Carácter
 }

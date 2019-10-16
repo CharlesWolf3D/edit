@@ -413,3 +413,14 @@ Lista de teclas:
 "\x1b\x7f"   [Ctrl+]Alt+[Mayús+]Retroceso
 "\x1f"       Ctrl+Alt+-
 "\x7f"       [Ctrl+][Mayús+]Retroceso
+
+Ratón:
+"\x1b[MABC"
+A=botones
+	si A&0x60, evento de rueda, bit 0 es si es abajo
+	bits 0..1: 0=pulsar izq, pulsar medio, pulsar der, soltar
+	bit 2:     mayús
+	bit 3:     alt
+	bit 4:     ctrl
+B=x+33
+C=y+33
