@@ -26,7 +26,12 @@ enum
 	MNID_CTXCUT,
 	MNID_CTXCOPY,
 	MNID_CTXPASTE,
-	MNID_CTXDELETE
+	MNID_CTXDELETE,
+	MNID_WNDMOVE,
+	MNID_WNDSIZE,
+	MNID_WNDMIN,
+	MNID_WNDMAX,
+	MNID_WNDCLOSE
 };
 
 /*
@@ -55,6 +60,12 @@ Mayús+RePág          | Ir a la página anterior seleccionando                 
 Mayús+AvPág          | Ir a la página siguiente seleccionando                    | Sí     | Alt+M
 Ctrl+Inicio          | Ir al principio del documento                             | Sí     | Alt+RePág
 Ctrl+Fin             | Ir al final del documento                                 | Sí     | Alt+AvPág
+---------------------|-----------------------------------------------------------|--------|----------------------------
+F10                  | Seleccionar barra de menús                                | Sí     | F4
+F7                   | Seleccionar buscar/ir/editor                              |        | 
+F5                   | Actualizar (explorador)                                   |        | 
+Ctrl+F5              | Restablecer colores                                       |        | 
+Alt+-                | Menú de ventana                                           |        | (Mayús+F4 queda mejor)
 ---------------------|-----------------------------------------------------------|--------|----------------------------
 Ctrl+N               | Archivo -> Nuevo                                          |        | 
 Ctrl+O               | Archivo -> Abrir...                                       |        | 
@@ -99,8 +110,9 @@ Ctrl+F6              | Ventana -> Siguiente división                           
 Ctrl+Mayús+F6        | Ventana -> División Anterior                              |        | 
 Ctrl+AvPág           | Ventana -> Siguiente pestaña                              | Sí     | Ctrl+F12
 Ctrl+RePág           | Ventana -> Pestaña anterior                               | Sí     | Ctrl+F11
+Ctrl+Tab             | Ventana -> Lista de ventanas...                           | Sí     | Alt+0
 ---------------------|-----------------------------------------------------------|--------|----------------------------
-F1                   | Ayuda -> Temas de ayuda                                   | Sí     | Mayús+F1
+F1                   | Ayuda -> Temas de ayuda                                   | Sí     | Ajo y agua
 Alt+F1               | Ayuda -> Acerca de...                                     | Sí     | Mayús+F1
 
 Para abrir un menú con el teclado:
@@ -173,7 +185,7 @@ menudef_t menudefs[] =
 	{"	Si&guiente pestaña",              HK_C   |   HK_F12, MNID_NONE,     MNFL_NORM, NULL},
 	{"	Pestaña an&terior",               HK_C   |   HK_F11, MNID_NONE,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, MNID_NONE,     MNFL_NORM, NULL},
+	{"	&Lista de ventanas...",           HK_A   |      '0', MNID_NONE,     MNFL_NORM, NULL},
 	{"A&yuda",                                      HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Temas de ayuda",                             HK_F1, MNID_NONE,     MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
@@ -181,8 +193,8 @@ menudef_t menudefs[] =
 	{NULL,                                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL}
 };
 
-//menú contextual
-menudef_t contextmenudefs[] =
+//menú contextual del editor
+menudef_t menudefs_ctx[] =
 {  //Texto                            Tecla rápida       ID              Opciones   Función
 	{"&Deshacer",                     HK_C   |      'Z', MNID_CTXUNDO,   MNFL_NOHK, NULL},
 	{"&Rehacer",                      HK_C   |      'Y', MNID_CTXREDO,   MNFL_NOHK, NULL},
@@ -206,6 +218,18 @@ menudef_t contextmenudefs[] =
 	{"	-",                                     HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
 	{"	&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, MNID_NONE,      MNFL_NORM, NULL},
 	{"	M&over líneas hacia abajo",   HK_A   |  HK_PGDN, MNID_NONE,      MNFL_NORM, NULL},
+	{NULL,                                      HK_NONE, MNID_NONE,      MNFL_NORM, NULL}
+};
+
+//menú de ventana
+menudef_t menudefs_wnd[] =
+{  //Texto                            Tecla rápida       ID              Opciones   Función
+	{"&Mover",                                  HK_NONE, MNID_WNDMOVE,   MNFL_NORM, NULL},
+	{"&Tamaño",                                 HK_NONE, MNID_WNDSIZE,   MNFL_NORM, NULL},
+	{"Mi&nimizar",                              HK_NONE, MNID_WNDMIN,    MNFL_NORM, NULL},
+	{"Ma&ximizar",                              HK_NONE, MNID_WNDMAX,    MNFL_NORM, NULL},
+	{"-",                                       HK_NONE, MNID_NONE,      MNFL_NORM, NULL},
+	{"&Cerrar",                       HK_C   |    HK_F4, MNID_WNDCLOSE,  MNFL_NOHK, NULL},
 	{NULL,                                      HK_NONE, MNID_NONE,      MNFL_NORM, NULL}
 };
 

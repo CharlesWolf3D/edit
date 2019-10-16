@@ -332,26 +332,28 @@ int printmn(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned char
 }
 
 //menú principal
-menudef_t menudefs_test[] =////
+menudef_t menudefs_test[] = ////
 {  //Texto                                Tecla rápida       ID             Opciones   Función
 	{"&Archivo",                                    HK_NONE, 0,             MNFL_NORM, NULL},
 	{"	&Nuevo",                          HK_C   |      'N', 0,             MNFL_NORM, NULL},
 	{"	&Abrir...",                       HK_C   |      'O', 0,             MNFL_NORM, NULL},
 	{"	&Guardar",                        HK_C   |      'S', 0,             MNFL_NORM, NULL},
-	{"	Guardar &como...",                HK_CS  |      'S', 0,             MNFL_NORM, NULL},
+	{"	Guardar &como...",                HK_A   |      'S', 0,             MNFL_NORM, NULL},
 	{"	Guardar copia co&mo...",          HK_CA  |      'S', 0,             MNFL_NORM, NULL},
 	{"	&Renombrar...",                               HK_F2, 0,             MNFL_NORM, NULL},
 	{"	Ce&rrar",                         HK_C   |    HK_F4, 0,             MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
-	{"	&Salir",                          HK_A   |    HK_F4, 0,             MNFL_NORM, NULL},
+	{"	&Salir",                          HK_C   |      'Q', 0,             MNFL_NORM, NULL},
 	{"&Edición",                                    HK_NONE, 0,             MNFL_NORM, NULL},
 	{"	&Deshacer",                       HK_C   |      'Z', 0,             MNFL_NORM, NULL},
 	{"	&Rehacer",                        HK_C   |      'Y', 0,             MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
 	{"	C&ortar",                         HK_C   |      'X', 0,             MNFL_NORM, NULL},
-	{"	&Copiar",                         HK_C   |      'C', 0,             MNFL_NORM, NULL},
-	{"	&Pegar",                          HK_C   |      'V', 0,             MNFL_NORM, NULL},
+	{"	&Copiar",                         HK_C   |      'C', 0,             MNFL_NORM, NULL},//funciona, pero no Ctrl+Ins
+	{"	&Pegar",                          HK_C   |      'V', 0,             MNFL_NORM, NULL},//funciona, pero no Mayús+Ins
 	{"	&Eliminar",                                  HK_DEL, 0,             MNFL_NOHK, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Reemplazar caracteres",                     HK_INS, 0,             MNFL_NOHK, NULL},
 	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
 	{"	Seleccionar &todo",               HK_C   |      'A', 0,             MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
@@ -363,7 +365,7 @@ menudef_t menudefs_test[] =////
 	{"		&Duplicar línea o selección", HK_C   |      'D', 0,             MNFL_NORM, NULL},
 	{"		-",                                     HK_NONE, 0,             MNFL_NORM, NULL},
 	{"		&Insertar línea debajo",      HK_C   | HK_ENTER, 0,             MNFL_NORM, NULL},
-	{"		I&nsertar línea encima",      HK_CS  | HK_ENTER, 0,             MNFL_NORM, NULL},
+	{"		I&nsertar línea encima",      HK_A   | HK_ENTER, 0,             MNFL_NORM, NULL},
 	{"		-",                                     HK_NONE, 0,             MNFL_NORM, NULL},
 	{"		&Mover líneas hacia arriba",  HK_A   |  HK_PGUP, 0,             MNFL_NORM, NULL},
 	{"		M&over líneas hacia abajo",   HK_A   |  HK_PGDN, 0,             MNFL_NORM, NULL},
@@ -375,22 +377,29 @@ menudef_t menudefs_test[] =////
 	{"	A&nterior seleccionado",          HK_CS  |    HK_F3, 0,             MNFL_NORM, NULL},
 	{"	Ree&mplazar...",                  HK_C   |      'H', 0,             MNFL_NORM, NULL},
 	{"&Ver",                                        HK_NONE, 0,             MNFL_NORM, NULL},
-	{"	&Espacios",                       HK_C   |      ' ', 0,             MNFL_NORM, NULL},
-	{"	&Tabuladores",                    HK_CS  |      ' ', 0,             MNFL_NORM, NULL},
-	{"	&Nuevas líneas",                  HK_C   | HK_ENTER, 0,             MNFL_NORM, NULL},
-	{"	T&odos los caracteres",           HK_C   |      '.', 0,             MNFL_NORM, NULL},
+	{"	&Espacios",                                 HK_NONE, 0,             MNFL_NORM, NULL},//no funciona
+	{"	&Tabuladores",                              HK_NONE, 0,             MNFL_NORM, NULL},//no funciona
+	{"	&Nuevas líneas",                            HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	T&odos los caracteres",                     HK_NONE, 0,             MNFL_NORM, NULL},//no funciona
 	{"&Configuración",                              HK_NONE, 0,             MNFL_NORM, NULL},
 	{"	&Preferencias...",                          HK_NONE, 0,             MNFL_NORM, NULL},
 	{"	&Colores...",                               HK_NONE, 0,             MNFL_NORM, NULL},
 	{"Ve&ntana",                                    HK_NONE, 0,             MNFL_NORM, NULL},
-	{"	&Siguiente",                      HK_C   |  HK_PGUP, 0,             MNFL_NORM, NULL},
-	{"	&Anterior",                       HK_C   |  HK_PGDN, 0,             MNFL_NORM, NULL},
+	{"	&Siguiente ventana",                          HK_F6, 0,             MNFL_NORM, NULL},
+	{"	Ventana &anterior",               HK_S   |    HK_F6, 0,             MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
-	{"	&Lista de ventanas...",           HK_C   |   HK_TAB, 0,             MNFL_NORM, NULL},
+	{"	S&iguiente división",             HK_C   |    HK_F6, 0,             MNFL_NORM, NULL},
+	{"	División a&nterior",              HK_CS  |    HK_F6, 0,             MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	Si&guiente pestaña",              HK_C   |   HK_F12, 0,             MNFL_NORM, NULL},
+	{"	Pestaña an&terior",               HK_C   |   HK_F11, 0,             MNFL_NORM, NULL},
+	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
+	{"	&Lista de ventanas...",           HK_A   |      '0', 0,             MNFL_NORM, NULL},
+	{"-",                                           HK_NONE, 0,             MNFL_NORM, NULL},
 	{"A&yuda",                                      HK_NONE, 0,             MNFL_NORM, NULL},
 	{"	&Temas de ayuda",                             HK_F1, 0,             MNFL_NORM, NULL},
 	{"	-",                                         HK_NONE, 0,             MNFL_NORM, NULL},
-	{"	&Acerca de...",                   HK_A   |    HK_F1, 0,             MNFL_NORM, NULL},
+	{"	&Acerca de...",                   HK_S   |    HK_F1, 0,             MNFL_NORM, NULL},
 	{NULL,                                          HK_NONE, 0,             MNFL_NORM, NULL}
 };
 
@@ -451,6 +460,11 @@ void wndRedraw(void)
 	{
 		if(menudefs_test[i].caption[0] == 9)
 			continue;
+		if(menudefs_test[i].caption[0] == '-' && menudefs_test[i].caption[1] == 0)
+		{
+			menuX += printmn(buffer, menuX, menuY, wndW, wndH, "|", colors[CLR_MENUBAR], colors[CLR_MENUBAR_KEY]);
+			continue;
+		}
 		unsigned char c_a = CLR_MENUBAR;
 		unsigned char c_b = CLR_MENUBAR_KEY;
 		if(mnid==1){c_a++;c_b++;}
