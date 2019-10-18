@@ -168,10 +168,10 @@ menudef_t menudefs[] =
 	{"	A&nterior seleccionado",          HK_CS  |    HK_F3, MNID_NONE,     MNFL_NORM, NULL},
 	{"	Ree&mplazar...",                  HK_C   |      'H', MNID_NONE,     MNFL_NORM, NULL},
 	{"&Ver",                                        HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
-	{"	&Espacios",                                 HK_NONE, MNID_SPACES,   MNFL_NORM, NULL},//no funciona
-	{"	&Tabuladores",                              HK_NONE, MNID_TABS,     MNFL_NORM, NULL},//no funciona
+	{"	&Espacios",                                 HK_NONE, MNID_SPACES,   MNFL_NORM, NULL},
+	{"	&Tabuladores",                              HK_NONE, MNID_TABS,     MNFL_NORM, NULL},
 	{"	&Nuevas líneas",                            HK_NONE, MNID_NEWLS,    MNFL_NORM, NULL},
-	{"	T&odos los caracteres",                     HK_NONE, MNID_ALLCHARS, MNFL_NORM, NULL},//no funciona
+	{"	T&odos los caracteres",                     HK_NONE, MNID_ALLCHARS, MNFL_NORM, NULL},
 	{"&Configuración",                              HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Preferencias...",                          HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
 	{"	&Colores...",                               HK_NONE, MNID_NONE,     MNFL_NORM, NULL},
@@ -240,7 +240,7 @@ tui.c
 	tipo de datos control
 	dibujar controles
 	eventos de controles
-ratón (term.c)
+mejorar eventos de ratón (tui.c)
 control etiqueta (controls.c)
 control texto (controls.c)
 control botón (controls.c)
@@ -302,12 +302,11 @@ int main(int argc, char *argv[])
 					tputs("X = "); int2str((unsigned char)(n2 - 33), str); tputs(str); tputs("\n\r");
 					tputs("Y = "); int2str((unsigned char)(n3 - 33), str); tputs(str); tputs("\n\r");
 					tputs("B = "); int2hex2(n1, str); tputs(str); tputs("\n\r");
-					char*btns[4]={"Pulsar 1","Pulsar 2","Pulsar 3","Soltar"};
+					char*btns[4]={"Pulsar izq","Pulsar cent","Pulsar der","Soltar"};
 					if((n1 & 0x60) == 0x60)
 						tputs((n1 & 1) ? "Rueda abajo" : "Rueda arriba");
 					else
 						tputs(btns[n1 & 3]);
-					
 					if(n1 & 0x04)tputs(" [Mayús]");
 					if(n1 & 0x08)tputs(" [Alt]");
 					if(n1 & 0x10)tputs(" [Ctrl]");
@@ -403,6 +402,7 @@ int main(int argc, char *argv[])
 				key = getKey();
 				if(HK_TYPEK(key) && HK_GET(key) == HK_ESC)finish = 1;
 				if(HK_TYPEC(key) && HK_GET(key) == ' '){resetcolor(); clear(); tputs("Entrando en modo sin procesar.\n\r"); refresh(); modo = 0;}
+				if(HK_TYPEM(key)){if(HK_GETC(key)==HK_WHUP){test_scroll--;redraw=1;}if(HK_GETC(key)==HK_WHDN){test_scroll++;redraw=1;}}
 				break;
 			}
 		}

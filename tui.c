@@ -402,6 +402,8 @@ menudef_t menudefs_test[] = ////
 	{NULL,                                          HK_NONE, 0,             MNFL_NORM, NULL}
 };
 
+int test_scroll=0;////
+
 //redibuja la ventana del programa
 //las dimensiones vienen dadas por wndW y wndH
 void wndRedraw(void)
@@ -556,15 +558,21 @@ void wndRedraw(void)
 		//espacio de texto
 		for(int i = 0; i < editW - 1; i++)
 			cellPrint(buffer, editX + i, editY + j, wndW, wndH, " ", colors[CLR_EDIT_TEXT]);
-		//espacio de barra de desplazamiento vertical
-		if(j < editH / 4)
+		//barra de desplazamiento vertical
+		int len = editH / 4;
+		if(test_scroll < 0)test_scroll = 0;
+		int start = test_scroll + 1;
+		int end = start + len;
+		int diff = end - (editH - 2);
+		if(diff > 0){start -= diff; end -= diff; test_scroll -= diff;}
+		if((j >= start) && (j < end))
 			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLR_EDIT_SC_THUMB]);
 		else
 			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
 	}
 	cellPrint(buffer, editX + editW - 1, editY, wndW, wndH, gchars[GCH_SCRL_UP], colors[CLR_EDIT_SC_ARR]); //flecha arriba
 	cellPrint(buffer, editX + editW - 1, editY + editH - 2, wndW, wndH, gchars[GCH_SCRL_DOWN], colors[CLR_EDIT_SC_ARR]); //flecha abajo
-	//espacio de barra de desplazamiento horizontal
+	//barra de desplazamiento horizontal
 	for(int i = 0; i < editW - 3; i++)
 		if(i < editW / 4)
 			cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLR_EDIT_SC_THUMB]);

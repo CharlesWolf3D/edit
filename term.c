@@ -163,10 +163,8 @@ void startText(void)
 	"\x1b[?25l"        //hidecursor
 	"\x1b%G"           //codificación en UTF-8
 	"\x1b F"           //códigos C1 de 7 bits
-	"\x1b[?1003h"////todos los eventos
-	"\x1b[?1007h"////scroll
-	"\x1b[?1004h"////enfoque
-	
+	"\x1b[?1003h"      //habilitar eventos de ratón (todos)
+	"\x1b[?1007h"      //habilitar rueda del ratón
 	);
 	refresh();
 }
@@ -178,9 +176,8 @@ void endText(void)
 	//enviar comandos a la terminal
 	tputs
 	(
-	"\x1b[?1004l"////
-	"\x1b[?1007l"////
-	"\x1b[?1003l"////
+	"\x1b[?1007l"      //deshabilitar rueda del ratón
+	"\x1b[?1003l"      //deshabilitar eventos de ratón (todos)
 	"\x1b[?7h"         //enablewrap
 	"\x1b[0m"          //setattr(ATTR_NONE)
 	"\x1b[39m\x1b[49m" //resetcolor
