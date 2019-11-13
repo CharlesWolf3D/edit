@@ -418,7 +418,7 @@ Ratón:
 "\x1b[MABC"
 A=botones
 	si A&0x60, evento de rueda, bit 0 es si es abajo
-	bits 0..1: 0=pulsar izq, pulsar medio, pulsar der, soltar
+	bits 0..1: 0=pulsar izq, 1=pulsar medio, 2=pulsar der, 3=soltar
 	bit 2:     mayús
 	bit 3:     alt
 	bit 4:     ctrl

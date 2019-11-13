@@ -38,9 +38,9 @@ extern unsigned char pal16_linux[48];
 #define HK_C        0x01000000                 //Ctrl
 #define HK_A        0x02000000                 //Alt
 #define HK_S        0x04000000                 //Mayús
-#define HK_CA       (HK_C | HK_A)              //Ctrl+Alt
-#define HK_CS       (HK_C | HK_S)              //Ctrl+Mayús
-#define HK_AS       (HK_A | HK_S)              //Alt+Mayús
+#define HK_CA       (HK_C  | HK_A)             //Ctrl+Alt
+#define HK_CS       (HK_C  | HK_S)             //Ctrl+Mayús
+#define HK_AS       (HK_A  | HK_S)             //Alt+Mayús
 #define HK_CAS      (HK_CA | HK_S)             //Ctrl+Alt+Mayús
 #define HK_F1       0x00000001                 //F1
 #define HK_F2       0x00000002                 //F2

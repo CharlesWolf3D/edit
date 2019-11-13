@@ -124,10 +124,12 @@ void wndEnd(void)
 	endText();
 }
 
+//celda de carácter de la terminal
+//sólo admite caracteres compuestos de un punto de código
 typedef struct
 {
-	unsigned int chr;
-	unsigned char clr;
+	unsigned int chr;  //punto de código en UTF-32
+	unsigned char clr; //color (b0..3=carácter, b4..7=fondo)
 } cell_t;
 
 //convierte un punto de código UTF-32 en una cadena UTF-8
@@ -526,7 +528,7 @@ void wndRedraw(void)
 		//pestañas
 		for(int i = 0; i < 4; i++)
 		{
-			char *list[]={" ArchivoUno.txt     "," FicheroDos.c     "," DocumentoTres.xml     ", " Edit.exe     "};
+			char *list[]={" ArchivoUno.txt     ", " FicheroDos.c     ", " DocumentoTres.xml     ", " Edit.exe     "};
 			cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, list[i], colors[i==1?CLR_TABBAR_ACTIVE:CLR_TABBAR_INACTIVE]);
 			tab_x += strlen_cp(list[i]);
 			cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
