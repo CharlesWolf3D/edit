@@ -125,7 +125,7 @@ void wndEnd(void)
 }
 
 //celda de carácter de la terminal
-//sólo admite caracteres compuestos de un punto de código
+//sólo admite caracteres compuestos por un punto de código
 typedef struct
 {
 	unsigned int chr;  //punto de código en UTF-32
@@ -584,8 +584,8 @@ void wndRedraw(void)
 	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_EDIT_SC_ARR]); //flecha derecha
 	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, gchars[GCH_BOX2_C4], colors[CLR_EDIT_BORDER]); //borde abajo derecha
 	//borrar pantalla
-	setfb(7, 0);
-	clear();
+	//setfb(7, 0);
+	//clear();
 	//copiar búfer
 	int index = 0;
 	for(int j = 0; j < wndH; j++)
