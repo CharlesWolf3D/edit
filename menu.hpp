@@ -1,5 +1,5 @@
-#ifndef MENU_H__
-#define MENU_H__
+#ifndef MENU_HPP_
+#define MENU_HPP_
 
 //opciones para elementos de menú
 #define MNFL_NORM 0x00000000 //sin opciones
@@ -12,11 +12,11 @@
 //elemento de definición de menú
 typedef struct
 {
-	char *caption;                 //el & indica el carácter enfatizado, cada tab al principio es un nivel de anidación
+	const char *caption;                 //el & indica el carácter enfatizado, cada tab al principio es un nivel de anidación
 	unsigned int hk;               //tecla de acceso rápido
 	unsigned int id;               //identificador para modificar el elemento
 	unsigned int flags;            //opciones
 	void (*func)(unsigned int id); //callback
 } menudef_t;
 
-#endif //MENU_H__
+#endif //MENU_HPP_

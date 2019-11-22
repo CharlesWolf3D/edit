@@ -1,6 +1,6 @@
 #include <unistd.h>
 
-#include "tui.h"
+#include "tui.hpp"
 
 //identificadores para elementos de menú
 enum
@@ -288,6 +288,7 @@ int main(int argc, char *argv[])
 	{
 		if(kbhit())
 		{
+			const char *btns[4]={"Pulsar izq","Pulsar cent","Pulsar der","Soltar"};
 			switch(modo)
 			{
 			case 0:
@@ -307,7 +308,6 @@ int main(int argc, char *argv[])
 					tputs("X = "); int2str((unsigned char)(n2 - 33), str); tputs(str); tputs("\n\r");
 					tputs("Y = "); int2str((unsigned char)(n3 - 33), str); tputs(str); tputs("\n\r");
 					tputs("B = "); int2hex2(n1, str); tputs(str); tputs("\n\r");
-					char*btns[4]={"Pulsar izq","Pulsar cent","Pulsar der","Soltar"};
 					if((n1 & 0x60) == 0x60)
 						tputs((n1 & 1) ? "Rueda abajo" : "Rueda arriba");
 					else

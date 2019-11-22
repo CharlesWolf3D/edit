@@ -4,7 +4,7 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 
-#include "term.h"
+#include "term.hpp"
 
 unsigned char pal16[48] =
 {
@@ -63,7 +63,7 @@ static struct termios savedTtyState; //estado de stdin salvado
 //escribe una cadena en la terminal
 //la almacena en un búfer y sólo escribe en el dispositivo cuando éste se llena
 //o se llama a refresh()
-void tputs(char *str)
+void tputs(const char *str)
 {
 	while(*str)
 	{

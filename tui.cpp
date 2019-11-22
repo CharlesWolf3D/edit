@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include "tui.h"
-#include "term.h"
+#include "tui.hpp"
+#include "term.hpp"
 
 ////TODO:
 ////2 búferes
@@ -56,7 +56,7 @@ unsigned char colors[] =
 };
 
 //caracteres gráficos
-char *gchars[] =
+const char *gchars[] =
 {
 	"\u250c", //caja1, arriba izquierda
 	"\u2510", //caja1, arriba derecha
@@ -95,9 +95,9 @@ char *gchars[] =
 };
 
 //nombres de las teclas modificadoras
-char *modkeynames[HK_KEY_NUMMODS] = {"Ctrl", "Alt", "Mayús"};
+const char *modkeynames[HK_KEY_NUMMODS] = {"Ctrl", "Alt", "Mayús"};
 //nombres de las teclas de acceso rápido (((HK_* >> 16) & 0xff) - 1)
-char *keynames[HK_KEY_NUMKEYS] =
+const char *keynames[HK_KEY_NUMKEYS] =
 {
 	"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
 	"Ins", "Supr", "Inicio", "Fin", "RePág", "AvPág",
@@ -182,7 +182,7 @@ int UTF32_UTF8(char *dest, unsigned int src)
 //offset=aquí se devolverá el número de bytes que avanzar para llegar al inicio del siguiente punto de código en la cadena
 //devuelve el punto de código en UTF-32
 //las secuencias de bytes no válidas serán devueltas como 0xfffd (carácter de reemplazo)
-unsigned int UTF8_UTF32(char *str, int *offset)
+unsigned int UTF8_UTF32(const char *str, int *offset)
 {
 	unsigned int code;
 	int numread = 0, num = 1;
@@ -237,7 +237,7 @@ unsigned int UTF8_UTF32(char *str, int *offset)
 }
 
 //devuelve el número de puntos de código UTF-8 que tiene una cadena
-int strlen_cp(char *str)
+int strlen_cp(const char *str)
 {
 	int offset, r = 0;
 	while(UTF8_UTF32(str, &offset))
@@ -256,7 +256,7 @@ int strlen_cp(char *str)
 //h=alto del búfer
 //str=puntero a la cadena
 //clr=color del texto
-void cellPrint(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned char clr)
+void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, unsigned char clr)
 {
 	unsigned int code;
 	int offset;
@@ -292,7 +292,7 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned c
 //textClr=color del texto
 //keyClr=color del carácter enfatizado
 //devuelve la longitud en puntos de código del texto sin el ampersand
-int printmn(cell_t *buffer, int x, int y, int w, int h, char *str, unsigned char textClr, unsigned char keyClr)
+int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, unsigned char textClr, unsigned char keyClr)
 {
 	unsigned int code;
 	int offset, len = 0;
@@ -528,7 +528,7 @@ void wndRedraw(void)
 		//pestañas
 		for(int i = 0; i < 4; i++)
 		{
-			char *list[]={" ArchivoUno.txt     ", " FicheroDos.c     ", " DocumentoTres.xml     ", " Edit.exe     "};
+			const char *list[]={" ArchivoUno.txt     ", " FicheroDos.c     ", " DocumentoTres.xml     ", " Edit.exe     "};
 			cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, list[i], colors[i==1?CLR_TABBAR_ACTIVE:CLR_TABBAR_INACTIVE]);
 			tab_x += strlen_cp(list[i]);
 			cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);

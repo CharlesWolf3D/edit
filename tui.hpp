@@ -1,11 +1,11 @@
-#ifndef TUI_H_
-#define TUI_H_
+#ifndef TUI_HPP_
+#define TUI_HPP_
 
-#include "term.h"
-#include "window.h"
-#include "controls.h"
-#include "menu.h"
-#include "edit.h"
+#include "term.hpp"
+#include "window.hpp"
+#include "controls.hpp"
+#include "menu.hpp"
+#include "edit.hpp"
 
 //colores de los elementos
 extern unsigned char colors[];
@@ -46,7 +46,7 @@ enum
 };
 
 //caracteres gráficos
-extern char *gchars[];
+extern const char *gchars[];
 
 //constantes para los caracrteres gráficos
 enum
@@ -88,9 +88,9 @@ enum
 };
 extern int test_scroll;////
 #define HK_KEY_NUMMODS 3
-extern char *modkeynames[HK_KEY_NUMMODS]; //nombres de las teclas modificadoras
+extern const char *modkeynames[HK_KEY_NUMMODS]; //nombres de las teclas modificadoras
 #define HK_KEY_NUMKEYS 26
-extern char *keynames[HK_KEY_NUMKEYS]; //nombres de las teclas de acceso rápido (((HK_* >> 16) & 0xff) - 1)
+extern const char *keynames[HK_KEY_NUMKEYS]; //nombres de las teclas de acceso rápido (((HK_* >> 16) & 0xff) - 1)
 
 extern int wndW, wndH; //dimensiones de la ventana
 
@@ -131,4 +131,4 @@ void wndEnd(void);
 //las dimensiones vienen dadas por wndW y wndH
 void wndRedraw(void);
 
-#endif // TUI_H_
+#endif // TUI_HPP_

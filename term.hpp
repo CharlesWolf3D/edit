@@ -1,5 +1,5 @@
-#ifndef TERM_H_
-#define TERM_H_
+#ifndef TERM_HPP_
+#define TERM_HPP_
 
 extern unsigned char pal16[48];
 extern unsigned char pal16_linux[48];
@@ -84,7 +84,7 @@ extern unsigned char pal16_linux[48];
 //escribe una cadena en la terminal
 //la almacena en un búfer y sólo escribe en el dispositivo cuando éste se llena
 //o se llama a refresh()
-void tputs(char *str);
+void tputs(const char *str);
 
 //escribe en la terminal la parte del búfer que todavía no ha sido escrita
 void refresh(void);
@@ -160,4 +160,4 @@ void getterminalsize(int *w, int *h);
 //devuelve una tecla pulsada con sus modificadores
 unsigned int getKey(void);
 
-#endif // TERM_H
+#endif // TERM_HPP_
