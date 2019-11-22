@@ -235,19 +235,19 @@ menudef_t menudefs_wnd[] =
 
 /*
 hacer:
-tui.c
-	2 búferes
+tui.cpp
+	2 búferes, actualizar pantalla
 	tipo de datos control
 	dibujar controles
 	eventos de controles
 	mejorar eventos de ratón
-controls.c
+controls.cpp
 	control etiqueta
 	control texto
 	control botón
-edit.c
+edit.cpp
 	control editor
-menu.c
+menu.cpp
 	control menú
 
 --Titulo------------------------------------------------------------------------
