@@ -11,7 +11,7 @@ edit:$(OBJSC)
 	$(CPPC) $(OBJSC) -o edit $(LFLAGS)
 
 %.elf:%.cpp
-	$(CPPC) -c $< -o $@ $(CFLAGS)
+	$(CPPC) -c $< -o $@ $(CPPFLAGS)
 
 -include $(DEPS)
 
