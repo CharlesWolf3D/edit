@@ -1,8 +1,9 @@
 #ifndef TERM_HPP_
 #define TERM_HPP_
 
-extern unsigned char pal16[48];
-extern unsigned char pal16_linux[48];
+#include <termios.h>
+
+#include "types.hpp"
 
 //atributos de los caracteres para setattr (sólo terminales gráficas)
 #define ATTR_NONE      0x00 //normal
@@ -81,83 +82,69 @@ extern unsigned char pal16_linux[48];
 #define HK_TYPEK(x) (((x)&HK_TYPEMASK)==HK_TK) //si el evento es de tipo tecla
 #define HK_TYPEM(x) (((x)&HK_TYPEMASK)==HK_TM) //si el evento es de tipo ratón
 
-//escribe una cadena en la terminal
-//la almacena en un búfer y sólo escribe en el dispositivo cuando éste se llena
-//o se llama a refresh()
-void tputs(const char *str);
+#define TERMBUFSZ 8192
+class TAnsiTerminal
+{
+public:
+	// Inicia el sistema de terminal.
+	void Start(void);
+	
+	// Cierra el sistema de terminal.
+	void End(void);
+	
+	// Escribe una cadena (texto o comandos) en la terminal.
+	// La almacena en un búfer y sólo escribe en el dispositivo cuando éste se llena o se llama a Refresh().
+	void Print(const char *str);
+	
+	// Escribe en la terminal la parte del búfer que todavía no ha sido escrita.
+	void Refresh(void);
+	
+	// Borra la pantalla y pone el cursor en 0,0.
+	void Clear(void);
+	
+	// Pone el cursor en x,y.
+	void GotoXY(int32 x, int32 y);
+	
+	// Obtiene el tamaño de la terminal
+	void GetSize(int32 *w, int32 *h);
+	
+	// Muestra u oculta el cursor de texto.
+	void ShowCursor(byte show);
+	
+	// Habilita o deshabilita la nueva línea automática al imprimir más allá del fin de la línea.
+	void EnableWrap(byte enable);
+	
+	// Establece los atributos de los caracteres que se van a escribir.
+	void SetAttr(unsigned char attr);
+	
+	// Establece el color de primer plano.
+	// El valor -1 establece el color predeterminado de la terminal.
+	void SetFgColor(int8 clr);
 
-//escribe en la terminal la parte del búfer que todavía no ha sido escrita
-void refresh(void);
-
-//establece los atributos de los caracteres que se van a escribir
-void setattr(unsigned char attr);
-
-//convierte un número entero en una cadena en base hexadecimal, utilizando
-//siempre 2 dígitos
-void int2hex2(int x, char *str);
-
-//establece los 16 colores de la paleta
-void setpal(unsigned char *pal);
-
-//inicia el sistema de terminal
-void startText(void);
-
-//cierra el sistema de terminal
-void endText(void);
-
-//devuelve si hay datos disponibles en stdin
-int kbhit(void);
-
-//lee un carácter de stdin (0..255)
-//devuelve -1 si hubo un error al leer
-int getchr(void);
-
-//convierte un número entero en una cadena en base decimal
-void int2str(int x, char *str);
-
-//borra la pantalla y pone el cursor en 0,0
-void clear(void);
-
-//pone el cursor en x,y
-void gotoxy(int x, int y);
-
-//establece el color de primer plano
-void setfg(int clr);
-
-//establece el color de fondo
-void setbg(int clr);
-
-//establece los colores de primer plano y fondo (dos parámetros)
-void setfb(int f, int b);
-
-//establece los colores de primer plano y fondo (un parámetro con los colores combinados)
-void setcolor(int clr);
-
-//selecciona el color de primer plano predeterminado
-void resetfg(void);
-
-//selecciona el color de fondo predeterminado
-void resetbg(void);
-
-//selecciona los colores de primer plano y fondo predeterminados
-void resetcolor(void);
-
-//oculta el cursor de texto
-void hidecursor(void);
-
-//muestra el cursor de texto
-void showcursor(void);
-
-//habilita la nueva línea automática al imprimir más allá del fin de la línea
-void enablewrap(void);
-
-//deshabilita la nueva línea automática al imprimir más allá del fin de la línea
-void disablewrap(void);
-
-//obtiene el tamaño de la terminal
-void getterminalsize(int *w, int *h);
-
-//devuelve una tecla pulsada con sus modificadores
-unsigned int getKey(void);
+	// Establece el color de fondo.
+	// El valor -1 establece el color predeterminado de la terminal.
+	void SetBgColor(int8 clr);
+	
+	// Establece los 16 colores de la paleta.
+	void SetPal(byte *pal);
+	
+	// Devuelve si hay datos disponibles en stdin.
+	byte KbHit(void);
+	
+	// Lee un carácter de stdin (0..255).
+	// Devuelve -1 si hubo un error al leer.
+	int GetChr(void);
+	
+	// Devuelve una tecla pulsada con sus modificadores.
+	dword GetKey(void);
+	
+private:
+	char termBuffer[TERMBUFSZ]; //búfer temporal para enviar datos a stdout en bloques
+	int termBufferCount;
+	byte textAttr; //últimos atributos de caracteres seleccionados
+	int32 textFG; //último color de primer plano seleccionado
+	int32 textBG; //último color de fondo seleccionado
+	struct termios savedTtyState; //estado de stdin salvado
+};
 
 #endif // TERM_HPP_

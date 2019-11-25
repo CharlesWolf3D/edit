@@ -7,21 +7,19 @@
 ////dibujar controles
 ////eventos de controles
 
-int wndW, wndH;
-
 //mostrar título
-char wndShowTitle = SHOWTITLE_NAME;
+byte wndShowTitle = SHOWTITLE_NAME;
 //mostrar barra de búsqueda
-char wndShowSearchBar = SHOWSEARCHBAR_ACTIVE;
+byte wndShowSearchBar = SHOWSEARCHBAR_ACTIVE;
 //mostrar barra de pestañas
-char wndShowTabs = SHOWTABS_ACTIVE;
+byte wndShowTabs = SHOWTABS_ACTIVE;
 //mostrar barra de estado
-char wndShowStatus = SHOWSTATUS_ACTIVE;
+byte wndShowStatus = SHOWSTATUS_ACTIVE;
 //ubicación de la posición
-char wndPosLocation = POSLOCATION_LSTATUS;
+byte wndPosLocation = POSLOCATION_LSTATUS;
 
 //colores de los elementos
-unsigned char colors[] =
+byte colors[] =
 {
 	0x1a, //título
 	0x70, //barra de menús
@@ -96,7 +94,7 @@ const char *gchars[] =
 
 //nombres de las teclas modificadoras
 const char *modkeynames[HK_KEY_NUMMODS] = {"Ctrl", "Alt", "Mayús"};
-//nombres de las teclas de acceso rápido (((HK_* >> 16) & 0xff) - 1)
+//nombres de las teclas de acceso rápido (HK_GETC(x) - 1)
 const char *keynames[HK_KEY_NUMKEYS] =
 {
 	"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
@@ -104,33 +102,6 @@ const char *keynames[HK_KEY_NUMKEYS] =
 	"Arriba", "Abajo", "Izquierda", "Derecha",
 	"Intro", "Retroceso", "Tab", "Escape"
 };
-
-//inicializa la ventana del editor
-void wndInit(void)
-{
-	startText();
-	setpal(pal16);
-	clear();
-	refresh();
-	getterminalsize(&wndW, &wndH);
-}
-
-//termina la ventana del editor
-void wndEnd(void)
-{
-	setpal(pal16_linux);
-	resetcolor();
-	clear();
-	endText();
-}
-
-//celda de carácter de la terminal
-//sólo admite caracteres compuestos por un punto de código
-typedef struct
-{
-	unsigned int chr;  //punto de código en UTF-32
-	unsigned char clr; //color (b0..3=carácter, b4..7=fondo)
-} cell_t;
 
 //convierte un punto de código UTF-32 en una cadena UTF-8
 //dest=cadena donde se escribirá el punto de código UTF-8
@@ -404,11 +375,69 @@ menudef_t menudefs_test[] = ////
 	{NULL,                                          HK_NONE, 0,             MNFL_NORM, NULL}
 };
 
-int test_scroll=0;////
+// Inicializa el entorno de texto.
+// Devuelve 0 si se pudo, 1 si no hay memoria suficiente.
+byte TTui::Start(void)
+{
+	cell_t *temp;
+	term.Start();
+	term.Clear();
+	term.Refresh();
+	term.GetSize(&wndW, &wndH);
+	temp = (cell_t *)malloc(wndW * wndH * sizeof(cell_t) * 2);
+	if(temp == NULL)
+	{
+		term.End();
+		return(1);
+	}
+	screenBuffer1 = temp;
+	screenBuffer2 = temp + wndW * wndH;
+	return(0);
+}
 
-//redibuja la ventana del programa
-//las dimensiones vienen dadas por wndW y wndH
-void wndRedraw(void)
+// Cierra el entorno de texto.
+void TTui::End(void)
+{
+	term.SetFgColor(-1);
+	term.SetBgColor(-1);
+	term.Clear();
+	term.End();
+	if(screenBuffer1 != NULL)
+	{
+		free(screenBuffer1);
+		screenBuffer1 = NULL;
+		screenBuffer2 = NULL;
+	}
+}
+
+int redraw = 0;////
+// Redibuja el entorno de texto si es necesario. También comprueba si hay que redimensionar.
+void TTui::Update(void)
+{
+	int wndW_new, wndH_new;
+	cell_t *temp;
+	term.GetSize(&wndW_new, &wndH_new);
+	if(wndW_new != wndW || wndH_new != wndH)
+	{
+		temp = (cell_t *)realloc(screenBuffer1, wndW_new * wndH_new * sizeof(cell_t) * 2);
+		if(temp != NULL)
+		{
+			wndW = wndW_new;
+			wndH = wndH_new;
+			screenBuffer1 = temp;
+			screenBuffer2 = temp + wndW * wndH;
+			redraw = 1;
+		}
+	}
+	if(redraw)
+	{
+		redraw = 0;
+		TEST_REDRAW();////
+	}
+}
+
+int test_scroll=0;////
+void TTui::TEST_REDRAW(void)
 {
 	int titleX = 0;
 	int titleY = 0;
@@ -442,9 +471,7 @@ void wndRedraw(void)
 	
 	char str[8];
 	cell_t *buffer;
-	buffer = (cell_t *)malloc(wndW * wndH * sizeof(cell_t));
-	if(buffer == NULL)
-		return;
+	buffer = screenBuffer1;
 	
 	//barra de título
 	if(wndShowTitle != SHOWTITLE_NONE)
@@ -590,18 +617,18 @@ void wndRedraw(void)
 	int index = 0;
 	for(int j = 0; j < wndH; j++)
 	{
-		gotoxy(0, j);
+		term.GotoXY(0, j);
 		for(int i = 0; i < wndW; i++)
 		{
-			setcolor(buffer[index].clr);
+			term.SetFgColor(buffer[index].clr);
+			term.SetBgColor(buffer[index].clr>>4);
 			UTF32_UTF8(str, buffer[index].chr);
 			if(str[0] == 0)
-				tputs(" ");
+				term.Print(" ");
 			else
-				tputs(str);
+				term.Print(str);
 			index++;
 		}
 	}
-	free(buffer);
-	refresh();
+	term.Refresh();
 }

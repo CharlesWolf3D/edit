@@ -92,25 +92,24 @@ extern const char *modkeynames[HK_KEY_NUMMODS]; //nombres de las teclas modifica
 #define HK_KEY_NUMKEYS 26
 extern const char *keynames[HK_KEY_NUMKEYS]; //nombres de las teclas de acceso rápido (((HK_* >> 16) & 0xff) - 1)
 
-extern int wndW, wndH; //dimensiones de la ventana
 
 //mostrar título
 #define SHOWTITLE_NONE       0 //no mostrar
 #define SHOWTITLE_NAME       1 //nombre
 #define SHOWTITLE_FULL       2 //ruta y nombre
-extern char wndShowTitle;
+extern byte wndShowTitle;
 //mostrar barra de búsqueda
 #define SHOWSEARCHBAR_NONE   0 //no mostrar
 #define SHOWSEARCHBAR_ACTIVE 1 //mostrar
-extern char wndShowSearchBar;
+extern byte wndShowSearchBar;
 //mostrar barra de pestañas
 #define SHOWTABS_NONE        0 //no mostrar
 #define SHOWTABS_ACTIVE      1 //mostrar
-extern char wndShowTabs;
+extern byte wndShowTabs;
 //mostrar barra de estado
 #define SHOWSTATUS_NONE      0 //no mostrar
 #define SHOWSTATUS_ACTIVE    1 //mostrar
-extern char wndShowStatus;
+extern byte wndShowStatus;
 //ubicación de la posición
 #define POSLOCATION_NONE     0 //no mostrar
 #define POSLOCATION_EDIT     1 //barra de desplazamiento del editor
@@ -119,16 +118,35 @@ extern char wndShowStatus;
 #define POSLOCATION_LTITLE   4 //barra de título, izquierda
 #define POSLOCATION_RTITLE   5 //barra de título, derecha
 #define POSLOCATION_MENU     6 //barra de menú
-extern char wndPosLocation;
+extern byte wndPosLocation;
 
-//inicializa la ventana del editor
-void wndInit(void);
+// Celda de carácter de la terminal.
+// Sólo admite caracteres compuestos por un punto de código.
+typedef struct
+{
+	unsigned int chr;  // Punto de código en UTF-32
+	unsigned char clr; // Color (b0..3=carácter, b4..7=fondo)
+} cell_t;
 
-//termina la ventana del editor
-void wndEnd(void);
-
-//redibuja la ventana del programa
-//las dimensiones vienen dadas por wndW y wndH
-void wndRedraw(void);
+class TTui
+{
+public:
+	int wndW, wndH; // Dimensiones de la terminal
+	TAnsiTerminal term;
+	
+	// Inicializa el entorno de texto.
+	// Devuelve 0 si se pudo, 1 si no hay memoria suficiente.
+	byte Start(void);
+	
+	// Cierra el entorno de texto.
+	void End(void);
+	
+	// Redibuja el entorno de texto si es necesario. También comprueba si hay que redimensionar.
+	void Update(void);
+	
+	void TEST_REDRAW(void);
+private:
+	cell_t *screenBuffer1, *screenBuffer2; // Búferes de pantalla
+};
 
 #endif // TUI_HPP_

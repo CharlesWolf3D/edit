@@ -4,9 +4,11 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 
+#include "types.hpp"
 #include "term.hpp"
 
-unsigned char pal16[48] =
+// Paleta estándar
+static byte pal16[48] =
 {
 	  0,   0,   0,
 	  0,   0, 160,
@@ -26,7 +28,8 @@ unsigned char pal16[48] =
 	255, 255, 255
 };
 
-unsigned char pal16_linux[48] =
+// Paleta de Linux
+static byte pal16_linux[48] =
 {
 	 46,  52,  54,
 	 52, 101, 164,
@@ -46,173 +49,17 @@ unsigned char pal16_linux[48] =
 	238, 238, 236
 };
 
-//números de color que enviar mediante comandos ANSI
-static unsigned char subst[16] =  { 0,  4,  2,  6,  1,  5,  3,  7,  8, 12, 10, 14,  9, 13, 11, 15};
-
-static unsigned char textAttr = ATTR_NONE; //últimos atributos de caracteres seleccionados
-static int textFG = -1; //último color de primer plano seleccionado
-static int textBG = -1; //último color de fondo seleccionado
-
-//búfer temporal para enviar datos a stdout en bloques
-#define TERMBUFSZ 8192
-char termBuffer[TERMBUFSZ];
-int termBufferCount = 0;
-
-static struct termios savedTtyState; //estado de stdin salvado
-
-//escribe una cadena en la terminal
-//la almacena en un búfer y sólo escribe en el dispositivo cuando éste se llena
-//o se llama a refresh()
-void tputs(const char *str)
-{
-	while(*str)
-	{
-		if(termBufferCount == TERMBUFSZ)
-		{
-			termBufferCount = 0;
-			write(STDOUT_FILENO, termBuffer, TERMBUFSZ);
-		}
-		termBuffer[termBufferCount++] = *str;
-		str++;
-	}
-}
-
-//escribe en la terminal la parte del búfer que todavía no ha sido escrita
-void refresh(void)
-{
-	if(termBufferCount)
-	{
-		write(STDOUT_FILENO, termBuffer, termBufferCount);
-		termBufferCount = 0;
-	}
-}
-
-//establece los atributos de los caracteres que se van a escribir
-void setattr(unsigned char attr)
-{
-	unsigned char change;
-	change = attr ^ textAttr;
-	if(!change)
-		return;
-	if(change & ATTR_BOLD)
-		tputs(attr & ATTR_BOLD ?      "\x1b[1m" : "\x1b[22m");
-	if(change & ATTR_ITALIC)
-		tputs(attr & ATTR_ITALIC ?    "\x1b[3m" : "\x1b[23m");
-	if(change & ATTR_UNDERLINE)
-		tputs(attr & ATTR_UNDERLINE ? "\x1b[4m" : "\x1b[24m");
-	if(change & ATTR_STRIKE)
-		tputs(attr & ATTR_STRIKE ?    "\x1b[9m" : "\x1b[29m");
-	textAttr = attr;
-}
-
+// Convierte un número entero en una cadena en base hexadecimal, utilizando siempre 2 dígitos.
 static char hexdigits [16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-//convierte un número entero en una cadena en base hexadecimal, utilizando
-//siempre 2 dígitos
-void int2hex2(int x, char *str)
+static void int2hex2(byte x, char *str)
 {
 	str[0] = hexdigits[(x >> 4) & 0xf];
 	str[1] = hexdigits[(x) & 0xf];
 	str[2] = 0;
 }
 
-//establece los 16 colores de la paleta
-void setpal(unsigned char *pal)
-{
-	char num[8];
-	unsigned char idx;
-	tputs("\x1b]4");
-	for(int i = 0; i < 16; i++)
-	{
-		idx = subst[i] * 3;
-		tputs(";");
-		int2str(i, num); tputs(num);
-		tputs(";rgb:");
-		int2hex2(pal[idx],     num); tputs(num); tputs("/");
-		int2hex2(pal[idx + 1], num); tputs(num); tputs("/");
-		int2hex2(pal[idx + 2], num); tputs(num);
-	}
-	tputs("\x1b\\");
-}
-
-//inicia el sistema de terminal
-void startText(void)
-{
-	struct termios ttystate;
-	//configurar stdin
-	tcgetattr(STDIN_FILENO, &ttystate);      //obtener atributos de stdin
-	tcgetattr(STDIN_FILENO, &savedTtyState); //
-	ttystate.c_lflag &= ~ICANON; //no esperar a nueva línea para recibir caracteres
-	ttystate.c_lflag &= ~ISIG;   //no generar señales de INTR/QUIT/SUSP/DSUSP (comentar esta línea en debug para poder salir con Ctrl+C)
-	ttystate.c_lflag &= ~IEXTEN; //no tratar de forma especial Ctrl+V
-	ttystate.c_lflag &= ~ECHO;   //no imprimir los caracteres entrantes
-	ttystate.c_iflag &= ~IXON;   //no tratar de forma especial Ctrl+S y Ctrl+Q
-	ttystate.c_iflag &= ~ICRNL;  //no transformar 13 en 10 para entrada
-	ttystate.c_oflag &= ~OPOST;  //no transformar "\n" en "\n\r" para salida
-	ttystate.c_cc[VMIN] = 1;     //recibir caracteres inmediatamente
-	tcsetattr(STDIN_FILENO, TCSANOW, &ttystate); //enviar atributos de stdin
-	//inicializar variables
-	termBufferCount = 0;
-	textAttr = ATTR_NONE;
-	textFG = textBG = -1;
-	//enviar comandos a la terminal
-	tputs
-	(
-	"\x1b[?7l"         //disablewrap
-	"\x1b[0m"          //setattr(ATTR_NONE)
-	"\x1b[39m\x1b[49m" //resetcolor
-	"\x1b[?25l"        //hidecursor
-	"\x1b%G"           //codificación en UTF-8
-	"\x1b F"           //códigos C1 de 7 bits
-	"\x1b[?1003h"      //habilitar eventos de ratón (todos)
-	"\x1b[?1007h"      //habilitar rueda del ratón
-	);
-	refresh();
-}
-
-//cierra el sistema de terminal
-void endText(void)
-{
-	setpal(pal16_linux);
-	//enviar comandos a la terminal
-	tputs
-	(
-	"\x1b[?1007l"      //deshabilitar rueda del ratón
-	"\x1b[?1003l"      //deshabilitar eventos de ratón (todos)
-	"\x1b[?7h"         //enablewrap
-	"\x1b[0m"          //setattr(ATTR_NONE)
-	"\x1b[39m\x1b[49m" //resetcolor
-	"\x1b[?25h"        //showcursor
-	);
-	refresh();
-	//restaurar atributos de stdin salvados
-	tcsetattr(STDIN_FILENO, TCSANOW, &savedTtyState);
-}
-
-//devuelve si hay datos disponibles en stdin
-int kbhit(void)
-{
-	struct timeval tv;
-	fd_set fds;
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
-	FD_ZERO(&fds);
-	FD_SET(STDIN_FILENO, &fds);
-	select(STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
-	return(FD_ISSET(STDIN_FILENO, &fds));
-}
-
-//lee un carácter de stdin (0..255)
-//devuelve -1 si hubo un error al leer
-int getchr(void)
-{
-	unsigned char ch;
-	if(read(STDIN_FILENO, &ch, 1) != 1)
-		return(-1);
-	return(ch);
-}
-
-//convierte un número entero en una cadena en base decimal
-void int2str(int x, char *str)
+// Convierte un número entero en una cadena en base decimal.
+static void int2str(int x, char *str)
 {
 	char buf[10];
 	unsigned char i = 0;
@@ -238,124 +85,110 @@ void int2str(int x, char *str)
 	*str = 0;
 }
 
-//borra la pantalla y pone el cursor en 0,0
-void clear(void)
-{
-	tputs("\x1b[2J\x1b[1;1H");
-}
+// Números de color que enviar mediante comandos ANSI.
+static unsigned char subst[16] =  { 0,  4,  2,  6,  1,  5,  3,  7,  8, 12, 10, 14,  9, 13, 11, 15};
 
-//pone el cursor en x,y
-void gotoxy(int x, int y)
+// Inicia el sistema de terminal.
+void TAnsiTerminal::Start(void)
 {
-	char num[8];
-	tputs("\x1b[");
-	int2str(y + 1, num);
-	tputs(num);
-	tputs(";");
-	int2str(x + 1, num);
-	tputs(num);
-	tputs("H");
-}
-
-//establece el color de primer plano
-void setfg(int clr)
-{
-	char num[8];
-	if(clr == textFG)
-		return;
-	if(clr == -1)
-	{
-		textFG = -1;
-		tputs("\x1b[39m");
-		return;
-	}
-	textFG = clr & 0xf;
-	tputs("\x1b[38;5;");
-	int2str(subst[textFG], num);
-	tputs(num);
-	tputs("m");
-}
-
-//establece el color de fondo
-void setbg(int clr)
-{
-	char num[8];
-	if(clr == textBG)
-		return;
-	if(clr == -1)
-	{
-		textBG = -1;
-		tputs("\x1b[49m");
-		return;
-	}
-	textBG = clr & 0xf;
-	tputs("\x1b[48;5;");
-	int2str(subst[textBG], num);
-	tputs(num);
-	tputs("m");
-}
-
-//establece los colores de primer plano y fondo (dos parámetros)
-void setfb(int f, int b)
-{
-	setfg(f);
-	setbg(b);
-}
-
-//establece los colores de primer plano y fondo (un parámetro con los colores combinados, no permite poner color predeterminado)
-void setcolor(int clr)
-{
-	setfg(clr);
-	setbg(clr >> 4);
-}
-
-//selecciona el color de primer plano predeterminado
-void resetfg(void)
-{
-	tputs("\x1b[39m");
-	textFG = -1;
-}
-
-//selecciona el color de fondo predeterminado
-void resetbg(void)
-{
-	tputs("\x1b[49m");
-	textBG = -1;
-}
-
-//selecciona los colores de primer plano y fondo predeterminados
-void resetcolor(void)
-{
-	tputs("\x1b[39m\x1b[49m");
+	struct termios ttystate;
+	//configurar stdin
+	tcgetattr(STDIN_FILENO, &ttystate);      //obtener atributos de stdin
+	tcgetattr(STDIN_FILENO, &savedTtyState); //
+	ttystate.c_lflag &= ~ICANON; //no esperar a nueva línea para recibir caracteres
+	ttystate.c_lflag &= ~ISIG;   //no generar señales de INTR/QUIT/SUSP/DSUSP (comentar esta línea en debug para poder salir con Ctrl+C)
+	ttystate.c_lflag &= ~IEXTEN; //no tratar de forma especial Ctrl+V
+	ttystate.c_lflag &= ~ECHO;   //no imprimir los caracteres entrantes
+	ttystate.c_iflag &= ~IXON;   //no tratar de forma especial Ctrl+S y Ctrl+Q
+	ttystate.c_iflag &= ~ICRNL;  //no transformar 13 en 10 para entrada
+	ttystate.c_oflag &= ~OPOST;  //no transformar "\n" en "\n\r" para salida
+	ttystate.c_cc[VMIN] = 1;     //recibir caracteres inmediatamente
+	tcsetattr(STDIN_FILENO, TCSANOW, &ttystate); //enviar atributos de stdin
+	//inicializar variables
+	termBufferCount = 0;
+	textAttr = ATTR_NONE;
 	textFG = textBG = -1;
+	//enviar comandos a la terminal
+	Print
+	(
+	"\x1b[?7l"         //disablewrap
+	"\x1b[0m"          //setattr(ATTR_NONE)
+	"\x1b[39m\x1b[49m" //resetcolor
+	"\x1b[?25l"        //hidecursor
+	"\x1b%G"           //codificación en UTF-8
+	"\x1b F"           //códigos C1 de 7 bits
+	"\x1b[?1003h"      //habilitar eventos de ratón (todos)
+	"\x1b[?1007h"      //habilitar rueda del ratón
+	);
+	Refresh();
 }
 
-//oculta el cursor de texto
-void hidecursor(void)
+// Cierra el sistema de terminal.
+void TAnsiTerminal::End(void)
 {
-	tputs("\x1b[?25l");
+	SetPal(pal16_linux);
+	//enviar comandos a la terminal
+	Print
+	(
+	"\x1b[?1007l"      //deshabilitar rueda del ratón
+	"\x1b[?1003l"      //deshabilitar eventos de ratón (todos)
+	"\x1b[?7h"         //enablewrap
+	"\x1b[0m"          //setattr(ATTR_NONE)
+	"\x1b[39m\x1b[49m" //resetcolor
+	"\x1b[?25h"        //showcursor
+	);
+	Refresh();
+	//restaurar atributos de stdin salvados
+	tcsetattr(STDIN_FILENO, TCSANOW, &savedTtyState);
 }
 
-//muestra el cursor de texto
-void showcursor(void)
+// Escribe una cadena (texto o comandos) en la terminal.
+// La almacena en un búfer y sólo escribe en el dispositivo cuando éste se llena o se llama a Refresh().
+void TAnsiTerminal::Print(const char *str)
 {
-	tputs("\x1b[?25h");
+	while(*str)
+	{
+		if(termBufferCount == TERMBUFSZ)
+		{
+			termBufferCount = 0;
+			write(STDOUT_FILENO, termBuffer, TERMBUFSZ);
+		}
+		termBuffer[termBufferCount++] = *str;
+		str++;
+	}
 }
 
-//habilita la nueva línea automática al imprimir más allá del fin de la línea
-void enablewrap(void)
+// Escribe en la terminal la parte del búfer que todavía no ha sido escrita.
+void TAnsiTerminal::Refresh(void)
 {
-	tputs("\x1b[?7h");
+	if(termBufferCount)
+	{
+		write(STDOUT_FILENO, termBuffer, termBufferCount);
+		termBufferCount = 0;
+	}
 }
 
-//deshabilita la nueva línea automática al imprimir más allá del fin de la línea
-void disablewrap(void)
+// Borra la pantalla y pone el cursor en 0,0.
+void TAnsiTerminal::Clear(void)
 {
-	tputs("\x1b[?7l");
+	Print("\x1b[2J\x1b[1;1H");
 }
 
-//obtiene el tamaño de la terminal
-void getterminalsize(int *w, int *h)
+// Pone el cursor en x,y.
+void TAnsiTerminal::GotoXY(int32 x, int32 y)
+{
+	char num[8];
+	Print("\x1b[");
+	int2str(y + 1, num);
+	Print(num);
+	Print(";");
+	int2str(x + 1, num);
+	Print(num);
+	Print("H");
+}
+
+// Obtiene el tamaño de la terminal
+void TAnsiTerminal::GetSize(int32 *w, int32 *h)
 {
 	struct winsize windowsz;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowsz);
@@ -365,37 +198,149 @@ void getterminalsize(int *w, int *h)
 		*h = windowsz.ws_row;
 }
 
-//devuelve una tecla pulsada con sus modificadores
-unsigned int getKey(void)
+// Muestra u oculta el cursor de texto.
+void TAnsiTerminal::ShowCursor(byte show)
+{
+	Print(show ? "\x1b[?25h" : "\x1b[?25l");
+}
+
+// Habilita o deshabilita la nueva línea automática al imprimir más allá del fin de la línea.
+void TAnsiTerminal::EnableWrap(byte enable)
+{
+	Print(enable ? "\x1b[?7h" : "\x1b[?7l");
+}
+
+// Establece los atributos de los caracteres que se van a escribir.
+void TAnsiTerminal::SetAttr(byte attr)
+{
+	byte change;
+	change = attr ^ textAttr;
+	if(!change)
+		return;
+	if(change & ATTR_BOLD)
+		Print(attr & ATTR_BOLD ?      "\x1b[1m" : "\x1b[22m");
+	if(change & ATTR_ITALIC)
+		Print(attr & ATTR_ITALIC ?    "\x1b[3m" : "\x1b[23m");
+	if(change & ATTR_UNDERLINE)
+		Print(attr & ATTR_UNDERLINE ? "\x1b[4m" : "\x1b[24m");
+	if(change & ATTR_STRIKE)
+		Print(attr & ATTR_STRIKE ?    "\x1b[9m" : "\x1b[29m");
+	textAttr = attr;
+}
+
+// Establece el color de primer plano.
+// El valor -1 establece el color predeterminado de la terminal.
+void TAnsiTerminal::SetFgColor(int8 clr)
+{
+	char num[8];
+	if(clr == textFG)
+		return;
+	if(clr == -1)
+	{
+		textFG = -1;
+		Print("\x1b[39m");
+		return;
+	}
+	textFG = clr & 0xf;
+	Print("\x1b[38;5;");
+	int2str(subst[textFG], num);
+	Print(num);
+	Print("m");
+}
+
+// Establece el color de fondo.
+// El valor -1 establece el color predeterminado de la terminal.
+void TAnsiTerminal::SetBgColor(int8 clr)
+{
+	char num[8];
+	if(clr == textBG)
+		return;
+	if(clr == -1)
+	{
+		textBG = -1;
+		Print("\x1b[49m");
+		return;
+	}
+	textBG = clr & 0xf;
+	Print("\x1b[48;5;");
+	int2str(subst[textBG], num);
+	Print(num);
+	Print("m");
+}
+
+// Establece los 16 colores de la paleta.
+void TAnsiTerminal::SetPal(byte *pal)
+{
+	char num[8];
+	byte idx;
+	Print("\x1b]4");
+	for(int i = 0; i < 16; i++)
+	{
+		idx = subst[i] * 3;
+		Print(";");
+		int2str(i, num); Print(num);
+		Print(";rgb:");
+		int2hex2(pal[idx],     num); Print(num); Print("/");
+		int2hex2(pal[idx + 1], num); Print(num); Print("/");
+		int2hex2(pal[idx + 2], num); Print(num);
+	}
+	Print("\x1b\\");
+}
+
+// Devuelve si hay datos disponibles en stdin.
+byte TAnsiTerminal::KbHit(void)
+{
+	struct timeval tv;
+	fd_set fds;
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	FD_ZERO(&fds);
+	FD_SET(STDIN_FILENO, &fds);
+	select(STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
+	return(FD_ISSET(STDIN_FILENO, &fds));
+}
+
+// Lee un carácter de stdin (0..255).
+// Devuelve -1 si hubo un error al leer.
+int TAnsiTerminal::GetChr(void)
+{
+	byte ch;
+	if(read(STDIN_FILENO, &ch, 1) != 1)
+		return(-1);
+	return(ch);
+}
+
+// Devuelve una tecla pulsada con sus modificadores.
+dword TAnsiTerminal::GetKey(void)
 {
 	int ch;
 	unsigned int mod = HK_NONE, num = 0, num2 = 0, num3;
 	int use_num = 0, use_num2 = 0;
-	ch = getchr();
+	ch = GetChr();
 	if(ch == 0x09)return(HK_TK | HK_TAB);                              //Tab (o Ctrl[+Mayús]+I)
 	if(ch == 0x0a)return(HK_TK | HK_C | HK_ENTER);                     //Ctrl+Intro (o Ctrl[+Mayús]+J)
 	if(ch == 0x0d)return(HK_TK | HK_ENTER);                            //Intro (o Ctrl[+Mayús]+M)
 	if(ch >= 0x01 && ch <= 0x1a)return(HK_TC | HK_C | (ch + 'A' - 1)); //Ctrl[+Mayús]+Letra, excluyendo I, J, y M
 	if(ch == 0x1b)
 	{
-		if(!kbhit())return(HK_TK | HK_ESC); //Esc (o Ctrl+3)
-		ch = getchr();
+		if(!KbHit())return(HK_TK | HK_ESC); //Esc (o Ctrl+3)
+		ch = GetChr();
 		if(ch == 0x1b)return(HK_TK | HK_ESC);                               //Esc
 		if(ch == 0x0a)return(HK_TK | HK_A | HK_ENTER);                      //[Ctrl+]Alt+[Mayús]Intro (o Ctrl+Alt[+Mayús]+J)
 		if(ch >= 0x01 && ch <= 0x1a)return(HK_TC | HK_CA | (ch + 'A' - 1)); //Ctrl+Alt[+Mayús]+Letra, excluyendo J
 		if(ch == 0x1f)return(HK_TC | HK_CAS | '-');                         //Ctrl+Alt+Mayús+-
 		if(ch == '[')
 		{
-			if(!kbhit())return(HK_TC | HK_A | '['); //Alt+[
-			ch = getchr();
+			if(!KbHit())return(HK_TC | HK_A | '['); //Alt+[
+			ch = GetChr();
 			if(ch == 'M')
 			{
-				if(!kbhit())return(0);
-				num = getchr();
-				if(!kbhit())return(0);
-				num2 = getchr();
-				if(!kbhit())return(0);
-				num3 = getchr();
+				if(!KbHit())return(0);
+				num = GetChr();
+				if(!KbHit())return(0);
+				num2 = GetChr();
+				if(!KbHit())return(0);
+				num3 = GetChr();
 				num2 = (unsigned char)(num2 - 33);
 				num3 = (unsigned char)(num3 - 33);
 				if(num & 0x04)mod |= HK_S;
@@ -426,15 +371,15 @@ unsigned int getKey(void)
 				{
 					num *= 10;
 					num += ch - '0';
-					if(!kbhit())return(0);
-					ch = getchr();
+					if(!KbHit())return(0);
+					ch = GetChr();
 					if(ch < '0' || ch > '9')break;
 				}
 			}
 			if(ch == ';')
 			{
-				if(!kbhit())return(0);
-				ch = getchr();
+				if(!KbHit())return(0);
+				ch = GetChr();
 				if(ch >= '0' && ch <= '9')
 				{
 					use_num2 = 1;
@@ -443,8 +388,8 @@ unsigned int getKey(void)
 					{
 						num2 *= 10;
 						num2 += ch - '0';
-						if(!kbhit())return(0);
-						ch = getchr();
+						if(!KbHit())return(0);
+						ch = GetChr();
 						if(ch < '0' || ch > '9')break;
 					}
 				}
@@ -517,22 +462,22 @@ unsigned int getKey(void)
 		}
 		if(ch == 'O')
 		{
-			if(kbhit())
+			if(KbHit())
 			{
-				ch = getchr();
+				ch = GetChr();
 				if(ch == '1')
 				{
-					if(!kbhit())return(0);
-					if(getchr() != ';')return(0);
-					if(!kbhit())return(0);
-					ch = getchr();
+					if(!KbHit())return(0);
+					if(GetChr() != ';')return(0);
+					if(!KbHit())return(0);
+					ch = GetChr();
 					if(ch < '1')return(0);
 					ch = ch - '0' - 1;
 					if(ch & 0x01)mod |= HK_S; //mod Mayús
 					if(ch & 0x02)mod |= HK_A; //mod Alt
 					if(ch & 0x04)mod |= HK_C; //mod Ctrl
-					if(!kbhit())return(0);
-					ch = getchr();
+					if(!KbHit())return(0);
+					ch = GetChr();
 					switch(ch)
 					{
 					case 'F': return(HK_TK | mod | HK_END);  //mod+Fin

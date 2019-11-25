@@ -17,7 +17,7 @@ public:
 	// Constructor
 	TWindow(void);
 	// Constructor especificando contenedor
-	TWindow(TContainer *parent);
+	TWindow(TWindow *parent);
 	// Destructor
 	~TWindow(void);
 	////TODO: completar clase

@@ -272,89 +272,96 @@ Estado: Posición, bloques
 Posición: izquierda del titulo, derecha del titulo, derecha del menú, barra de desplazamiento, barra de estado (barra)
 
 */
-
+#include <stdio.h>
+extern int redraw;////
 int main(int argc, char *argv[])
 {
-	int oldw = -1, oldh = -1;
+	TTui tui;
 	int ch;
 	unsigned char chr;
 	int finish = 0;
 	int modo = 0;
-	int redraw = 0;
 	char str[64];
 	unsigned int key;
-	wndInit();
+	tui.Start();
 	while(!finish)
 	{
-		if(kbhit())
+		if(tui.term.KbHit())
 		{
 			const char *btns[4]={"Pulsar izq","Pulsar cent","Pulsar der","Soltar"};
 			switch(modo)
 			{
 			case 0:
-				ch = getchr();
+				ch = tui.term.GetChr();
 				switch(ch)
 				{
 				case 'q': finish = 1; break;
-				case 'w': clear(); refresh(); break;
+				case 'w': tui.term.Clear(); tui.term.Refresh(); break;
 				case 27:
-					clear(); refresh();
-					if(!kbhit())break; ch = getchr(); if(ch != '[')break;
-					if(!kbhit())break; ch = getchr(); if(ch != 'M')break;
+					tui.term.Clear(); tui.term.Refresh();
+					if(!tui.term.KbHit())break; ch = tui.term.GetChr(); if(ch != '[')break;
+					if(!tui.term.KbHit())break; ch = tui.term.GetChr(); if(ch != 'M')break;
 					int n1, n2, n3;
-					if(!kbhit())break; n1 = getchr();
-					if(!kbhit())break; n2 = getchr();
-					if(!kbhit())break; n3 = getchr();
-					tputs("X = "); int2str((unsigned char)(n2 - 33), str); tputs(str); tputs("\n\r");
-					tputs("Y = "); int2str((unsigned char)(n3 - 33), str); tputs(str); tputs("\n\r");
-					tputs("B = "); int2hex2(n1, str); tputs(str); tputs("\n\r");
+					if(!tui.term.KbHit())break; n1 = tui.term.GetChr();
+					if(!tui.term.KbHit())break; n2 = tui.term.GetChr();
+					if(!tui.term.KbHit())break; n3 = tui.term.GetChr();
+					
+					sprintf(str,"X = %i\n\rY = %i\n\rB = %02x\n\r",(unsigned char)(n2 - 33),(unsigned char)(n3 - 33),n1);
+					tui.term.Print(str);
+					/*
+					tui.term.Print("X = "); int2str((unsigned char)(n2 - 33), str); tui.term.Print(str); tui.term.Print("\n\r");
+					tui.term.Print("Y = "); int2str((unsigned char)(n3 - 33), str); tui.term.Print(str); tui.term.Print("\n\r");
+					tui.term.Print("B = "); int2hex2(n1, str); tui.term.Print(str); tui.term.Print("\n\r");
+					*/
 					if((n1 & 0x60) == 0x60)
-						tputs((n1 & 1) ? "Rueda abajo" : "Rueda arriba");
+						tui.term.Print((n1 & 1) ? "Rueda abajo" : "Rueda arriba");
 					else
-						tputs(btns[n1 & 3]);
-					if(n1 & 0x04)tputs(" [Mayús]");
-					if(n1 & 0x08)tputs(" [Alt]");
-					if(n1 & 0x10)tputs(" [Ctrl]");
-					tputs("\n\r");
-					refresh();
+						tui.term.Print(btns[n1 & 3]);
+					if(n1 & 0x04)tui.term.Print(" [Mayús]");
+					if(n1 & 0x08)tui.term.Print(" [Alt]");
+					if(n1 & 0x10)tui.term.Print(" [Ctrl]");
+					tui.term.Print("\n\r");
+					tui.term.Refresh();
 					break;
-				case ' ': tputs("Entrando en modo procesado.\n\r"); refresh(); modo = 1; break;
+				case ' ': tui.term.Print("Entrando en modo procesado.\n\r"); tui.term.Refresh(); modo = 1; break;
 				default:
-					clear();
-					int2hex2(ch,str);
-					tputs(str);
+					tui.term.Clear();
+					sprintf(str,"%02x",ch);
+					//int2hex2(ch,str);
+					tui.term.Print(str);
 					if(ch >= 32)
 					{
-						tputs(" (");
+						tui.term.Print(" (");
 						str[0] = ch; str[1] = 0;
-						tputs(str);
-						tputs(")");
+						tui.term.Print(str);
+						tui.term.Print(")");
 					}
-					tputs("\n\r");
+					tui.term.Print("\n\r");
 					
-					while(kbhit())
+					while(tui.term.KbHit())
 					{
-						ch = getchr();
-						int2hex2(ch,str);
-						tputs(str);
+						ch = tui.term.GetChr();
+						sprintf(str,"%02x",ch);
+						//int2hex2(ch,str);
+						tui.term.Print(str);
 						if(ch >= 32)
 						{
-							tputs(" (");
+							tui.term.Print(" (");
 							str[0] = ch; str[1] = 0;
-							tputs(str);
-							tputs(")");
+							tui.term.Print(str);
+							tui.term.Print(")");
 						}
-						tputs("\n\r");
+						tui.term.Print("\n\r");
 					}
-					refresh();
+					tui.term.Refresh();
 				}
 				break;
 			case 1:
-				key = getKey();
+				key = tui.term.GetKey();
 				chr = HK_GETC(key);
-				if(key & HK_C)tputs("Ctrl+");
-				if(key & HK_A)tputs("Alt+");
-				if(key & HK_S)tputs("Mayús+");
+				if(key & HK_C)tui.term.Print("Ctrl+");
+				if(key & HK_A)tui.term.Print("Alt+");
+				if(key & HK_S)tui.term.Print("Mayús+");
 				if(HK_TYPEC(key))
 				{
 					
@@ -362,20 +369,21 @@ int main(int argc, char *argv[])
 					if(chr >= 32 && chr <= 126)
 					{
 						if(chr == 32)
-							tputs("Espacio");
+							tui.term.Print("Espacio");
 						else
 						{
 							str[0] = chr;
 							str[1] = 0;
-							tputs(str);
+							tui.term.Print(str);
 						}
 					}
 					else
 					{
-						tputs("<");
-						int2str(chr, str);
-						tputs(str);
-						tputs(">");
+						tui.term.Print("<");
+						sprintf(str,"%i",chr);
+						//int2str(chr, str);
+						tui.term.Print(str);
+						tui.term.Print(">");
 					}
 					
 				}
@@ -385,28 +393,32 @@ int main(int argc, char *argv[])
 					if(chr)
 					{
 						chr--;
-						tputs(keynames[chr]);
+						tui.term.Print(keynames[chr]);
 					}
 				}
 				if(HK_TYPEM(key))
 				{
-					if(key & HK_M1)tputs("M1");
-					if(key & HK_M2)tputs("M2");
-					if(key & HK_M3)tputs("M3");
-					if(key & HK_WHUP)tputs("Rueda arriba");
-					if(key & HK_WHDN)tputs("Rueda abajo");
-					tputs(" X=");
-					int2str(HK_MX(key),str);tputs(str);
-					tputs(" Y=");
-					int2str(HK_MY(key),str);tputs(str);
+					if(key & HK_M1)tui.term.Print("M1");
+					if(key & HK_M2)tui.term.Print("M2");
+					if(key & HK_M3)tui.term.Print("M3");
+					if(key & HK_WHUP)tui.term.Print("Rueda arriba");
+					if(key & HK_WHDN)tui.term.Print("Rueda abajo");
+					sprintf(str," X=%i Y=%i",HK_MX(key),HK_MY(key));
+					tui.term.Print(str);
+					/*
+					tui.term.Print(" X=");
+					int2str(HK_MX(key),str);tui.term.Print(str);
+					tui.term.Print(" Y=");
+					int2str(HK_MY(key),str);tui.term.Print(str);
+					*/
 				}
-				tputs("\n\r");
-				refresh();
+				tui.term.Print("\n\r");
+				tui.term.Refresh();
 				break;
 			case 2:
-				key = getKey();
+				key = tui.term.GetKey();
 				if(HK_TYPEK(key) && HK_GET(key) == HK_ESC)finish = 1;
-				if(HK_TYPEC(key) && HK_GET(key) == ' '){resetcolor(); clear(); tputs("Entrando en modo sin procesar.\n\r"); refresh(); modo = 0;}
+				if(HK_TYPEC(key) && HK_GET(key) == ' '){tui.term.SetFgColor(-1); tui.term.SetBgColor(-1); tui.term.Clear(); tui.term.Print("Entrando en modo sin procesar.\n\r"); tui.term.Refresh(); modo = 0;}
 				if(HK_TYPEM(key)){if(HK_GETC(key)==HK_WHUP){test_scroll--;redraw=1;}if(HK_GETC(key)==HK_WHDN){test_scroll++;redraw=1;}}
 				break;
 			}
@@ -415,6 +427,8 @@ int main(int argc, char *argv[])
 			usleep(20 * 1000); //20=>50Hz, 16=>60Hz
 		if(modo == 2)
 		{
+			tui.Update();
+			/*
 			getterminalsize(&wndW, &wndH);
 			if(oldw != wndW || oldh != wndH || redraw)
 			{
@@ -423,9 +437,14 @@ int main(int argc, char *argv[])
 				redraw = 0;
 				wndRedraw();
 			}
+			*/
 		}
+		////
+		//tuiRefresh();
+		
+		////
 	}
-	wndEnd();
+	tui.End();
 	return(0);
 }
 
