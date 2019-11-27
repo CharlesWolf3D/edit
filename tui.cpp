@@ -21,36 +21,36 @@ byte wndPosLocation = POSLOCATION_LSTATUS;
 //colores de los elementos
 byte colors[] =
 {
-	0x1a, //título
-	0x70, //barra de menús
-	0x20, //barra de menús, seleccionado
-	0x74, //barra de menús, tecla
-	0x24, //barra de menús, tecla, seleccionado
-	0x78, //barra de menús, deshabilitado
-	0x28, //barra de menús, deshabilitado, seleccionado
-	0x70, //menú
-	0x1f, //menú, seleccionado
-	0x71, //menú, tecla
-	0x1b, //menú, tecla, seleccionado
-	0x78, //menú, deshabilitado
-	0x18, //menú, deshabilitado, seleccionado
-	0x70, //barra de búsqueda
-	0xf0, //barra de búsqueda, texto
-	0xf4, //barra de búsqueda, borrar
-	0x3b, //barra de búsqueda, botón
-	0x80, //barra de pestañas
-	0xb0, //barra de pestañas, pestaña activa
-	0x70, //barra de pestañas, pestaña inactiva
-	0xcf, //barra de pestañas, botón cerrar
-	0xf1, //barra de pestañas, flecha habilitada
-	0x78, //barra de pestañas, flecha deshabilitada
-	0x17, //editor, texto
-	0x71, //editor, texto seleccionado
-	0x1a, //editor, borde
-	0x07, //editor, barra, flecha
-	0x17, //editor, barra, espacio
-	0x07, //editor, barra, control
-	0x3f  //barra de estado
+	0x0a, 0x01, //título
+	0x00, 0x07, //barra de menús
+	0x00, 0x02, //barra de menús, seleccionado
+	0x04, 0x07, //barra de menús, tecla
+	0x04, 0x02, //barra de menús, tecla, seleccionado
+	0x08, 0x07, //barra de menús, deshabilitado
+	0x08, 0x02, //barra de menús, deshabilitado, seleccionado
+	0x00, 0x07, //menú
+	0x0f, 0x01, //menú, seleccionado
+	0x01, 0x07, //menú, tecla
+	0x0b, 0x01, //menú, tecla, seleccionado
+	0x08, 0x07, //menú, deshabilitado
+	0x08, 0x01, //menú, deshabilitado, seleccionado
+	0x00, 0x07, //barra de búsqueda
+	0x00, 0x0f, //barra de búsqueda, texto
+	0x04, 0x0f, //barra de búsqueda, borrar
+	0x0b, 0x03, //barra de búsqueda, botón
+	0x00, 0x08, //barra de pestañas
+	0x00, 0x0b, //barra de pestañas, pestaña activa
+	0x00, 0x07, //barra de pestañas, pestaña inactiva
+	0x0f, 0x0c, //barra de pestañas, botón cerrar
+	0x01, 0x0f, //barra de pestañas, flecha habilitada
+	0x08, 0x07, //barra de pestañas, flecha deshabilitada
+	0x07, 0x01, //editor, texto
+	0x01, 0x07, //editor, texto seleccionado
+	0x0a, 0x01, //editor, borde
+	0x07, 0x00, //editor, barra, flecha
+	0x07, 0x01, //editor, barra, espacio
+	0x07, 0x00, //editor, barra, control
+	0x0f, 0x03  //barra de estado
 };
 
 //caracteres gráficos
@@ -226,8 +226,9 @@ int strlen_cp(const char *str)
 //w=ancho del búfer
 //h=alto del búfer
 //str=puntero a la cadena
-//clr=color del texto
-void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, unsigned char clr)
+//fg=color de primer plano
+//bg=color de fondo
+void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte fg, byte bg)
 {
 	unsigned int code;
 	int offset;
@@ -246,8 +247,9 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, unsi
 			return;
 		code = UTF8_UTF32(str, &offset);
 		str += offset;
+		buffer->fg = fg;
+		buffer->bg = bg;
 		buffer->chr = code;
-		buffer->clr = clr;
 		buffer++;
 		x++;
 	}
@@ -263,21 +265,25 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, unsi
 //textClr=color del texto
 //keyClr=color del carácter enfatizado
 //devuelve la longitud en puntos de código del texto sin el ampersand
-int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, unsigned char textClr, unsigned char keyClr)
+int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, byte textFG, byte textBG, byte keyFG, byte keyBG)
 {
 	unsigned int code;
 	int offset, len = 0;
-	unsigned char clr = textClr;
+	byte fg = textFG, bg = textBG;
 	while(x < 0 && *str)
 	{
 		if(UTF8_UTF32(str, &offset) != '&')
 		{
 			len++;
 			x++;
-			clr = textClr;
+			fg = textFG;
+			bg = textBG;
 		}
 		else
-			clr = keyClr;
+		{
+			fg = keyFG;
+			bg = keyBG;
+		}
 		str += offset;
 	}
 	buffer += x + y * w;
@@ -290,15 +296,20 @@ int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, unsigne
 			if((x < w) && (y >= 0) && (y < h))
 			{
 				buffer->chr = code;
-				buffer->clr = clr;
+				buffer->fg = fg;
+				buffer->bg = bg;
 				buffer++;
 				len++;
-				clr = textClr;
+				fg = textFG;
+				bg = textBG;
 			}
 			x++;
 		}
 		else
-			clr = keyClr;
+		{
+			fg = keyFG;
+			bg = keyBG;
+		}
 	}
 	return(len);
 }
@@ -484,13 +495,13 @@ void TTui::TEST_REDRAW(void)
 	{
 		titleH++;
 		for(int i = 0; i < titleW; i++)
-			cellPrint(buffer, i+titleX, titleY, wndW, wndH, " ", colors[CLR_TITLE]);
-		cellPrint(buffer, /*titleX + 1*/(titleW - (int)strlen_cp("Editor de texto")) / 2, titleY, wndW, wndH, "Editor de texto", colors[CLR_TITLE]);
+			cellPrint(buffer, i+titleX, titleY, wndW, wndH, " ", colors[CLRF_TITLE], colors[CLRB_TITLE]);
+		cellPrint(buffer, /*titleX + 1*/(titleW - (int)strlen_cp("Editor de texto")) / 2, titleY, wndW, wndH, "Editor de texto", colors[CLRF_TITLE], colors[CLRB_TITLE]);
 	}
 	menuY = titleY + titleH;
 	//barra de menús
 	for(int i = 0; i < menuW; i++)
-		cellPrint(buffer, menuX + i, menuY, wndW, wndH, " ", colors[CLR_MENUBAR]);
+		cellPrint(buffer, menuX + i, menuY, wndW, wndH, " ", colors[CLRF_MENUBAR], colors[CLRB_MENUBAR]);
 	int mnid = 0;
 	for(int i = 0; menudefs_test[i].caption; i++)
 	{
@@ -498,19 +509,23 @@ void TTui::TEST_REDRAW(void)
 			continue;
 		if(menudefs_test[i].caption[0] == '-' && menudefs_test[i].caption[1] == 0)
 		{
-			menuX += printmn(buffer, menuX, menuY, wndW, wndH, "|", colors[CLR_MENUBAR], colors[CLR_MENUBAR_KEY]);
+			menuX += printmn(buffer, menuX, menuY, wndW, wndH, "|", colors[CLRF_MENUBAR], colors[CLRB_MENUBAR], colors[CLRF_MENUBAR_KEY], colors[CLRB_MENUBAR_KEY]);
 			continue;
 		}
-		unsigned char c_a = CLR_MENUBAR;
-		unsigned char c_b = CLR_MENUBAR_KEY;
-		if(mnid==1){c_a++;c_b++;}
-		if(mnid==2){c_a+=4;c_b=c_a;}
-		if(mnid==3){c_a+=5;c_b=c_a;}
-		c_a = colors[c_a];
-		c_b = colors[c_b];
-		menuX += printmn(buffer, menuX, menuY, wndW, wndH, " ", c_a, c_b);
-		menuX += printmn(buffer, menuX, menuY, wndW, wndH, menudefs_test[i].caption, c_a, c_b);
-		menuX += printmn(buffer, menuX, menuY, wndW, wndH, " ", c_a, c_b);
+		unsigned char c_a_f = CLRF_MENUBAR;
+		unsigned char c_a_b = CLRB_MENUBAR;
+		unsigned char c_b_f = CLRF_MENUBAR_KEY;
+		unsigned char c_b_b = CLRB_MENUBAR_KEY;
+		if(mnid==1){c_a_f+=2;c_b_f+=2;c_a_b+=2;c_b_b+=2;}
+		if(mnid==2){c_a_f+=8;c_b_f=c_a_f;c_a_b+=8;c_b_b=c_a_b;}
+		if(mnid==3){c_a_f+=10;c_b_f=c_a_f;c_a_b+=10;c_b_b=c_a_b;}
+		c_a_f = colors[c_a_f];
+		c_b_f = colors[c_b_f];
+		c_a_b = colors[c_a_b];
+		c_b_b = colors[c_b_b];
+		menuX += printmn(buffer, menuX, menuY, wndW, wndH, " ", c_a_f, c_a_b, c_b_f, c_b_b);
+		menuX += printmn(buffer, menuX, menuY, wndW, wndH, menudefs_test[i].caption, c_a_f, c_a_b, c_b_f, c_b_b);
+		menuX += printmn(buffer, menuX, menuY, wndW, wndH, " ", c_a_f, c_a_b, c_b_f, c_b_b);
 		mnid++;
 	}
 	searchY = menuY + menuH;
@@ -520,33 +535,33 @@ void TTui::TEST_REDRAW(void)
 		searchH++;
 		//barra
 		for(int i = 0; i < searchW; i++)
-			cellPrint(buffer, searchX + i, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR]);
+			cellPrint(buffer, searchX + i, searchY, wndW, wndH, " ", colors[CLRF_SEARCHBAR], colors[CLRB_SEARCHBAR]);
 		int search_x = 1;
 		//caja de texto de búsqueda
 		for(int i = 0; i < 16; i++)
-			cellPrint(buffer, searchX + search_x + i, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+			cellPrint(buffer, searchX + search_x + i, searchY, wndW, wndH, " ", colors[CLRF_SEARCHBAR_TXT], colors[CLRB_SEARCHBAR_TXT]);
 		search_x += 16;
 		//botón borrar
-		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLRF_SEARCHBAR_DEL], colors[CLRB_SEARCHBAR_DEL]);
 		search_x += strlen_cp("<X ") + 1;
 		//botón buscar anterior
-		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " <B ", colors[CLR_SEARCHBAR_BTN]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " <B ", colors[CLRF_SEARCHBAR_BTN], colors[CLRB_SEARCHBAR_BTN]);
 		search_x += strlen_cp(" <B ") + 1;
 		//botón buscar siguiente
-		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " B> ", colors[CLR_SEARCHBAR_BTN]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " B> ", colors[CLRF_SEARCHBAR_BTN], colors[CLRB_SEARCHBAR_BTN]);
 		search_x += strlen_cp(" B> ") + 1;
 		//separador
-		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "|", colors[CLR_SEARCHBAR]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "|", colors[CLRF_SEARCHBAR], colors[CLRB_SEARCHBAR]);
 		search_x += strlen_cp("|") + 1;
 		//caja de texto de ir
 		for(int i = 0; i < 8; i++)
-			cellPrint(buffer, searchX + i + search_x, searchY, wndW, wndH, " ", colors[CLR_SEARCHBAR_TXT]);
+			cellPrint(buffer, searchX + i + search_x, searchY, wndW, wndH, " ", colors[CLRF_SEARCHBAR_TXT], colors[CLRB_SEARCHBAR_TXT]);
 		search_x += 8;
 		//botón borrar
-		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLR_SEARCHBAR_DEL]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLRF_SEARCHBAR_DEL], colors[CLRB_SEARCHBAR_DEL]);
 		search_x += strlen_cp("<X ") + 1;
 		//botón ir
-		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " Ir ", colors[CLR_SEARCHBAR_BTN]);
+		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " Ir ", colors[CLRF_SEARCHBAR_BTN], colors[CLRB_SEARCHBAR_BTN]);
 		search_x += strlen_cp(" Ir ") + 1;
 	}
 	tabY = searchY + searchH;
@@ -556,26 +571,26 @@ void TTui::TEST_REDRAW(void)
 		tabH++;
 		//barra
 		for(int i = 0; i < tabW; i++)
-			cellPrint(buffer, tabX + i, tabY, wndW, wndH, " ", colors[CLR_TABBAR]);
+			cellPrint(buffer, tabX + i, tabY, wndW, wndH, " ", colors[CLRF_TABBAR], colors[CLRB_TABBAR]);
 		int tab_x = 3;
 		//pestañas
 		for(int i = 0; i < 4; i++)
 		{
 			const char *list[]={" ArchivoUno.txt     ", " FicheroDos.c     ", " DocumentoTres.xml     ", " Edit.exe     "};
-			cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, list[i], colors[i==1?CLR_TABBAR_ACTIVE:CLR_TABBAR_INACTIVE]);
+			cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, list[i], colors[i==1?CLRF_TABBAR_ACTIVE:CLRF_TABBAR_INACTIVE], colors[i==1?CLRB_TABBAR_ACTIVE:CLRB_TABBAR_INACTIVE]);
 			tab_x += strlen_cp(list[i]);
-			cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLR_TABBAR_CLOSE]);
+			cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLRF_TABBAR_CLOSE], colors[CLRB_TABBAR_CLOSE]);
 			if(i != 3)
 			{
-				cellPrint(buffer, tabX + tab_x, tabY, wndW, wndH, "|", colors[CLR_TABBAR]);
+				cellPrint(buffer, tabX + tab_x, tabY, wndW, wndH, "|", colors[CLRF_TABBAR], colors[CLRB_TABBAR]);
 				tab_x += 1;
 			}
 		}
 		//flechas
-		cellPrint(buffer, tabX, tabY, wndW, wndH, "[ ]", colors[CLR_TABBAR_ARROW]);
-		cellPrint(buffer, tabX + 1, tabY, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLR_TABBAR_ARROW]);
-		cellPrint(buffer, tabX + tabW - 3, tabY, wndW, wndH, "[ ]", colors[CLR_TABBAR_ARROW_DIS]);
-		cellPrint(buffer, tabX + tabW - 2, tabY, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_TABBAR_ARROW_DIS]);
+		cellPrint(buffer, tabX, tabY, wndW, wndH, "[ ]", colors[CLRF_TABBAR_ARROW], colors[CLRB_TABBAR_ARROW]);
+		cellPrint(buffer, tabX + 1, tabY, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLRF_TABBAR_ARROW], colors[CLRB_TABBAR_ARROW]);
+		cellPrint(buffer, tabX + tabW - 3, tabY, wndW, wndH, "[ ]", colors[CLRF_TABBAR_ARROW_DIS], colors[CLRB_TABBAR_ARROW_DIS]);
+		cellPrint(buffer, tabX + tabW - 2, tabY, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLRF_TABBAR_ARROW_DIS], colors[CLRB_TABBAR_ARROW_DIS]);
 	}
 	editY = tabY + tabH;
 	//barra de estado
@@ -583,8 +598,8 @@ void TTui::TEST_REDRAW(void)
 	{
 		statusH++;
 		for(int i = 0; i < statusW; i++)
-			cellPrint(buffer, statusX + i, statusY, wndW, wndH, " ", colors[CLR_STATUSBAR]);
-		cellPrint(buffer, statusX, statusY, wndW, wndH, "Estado", colors[CLR_STATUSBAR]);
+			cellPrint(buffer, statusX + i, statusY, wndW, wndH, " ", colors[CLRF_STATUSBAR], colors[CLRB_STATUSBAR]);
+		cellPrint(buffer, statusX, statusY, wndW, wndH, "Estado", colors[CLRF_STATUSBAR], colors[CLRB_STATUSBAR]);
 	}
 	editH = wndH - editY - statusH;
 	//editor
@@ -592,7 +607,7 @@ void TTui::TEST_REDRAW(void)
 	{
 		//espacio de texto
 		for(int i = 0; i < editW - 1; i++)
-			cellPrint(buffer, editX + i, editY + j, wndW, wndH, " ", colors[CLR_EDIT_TEXT]);
+			cellPrint(buffer, editX + i, editY + j, wndW, wndH, " ", colors[CLRF_EDIT_TEXT], colors[CLRB_EDIT_TEXT]);
 		//barra de desplazamiento vertical
 		int len = editH / 4;
 		if(test_scroll < 0)test_scroll = 0;
@@ -601,21 +616,21 @@ void TTui::TEST_REDRAW(void)
 		int diff = end - (editH - 2);
 		if(diff > 0){start -= diff; end -= diff; test_scroll -= diff;}
 		if((j >= start) && (j < end))
-			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLR_EDIT_SC_THUMB]);
+			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLRF_EDIT_SC_THUMB], colors[CLRB_EDIT_SC_THUMB]);
 		else
-			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
+			cellPrint(buffer, editX + editW - 1, editY + j, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLRF_EDIT_SC_SPACE], colors[CLRB_EDIT_SC_SPACE]);
 	}
-	cellPrint(buffer, editX + editW - 1, editY, wndW, wndH, gchars[GCH_SCRL_UP], colors[CLR_EDIT_SC_ARR]); //flecha arriba
-	cellPrint(buffer, editX + editW - 1, editY + editH - 2, wndW, wndH, gchars[GCH_SCRL_DOWN], colors[CLR_EDIT_SC_ARR]); //flecha abajo
+	cellPrint(buffer, editX + editW - 1, editY, wndW, wndH, gchars[GCH_SCRL_UP], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha arriba
+	cellPrint(buffer, editX + editW - 1, editY + editH - 2, wndW, wndH, gchars[GCH_SCRL_DOWN], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha abajo
 	//barra de desplazamiento horizontal
 	for(int i = 0; i < editW - 3; i++)
 		if(i < editW / 4)
-			cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLR_EDIT_SC_THUMB]);
+			cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_THUMB], colors[CLRF_EDIT_SC_THUMB], colors[CLRB_EDIT_SC_THUMB]);
 		else
-			cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLR_EDIT_SC_SPACE]);
-	cellPrint(buffer, editX, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLR_EDIT_SC_ARR]); //flecha izquierda
-	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLR_EDIT_SC_ARR]); //flecha derecha
-	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, gchars[GCH_BOX2_C4], colors[CLR_EDIT_BORDER]); //borde abajo derecha
+			cellPrint(buffer, editX + i + 1, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_SPACE], colors[CLRF_EDIT_SC_SPACE], colors[CLRB_EDIT_SC_SPACE]);
+	cellPrint(buffer, editX, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha izquierda
+	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha derecha
+	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, gchars[GCH_BOX2_C4], colors[CLRF_EDIT_BORDER], colors[CLRB_EDIT_BORDER]); //borde abajo derecha
 	//borrar pantalla
 	//setfb(7, 0);
 	//clear();
@@ -626,8 +641,15 @@ void TTui::TEST_REDRAW(void)
 		term.GotoXY(0, j);
 		for(int i = 0; i < wndW; i++)
 		{
-			term.SetFgColor(buffer[index].clr);
-			term.SetBgColor(buffer[index].clr>>4);
+			int fg, bg;
+			fg = buffer[index].fg;
+			bg = buffer[index].bg;
+			if(fg == 255)
+				fg = -1;
+			if(bg == 255)
+				bg = -1;
+			term.SetFgColor(fg);
+			term.SetBgColor(bg);
 			UTF32_UTF8(str, buffer[index].chr);
 			if(str[0] == 0)
 				term.Print(" ");
