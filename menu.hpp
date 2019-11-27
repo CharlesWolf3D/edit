@@ -12,7 +12,7 @@
 //elemento de definición de menú
 typedef struct
 {
-	const char *caption;                 //el & indica el carácter enfatizado, cada tab al principio es un nivel de anidación
+	const char *caption;           //el & indica el carácter enfatizado, cada tab al principio es un nivel de anidación
 	unsigned int hk;               //tecla de acceso rápido
 	unsigned int id;               //identificador para modificar el elemento
 	unsigned int flags;            //opciones

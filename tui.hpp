@@ -132,6 +132,7 @@ class TTui
 {
 public:
 	int wndW, wndH; // Dimensiones de la terminal
+	int maxW, maxH; // Dimensiones máximas permitidas de la terminal
 	TAnsiTerminal term;
 	
 	// Inicializa el entorno de texto.

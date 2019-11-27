@@ -62,8 +62,8 @@ static void int2hex2(byte x, char *str)
 static void int2str(int x, char *str)
 {
 	char buf[10];
-	unsigned char i = 0;
-	unsigned int ux;
+	byte i = 0;
+	dword ux;
 	if(x == 0)
 		*str++ = '0';
 	else
@@ -73,7 +73,7 @@ static void int2str(int x, char *str)
 			*str++ = '-';
 			x = -x;
 		}
-		ux = (unsigned int)x;
+		ux = (dword)x;
 		while(ux)
 		{
 			buf[i++] = (ux % 10) + '0';

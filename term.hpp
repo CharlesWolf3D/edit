@@ -115,7 +115,7 @@ public:
 	void EnableWrap(byte enable);
 	
 	// Establece los atributos de los caracteres que se van a escribir.
-	void SetAttr(unsigned char attr);
+	void SetAttr(byte attr);
 	
 	// Establece el color de primer plano.
 	// El valor -1 establece el color predeterminado de la terminal.

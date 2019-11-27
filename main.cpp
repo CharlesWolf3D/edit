@@ -308,11 +308,6 @@ int main(int argc, char *argv[])
 					
 					sprintf(str,"X = %i\n\rY = %i\n\rB = %02x\n\r",(unsigned char)(n2 - 33),(unsigned char)(n3 - 33),n1);
 					tui.term.Print(str);
-					/*
-					tui.term.Print("X = "); int2str((unsigned char)(n2 - 33), str); tui.term.Print(str); tui.term.Print("\n\r");
-					tui.term.Print("Y = "); int2str((unsigned char)(n3 - 33), str); tui.term.Print(str); tui.term.Print("\n\r");
-					tui.term.Print("B = "); int2hex2(n1, str); tui.term.Print(str); tui.term.Print("\n\r");
-					*/
 					if((n1 & 0x60) == 0x60)
 						tui.term.Print((n1 & 1) ? "Rueda abajo" : "Rueda arriba");
 					else
@@ -327,7 +322,6 @@ int main(int argc, char *argv[])
 				default:
 					tui.term.Clear();
 					sprintf(str,"%02x",ch);
-					//int2hex2(ch,str);
 					tui.term.Print(str);
 					if(ch >= 32)
 					{
@@ -342,7 +336,6 @@ int main(int argc, char *argv[])
 					{
 						ch = tui.term.GetChr();
 						sprintf(str,"%02x",ch);
-						//int2hex2(ch,str);
 						tui.term.Print(str);
 						if(ch >= 32)
 						{
@@ -381,7 +374,6 @@ int main(int argc, char *argv[])
 					{
 						tui.term.Print("<");
 						sprintf(str,"%i",chr);
-						//int2str(chr, str);
 						tui.term.Print(str);
 						tui.term.Print(">");
 					}
@@ -405,12 +397,6 @@ int main(int argc, char *argv[])
 					if(key & HK_WHDN)tui.term.Print("Rueda abajo");
 					sprintf(str," X=%i Y=%i",HK_MX(key),HK_MY(key));
 					tui.term.Print(str);
-					/*
-					tui.term.Print(" X=");
-					int2str(HK_MX(key),str);tui.term.Print(str);
-					tui.term.Print(" Y=");
-					int2str(HK_MY(key),str);tui.term.Print(str);
-					*/
 				}
 				tui.term.Print("\n\r");
 				tui.term.Refresh();
@@ -428,16 +414,6 @@ int main(int argc, char *argv[])
 		if(modo == 2)
 		{
 			tui.Update();
-			/*
-			getterminalsize(&wndW, &wndH);
-			if(oldw != wndW || oldh != wndH || redraw)
-			{
-				oldw = wndW;
-				oldh = wndH;
-				redraw = 0;
-				wndRedraw();
-			}
-			*/
 		}
 		////
 		//tuiRefresh();

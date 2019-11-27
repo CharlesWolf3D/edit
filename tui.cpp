@@ -380,6 +380,8 @@ menudef_t menudefs_test[] = ////
 byte TTui::Start(void)
 {
 	cell_t *temp;
+	maxW = 256;
+	maxH = 256;
 	term.Start();
 	term.Clear();
 	term.Refresh();
@@ -417,6 +419,10 @@ void TTui::Update(void)
 	int wndW_new, wndH_new;
 	cell_t *temp;
 	term.GetSize(&wndW_new, &wndH_new);
+	if(maxW && wndW_new > maxW)
+		wndW_new = maxW;
+	if(maxH && wndH_new > maxH)
+		wndH_new = maxH;
 	if(wndW_new != wndW || wndH_new != wndH)
 	{
 		temp = (cell_t *)realloc(screenBuffer1, wndW_new * wndH_new * sizeof(cell_t) * 2);
