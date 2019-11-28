@@ -283,6 +283,7 @@ int main(int argc, char *argv[])
 	int modo = 0;
 	char str[64];
 	unsigned int key;
+	byte redraw = 0;
 	tui.Start();
 	while(!finish)
 	{
@@ -358,7 +359,7 @@ int main(int argc, char *argv[])
 				if(HK_TYPEC(key))
 				{
 					
-					if(chr == ' '){redraw = 1; modo = 2;}
+					if(chr == ' '){redraw = 2; modo = 2;}
 					if(chr >= 32 && chr <= 126)
 					{
 						if(chr == 32)
@@ -413,12 +414,9 @@ int main(int argc, char *argv[])
 			usleep(20 * 1000); //20=>50Hz, 16=>60Hz
 		if(modo == 2)
 		{
-			tui.Update();
+			tui.Update(redraw);
+			redraw = 0;
 		}
-		////
-		//tuiRefresh();
-		
-		////
 	}
 	tui.End();
 	return(0);

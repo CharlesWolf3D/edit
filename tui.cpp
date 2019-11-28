@@ -423,12 +423,16 @@ void TTui::End(void)
 	}
 }
 
-int redraw = 0;////
 // Redibuja el entorno de texto si es necesario. También comprueba si hay que redimensionar.
-void TTui::Update(void)
+// redraw =
+//     0 = redibujar todo si cambió de tamaño, no redibujar si no cambió el tamaño
+//     1 = redibujar todo si cambió de tamaño, redibujar parcialmente lo que haya cambiado en el búfer
+//     2 = redibujar todo
+void TTui::Update(byte redraw)
 {
 	int wndW_new, wndH_new;
 	cell_t *temp;
+	char str[8];
 	term.GetSize(&wndW_new, &wndH_new);
 	if(maxW && wndW_new > maxW)
 		wndW_new = maxW;
@@ -443,13 +447,85 @@ void TTui::Update(void)
 			wndH = wndH_new;
 			screenBuffer1 = temp;
 			screenBuffer2 = temp + wndW * wndH;
-			redraw = 1;
+			redraw = 2;
 		}
 	}
-	if(redraw)
+	//a partir de aquí redraw significa:
+	//0 = no redibujar
+	//1 = redibujar parcialmente lo que haya cambiado en el búfer
+	//2 = redibujar todo
+	int lastX;
+	int lastY;
+	int index = 0;
+	switch(redraw)
 	{
-		redraw = 0;
+	case 1: //dibujar lo que haya cambiado entre buf1 y buf2, y copiarlo de buf1 a buf2
 		TEST_REDRAW();////
+		lastX = lastY = -1;
+		for(int j = 0; j < wndH; j++)
+		{
+			for(int i = 0; i < wndW; i++)
+			{
+				int fg, bg;
+				dword chr;
+				chr = screenBuffer1[index].chr;
+				fg = screenBuffer1[index].fg;
+				bg = screenBuffer1[index].bg;
+				if((chr != screenBuffer2[index].chr) || (fg != screenBuffer2[index].fg) || (bg != screenBuffer2[index].bg))
+				{
+					screenBuffer2[index].chr = chr;
+					screenBuffer2[index].fg = fg;
+					screenBuffer2[index].bg = bg;
+					if((i != lastX) || (j != lastY))
+					{
+						term.GotoXY(i, j);
+						lastX = i;
+						lastY = j;
+					}
+					if(fg == 255) fg = -1;
+					if(bg == 255) bg = -1;
+					term.SetFgColor(fg);
+					term.SetBgColor(bg);
+					UTF32_UTF8(str, screenBuffer1[index].chr);
+					if(str[0] == 0)
+						term.Print(" ");
+					else
+						term.Print(str);
+					lastX++;
+				}
+				index++;
+			}
+		}
+		term.Refresh();
+		break;
+	case 2: //dibujar todo buf1, copiar todo de buf1 a buf2
+		TEST_REDRAW();////
+		for(int j = 0; j < wndH; j++)
+		{
+			term.GotoXY(0, j);
+			for(int i = 0; i < wndW; i++)
+			{
+				int fg, bg, chr;
+				chr = screenBuffer1[index].chr;
+				fg = screenBuffer1[index].fg;
+				bg = screenBuffer1[index].bg;
+				screenBuffer2[index].fg = fg;
+				screenBuffer2[index].bg = bg;
+				screenBuffer2[index].chr = chr;
+				if(fg == 255) fg = -1;
+				if(bg == 255) bg = -1;
+				term.SetFgColor(fg);
+				term.SetBgColor(bg);
+				UTF32_UTF8(str, chr);
+				if(str[0] == 0)
+					term.Print(" ");
+				else
+					term.Print(str);
+				index++;
+			}
+		}
+		term.Refresh();
+		break;
 	}
 }
 
@@ -486,7 +562,6 @@ void TTui::TEST_REDRAW(void)
 	int statusW = wndW;
 	int statusH = 0;
 	
-	char str[8];
 	cell_t *buffer;
 	buffer = screenBuffer1;
 	
@@ -631,32 +706,4 @@ void TTui::TEST_REDRAW(void)
 	cellPrint(buffer, editX, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha izquierda
 	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha derecha
 	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, gchars[GCH_BOX2_C4], colors[CLRF_EDIT_BORDER], colors[CLRB_EDIT_BORDER]); //borde abajo derecha
-	//borrar pantalla
-	//setfb(7, 0);
-	//clear();
-	//copiar búfer
-	int index = 0;
-	for(int j = 0; j < wndH; j++)
-	{
-		term.GotoXY(0, j);
-		for(int i = 0; i < wndW; i++)
-		{
-			int fg, bg;
-			fg = buffer[index].fg;
-			bg = buffer[index].bg;
-			if(fg == 255)
-				fg = -1;
-			if(bg == 255)
-				bg = -1;
-			term.SetFgColor(fg);
-			term.SetBgColor(bg);
-			UTF32_UTF8(str, buffer[index].chr);
-			if(str[0] == 0)
-				term.Print(" ");
-			else
-				term.Print(str);
-			index++;
-		}
-	}
-	term.Refresh();
 }

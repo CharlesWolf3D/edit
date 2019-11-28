@@ -174,7 +174,11 @@ public:
 	void End(void);
 	
 	// Redibuja el entorno de texto si es necesario. También comprueba si hay que redimensionar.
-	void Update(void);
+	// redraw =
+	//     0 = redibujar todo si cambió de tamaño, no redibujar si no cambió el tamaño
+	//     1 = redibujar todo si cambió de tamaño, redibujar parcialmente lo que haya cambiado en el búfer
+	//     2 = redibujar todo
+	void Update(byte redraw);
 	
 	void TEST_REDRAW(void);
 private:
