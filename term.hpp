@@ -102,8 +102,30 @@ public:
 	// Borra la pantalla y pone el cursor en 0,0.
 	void Clear(void);
 	
-	// Pone el cursor en x,y.
+	// Pone el cursor en la posición deseada.
+	// x = Coordenada x, basada en 0
+	// y = Coordenada y, basada en 0
 	void GotoXY(int32 x, int32 y);
+
+	// Pone el cursor en la posición horizontal deseada.
+	// x = Coordenada x, basada en 0
+	void GotoX(int32 x);
+
+	// Mueve el cursor hacia arriba.
+	// count = número de posiciones que mover el cursor
+	void GotoUp(int32 count);
+
+	// Mueve el cursor hacia abajo.
+	// count = número de posiciones que mover el cursor
+	void GotoDown(int32 count);
+
+	// Mueve el cursor hacia la izquierda.
+	// count = número de posiciones que mover el cursor
+	void GotoLeft(int32 count);
+
+	// Mueve el cursor hacia la derecha.
+	// count = número de posiciones que mover el cursor
+	void GotoRight(int32 count);
 	
 	// Obtiene el tamaño de la terminal
 	void GetSize(int32 *w, int32 *h);

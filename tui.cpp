@@ -476,11 +476,19 @@ void TTui::Update(byte redraw)
 					screenBuffer2[index].chr = chr;
 					screenBuffer2[index].fg = fg;
 					screenBuffer2[index].bg = bg;
-					if((i != lastX) || (j != lastY))
+					if(j != lastY)
 					{
 						term.GotoXY(i, j);
 						lastX = i;
 						lastY = j;
+					}
+					else
+					{
+						if(i != lastX)
+						{
+							term.GotoX(i);
+							lastX = i;
+						}
 					}
 					if(fg == 255) fg = -1;
 					if(bg == 255) bg = -1;

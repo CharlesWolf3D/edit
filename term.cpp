@@ -174,7 +174,9 @@ void TAnsiTerminal::Clear(void)
 	Print("\x1b[2J\x1b[1;1H");
 }
 
-// Pone el cursor en x,y.
+// Pone el cursor en la posición deseada.
+// x = Coordenada x, basada en 0
+// y = Coordenada y, basada en 0
 void TAnsiTerminal::GotoXY(int32 x, int32 y)
 {
 	char num[8];
@@ -185,6 +187,61 @@ void TAnsiTerminal::GotoXY(int32 x, int32 y)
 	int2str(x + 1, num);
 	Print(num);
 	Print("H");
+}
+
+// Pone el cursor en la posición horizontal deseada.
+// x = Coordenada x, basada en 0
+void TAnsiTerminal::GotoX(int32 x)
+{
+	char num[8];
+	Print("\x1b[");
+	int2str(x + 1, num);
+	Print(num);
+	Print("G");
+}
+
+// Mueve el cursor hacia arriba.
+// count = número de posiciones que mover el cursor
+void TAnsiTerminal::GotoUp(int32 count)
+{
+	char num[8];
+	Print("\x1b[");
+	int2str(count, num);
+	Print(num);
+	Print("A");
+}
+
+// Mueve el cursor hacia abajo.
+// count = número de posiciones que mover el cursor
+void TAnsiTerminal::GotoDown(int32 count)
+{
+	char num[8];
+	Print("\x1b[");
+	int2str(count, num);
+	Print(num);
+	Print("B");
+}
+
+// Mueve el cursor hacia la izquierda.
+// count = número de posiciones que mover el cursor
+void TAnsiTerminal::GotoLeft(int32 count)
+{
+	char num[8];
+	Print("\x1b[");
+	int2str(count, num);
+	Print(num);
+	Print("D");
+}
+
+// Mueve el cursor hacia la derecha.
+// count = número de posiciones que mover el cursor
+void TAnsiTerminal::GotoRight(int32 count)
+{
+	char num[8];
+	Print("\x1b[");
+	int2str(count, num);
+	Print(num);
+	Print("C");
 }
 
 // Obtiene el tamaño de la terminal
