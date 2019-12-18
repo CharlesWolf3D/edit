@@ -1,5 +1,5 @@
 CPPC=@g++
-CPPFLAGS=-std=c++98 -MD -O2 -Wall -Wextra
+CPPFLAGS=-std=c++98 -MD -O2 -Wall -Wextra -Wno-misleading-indentation
 LFLAGS= -O2
 OBJSC:=main.elf tui.elf term.elf window.elf controls.elf menu.elf edit.elf
 DEPS=$(OBJSC:.elf=.d)
