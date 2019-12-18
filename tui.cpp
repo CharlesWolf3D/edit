@@ -219,6 +219,151 @@ int strlen_cp(const char *str)
 	return(r);
 }
 
+static dword wideRanges[] =
+{
+	0x01100, 0x0115F,
+	0x0231A, 0x0231B,
+	0x02329, 0x0232A,
+	0x023E9, 0x023EC,
+	0x023F0, 0x023F0,
+	0x023F3, 0x023F3,
+	0x025FD, 0x025FE,
+	0x02614, 0x02615,
+	0x02648, 0x02653,
+	0x0267F, 0x0267F,
+	0x02693, 0x02693,
+	0x026A1, 0x026A1,
+	0x026AA, 0x026AB,
+	0x026BD, 0x026BE,
+	0x026C4, 0x026C5,
+	0x026CE, 0x026CE,
+	0x026D4, 0x026D4,
+	0x026EA, 0x026EA,
+	0x026F2, 0x026F3,
+	0x026F5, 0x026F5,
+	0x026FA, 0x026FA,
+	0x026FD, 0x026FD,
+	0x02705, 0x02705,
+	0x0270A, 0x0270B,
+	0x02728, 0x02728,
+	0x0274C, 0x0274C,
+	0x0274E, 0x0274E,
+	0x02753, 0x02755,
+	0x02757, 0x02757,
+	0x02795, 0x02797,
+	0x027B0, 0x027B0,
+	0x027BF, 0x027BF,
+	0x02B1B, 0x02B1C,
+	0x02B50, 0x02B50,
+	0x02B55, 0x02B55,
+	0x02E80, 0x02E99,
+	0x02E9B, 0x02EF3,
+	0x02F00, 0x02FD5,
+	0x02FF0, 0x02FFB,
+	0x03001, 0x0303E,
+	0x03041, 0x03096,
+	0x03099, 0x030FF,
+	0x03105, 0x0312F,
+	0x03131, 0x0318E,
+	0x03190, 0x031BA,
+	0x031C0, 0x031E3,
+	0x031F0, 0x0321E,
+	0x03220, 0x03247,
+	0x03250, 0x04DBF,
+	0x04E00, 0x0A48C, //CJK unificado
+	0x0A490, 0x0A4C6,
+	0x0A960, 0x0A97C,
+	0x0AC00, 0x0D7A3,
+	0x0F900, 0x0FAFF,
+	0x0FE10, 0x0FE19,
+	0x0FE30, 0x0FE52,
+	0x0FE54, 0x0FE66,
+	0x0FE68, 0x0FE6B,
+	0x0FF00, 0x0FFEF, //ancho doble
+	0x16FE0, 0x16FE3,
+	0x17000, 0x187F7,
+	0x18800, 0x18AF2,
+	0x1B000, 0x1B11E,
+	0x1B150, 0x1B152,
+	0x1B164, 0x1B167,
+	0x1B170, 0x1B2FB,
+	0x1F004, 0x1F004,
+	0x1F0CF, 0x1F0CF,
+	0x1F18E, 0x1F18E,
+	0x1F191, 0x1F19A,
+	0x1F200, 0x1F202,
+	0x1F210, 0x1F23B,
+	0x1F240, 0x1F248,
+	0x1F250, 0x1F251,
+	0x1F260, 0x1F265,
+	0x1F300, 0x1F320,
+	0x1F32D, 0x1F335,
+	0x1F337, 0x1F37C,
+	0x1F37E, 0x1F393,
+	0x1F3A0, 0x1F3CA,
+	0x1F3CF, 0x1F3D3,
+	0x1F3E0, 0x1F3F0,
+	0x1F3F4, 0x1F3F4,
+	0x1F3F8, 0x1F43E,
+	0x1F440, 0x1F440,
+	0x1F442, 0x1F4FC,
+	0x1F4FF, 0x1F53D,
+	0x1F54B, 0x1F54E,
+	0x1F550, 0x1F567,
+	0x1F57A, 0x1F57A,
+	0x1F595, 0x1F596,
+	0x1F5A4, 0x1F5A4,
+	0x1F5FB, 0x1F64F,
+	0x1F680, 0x1F6C5,
+	0x1F6CC, 0x1F6CC,
+	0x1F6D0, 0x1F6D2,
+	0x1F6D5, 0x1F6D5,
+	0x1F6EB, 0x1F6EC,
+	0x1F6F4, 0x1F6FA,
+	0x1F7E0, 0x1F7EB,
+	0x1F90D, 0x1F971,
+	0x1F973, 0x1F976,
+	0x1F97A, 0x1F9A2,
+	0x1F9A5, 0x1F9AA,
+	0x1F9AE, 0x1F9CA,
+	0x1F9CD, 0x1F9FF,
+	0x1FA70, 0x1FA73,
+	0x1FA78, 0x1FA7A,
+	0x1FA80, 0x1FA82,
+	0x1FA90, 0x1FA95,
+	0x20000, 0x2FFFD,
+	0x30000, 0x3FFFD,
+	0
+};
+
+//devuelve la longitud en celdas de un punto de código UTF-8
+int chwidth(unsigned int cp)
+{
+	int i = 0;
+	while(wideRanges[i])
+	{
+		if(cp < wideRanges[i])
+			return(1);
+		if(cp <= wideRanges[i + 1])
+			return(2);
+		i += 2;
+	}
+	return(1);
+}
+
+//devuelve la longitud en celdas de una cadena
+int strlen_cells(const char *str)
+{
+	int offset, r = 0;
+	unsigned int cp;
+	while((cp = UTF8_UTF32(str, &offset)) != 0)
+	{
+		r += chwidth(cp);
+		str += offset;
+	}
+	return(r);
+}
+
 //imprime texto en un búfer de celdas
 //buffer=puntero al array de celdas, deberá haber w*h celdas
 //x=coordenada x
@@ -232,13 +377,14 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 {
 	unsigned int code;
 	int offset;
+	int ch_width;
 	if(y < 0 || y >= h)
 		return;
 	while(x < 0 && *str)
 	{
-		UTF8_UTF32(str, &offset);
+		code = UTF8_UTF32(str, &offset);
 		str += offset;
-		x++;
+		x += chwidth(code);
 	}
 	buffer += x + y * w;
 	while(*str)
@@ -250,8 +396,9 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 		buffer->fg = fg;
 		buffer->bg = bg;
 		buffer->chr = code;
-		buffer++;
-		x++;
+		ch_width = chwidth(code);
+		buffer+= ch_width;
+		x += ch_width;
 	}
 }
 
@@ -264,18 +411,21 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 //str=puntero a la cadena
 //textClr=color del texto
 //keyClr=color del carácter enfatizado
-//devuelve la longitud en puntos de código del texto sin el ampersand
+//devuelve la longitud en celdas del texto sin el ampersand
 int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, byte textFG, byte textBG, byte keyFG, byte keyBG)
 {
 	unsigned int code;
 	int offset, len = 0;
+	int ch_width;
 	byte fg = textFG, bg = textBG;
 	while(x < 0 && *str)
 	{
-		if(UTF8_UTF32(str, &offset) != '&')
+		code = UTF8_UTF32(str, &offset);
+		if(code != '&')
 		{
-			len++;
-			x++;
+			ch_width = chwidth(code);
+			len += ch_width;
+			x += ch_width;
 			fg = textFG;
 			bg = textBG;
 		}
@@ -293,17 +443,18 @@ int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, byte te
 		str += offset;
 		if(code  != '&')
 		{
+			ch_width = chwidth(code);
 			if((x < w) && (y >= 0) && (y < h))
 			{
 				buffer->chr = code;
 				buffer->fg = fg;
 				buffer->bg = bg;
-				buffer++;
-				len++;
+				buffer += ch_width;
+				len += ch_width;
 				fg = textFG;
 				bg = textBG;
 			}
-			x++;
+			x += ch_width;
 		}
 		else
 		{
@@ -457,6 +608,7 @@ void TTui::Update(byte redraw)
 	int lastX;
 	int lastY;
 	int index = 0;
+	int skip = 0;
 	switch(redraw)
 	{
 	case 1: //dibujar lo que haya cambiado entre buf1 y buf2, y copiarlo de buf1 a buf2
@@ -476,30 +628,40 @@ void TTui::Update(byte redraw)
 					screenBuffer2[index].chr = chr;
 					screenBuffer2[index].fg = fg;
 					screenBuffer2[index].bg = bg;
-					if(j != lastY)
+					if(skip)
 					{
-						term.GotoXY(i, j);
-						lastX = i;
-						lastY = j;
+						skip = 0;
+						lastX++;
 					}
 					else
 					{
-						if(i != lastX)
+						if(j != lastY)
 						{
-							term.GotoX(i);
+							term.GotoXY(i, j);
 							lastX = i;
+							lastY = j;
 						}
+						else
+						{
+							if(i != lastX)
+							{
+								term.GotoX(i);
+								lastX = i;
+							}
+						}
+						if(fg == 255) fg = -1;
+						if(bg == 255) bg = -1;
+						term.SetFgColor(fg);
+						term.SetBgColor(bg);
+						UTF32_UTF8(str, screenBuffer1[index].chr);
+						if(str[0] == 0)
+							term.Print(" ");
+						else
+							term.Print(str);
+						lastX++;
+						if(chwidth(screenBuffer1[index].chr) == 2)
+							skip = 1;
 					}
-					if(fg == 255) fg = -1;
-					if(bg == 255) bg = -1;
-					term.SetFgColor(fg);
-					term.SetBgColor(bg);
-					UTF32_UTF8(str, screenBuffer1[index].chr);
-					if(str[0] == 0)
-						term.Print(" ");
-					else
-						term.Print(str);
-					lastX++;
 				}
 				index++;
 			}
@@ -520,15 +682,22 @@ void TTui::Update(byte redraw)
 				screenBuffer2[index].fg = fg;
 				screenBuffer2[index].bg = bg;
 				screenBuffer2[index].chr = chr;
-				if(fg == 255) fg = -1;
-				if(bg == 255) bg = -1;
-				term.SetFgColor(fg);
-				term.SetBgColor(bg);
-				UTF32_UTF8(str, chr);
-				if(str[0] == 0)
-					term.Print(" ");
+				if(skip)
+					skip = 0;
 				else
-					term.Print(str);
+				{
+					if(fg == 255) fg = -1;
+					if(bg == 255) bg = -1;
+					term.SetFgColor(fg);
+					term.SetBgColor(bg);
+					UTF32_UTF8(str, chr);
+					if(str[0] == 0)
+						term.Print(" ");
+					else
+						term.Print(str);
+					if(chwidth(chr) == 2)
+						skip = 1;
+				}
 				index++;
 			}
 		}
@@ -579,7 +748,7 @@ void TTui::TEST_REDRAW(void)
 		titleH++;
 		for(int i = 0; i < titleW; i++)
 			cellPrint(buffer, i+titleX, titleY, wndW, wndH, " ", colors[CLRF_TITLE], colors[CLRB_TITLE]);
-		cellPrint(buffer, /*titleX + 1*/(titleW - (int)strlen_cp("Editor de texto")) / 2, titleY, wndW, wndH, "Editor de texto", colors[CLRF_TITLE], colors[CLRB_TITLE]);
+		cellPrint(buffer, /*titleX + 1*/(titleW - (int)strlen_cells("Editor de texto")) / 2, titleY, wndW, wndH, "Editor de texto", colors[CLRF_TITLE], colors[CLRB_TITLE]);
 	}
 	menuY = titleY + titleH;
 	//barra de menús
@@ -626,26 +795,26 @@ void TTui::TEST_REDRAW(void)
 		search_x += 16;
 		//botón borrar
 		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLRF_SEARCHBAR_DEL], colors[CLRB_SEARCHBAR_DEL]);
-		search_x += strlen_cp("<X ") + 1;
+		search_x += strlen_cells("<X ") + 1;
 		//botón buscar anterior
 		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " <B ", colors[CLRF_SEARCHBAR_BTN], colors[CLRB_SEARCHBAR_BTN]);
-		search_x += strlen_cp(" <B ") + 1;
+		search_x += strlen_cells(" <B ") + 1;
 		//botón buscar siguiente
 		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " B> ", colors[CLRF_SEARCHBAR_BTN], colors[CLRB_SEARCHBAR_BTN]);
-		search_x += strlen_cp(" B> ") + 1;
+		search_x += strlen_cells(" B> ") + 1;
 		//separador
 		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "|", colors[CLRF_SEARCHBAR], colors[CLRB_SEARCHBAR]);
-		search_x += strlen_cp("|") + 1;
+		search_x += strlen_cells("|") + 1;
 		//caja de texto de ir
 		for(int i = 0; i < 8; i++)
 			cellPrint(buffer, searchX + i + search_x, searchY, wndW, wndH, " ", colors[CLRF_SEARCHBAR_TXT], colors[CLRB_SEARCHBAR_TXT]);
 		search_x += 8;
 		//botón borrar
 		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, "<X ", colors[CLRF_SEARCHBAR_DEL], colors[CLRB_SEARCHBAR_DEL]);
-		search_x += strlen_cp("<X ") + 1;
+		search_x += strlen_cells("<X ") + 1;
 		//botón ir
 		cellPrint(buffer, searchX + search_x, searchY, wndW, wndH, " Ir ", colors[CLRF_SEARCHBAR_BTN], colors[CLRB_SEARCHBAR_BTN]);
-		search_x += strlen_cp(" Ir ") + 1;
+		search_x += strlen_cells(" Ir ") + 1;
 	}
 	tabY = searchY + searchH;
 	//barra de pestañas
@@ -659,9 +828,9 @@ void TTui::TEST_REDRAW(void)
 		//pestañas
 		for(int i = 0; i < 4; i++)
 		{
-			const char *list[]={" ArchivoUno.txt     ", " FicheroDos.c     ", " DocumentoTres.xml     ", " Edit.exe     "};
+			const char *list[]={" ArchivoUno.txt     ", " FicheroDos.c     ", " ありがとう.xml     ", " Edit.exe     "};
 			cellPrint(buffer, tabX +  tab_x, tabY, wndW, wndH, list[i], colors[i==1?CLRF_TABBAR_ACTIVE:CLRF_TABBAR_INACTIVE], colors[i==1?CLRB_TABBAR_ACTIVE:CLRB_TABBAR_INACTIVE]);
-			tab_x += strlen_cp(list[i]);
+			tab_x += strlen_cells(list[i]);
 			cellPrint(buffer, tabX + tab_x - 4, tabY, wndW, wndH, "[X]", colors[CLRF_TABBAR_CLOSE], colors[CLRB_TABBAR_CLOSE]);
 			if(i != 3)
 			{
