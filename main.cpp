@@ -406,7 +406,9 @@ int main(int argc, char *argv[])
 				key = tui.term.GetKey();
 				if(HK_TYPEK(key) && HK_GET(key) == HK_ESC)finish = 1;
 				if(HK_TYPEC(key) && HK_GET(key) == ' '){tui.term.SetFgColor(-1); tui.term.SetBgColor(-1); tui.term.Clear(); tui.term.Print("Entrando en modo sin procesar.\n\r"); tui.term.Refresh(); modo = 0;}
-				if(HK_TYPEM(key)){if(HK_GETC(key)==HK_WHUP){test_scroll--;redraw=1;}if(HK_GETC(key)==HK_WHDN){test_scroll++;redraw=1;}}
+				if(HK_TYPEM(key)){if(HK_GETC(key) == HK_WHUP){test_scroll--; redraw = 1;} if(HK_GETC(key) == HK_WHDN){test_scroll++; redraw = 1;}}
+				if(HK_TYPEM(key)){mousex = HK_MX(key); mousey = HK_MY(key); redraw = 1;}
+				if(HK_TYPEK(key) && HK_GET(key) == HK_F5)redraw = 2;
 				break;
 			}
 		}

@@ -418,7 +418,7 @@ dword TAnsiTerminal::GetKey(void)
 						case 2: btns |= HK_M2; break;
 					}
 				}
-				return(HK_TM | mod | (num3 << 8) | (num2 << 16) | btns); //Ratón
+				return(HK_TM | mod | (num2 << 8) | (num3 << 16) | btns); //Ratón
 			}
 			if(ch >= '0' && ch <= '9')
 			{

@@ -379,28 +379,58 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 {
 	unsigned int code;
 	int offset;
-	int ch_width;
-	if(y < 0 || y >= h)
+	int ch_width = 0;
+	if(y < 0 || y >= h) //salir si la línea está fuera de la pantalla
 		return;
-	while(x < 0 && *str)
+	while(x < 0 && *str) //saltarse los caracteres que estén a la izquierda del inicio de la pantalla
 	{
 		code = UTF8_UTF32(str, &offset);
 		str += offset;
-		x += chwidth(code);
+		ch_width = chwidth(code);
+		x += ch_width;
 	}
-	buffer += x + y * w;
+	buffer += y * w; //poner al búfer apuntando al inicio de la zona donde se imprimirá
+	if((ch_width == 2) && (x == 1)) //si nos hemos saltado un carácter de ancho doble y estamos en la coordenada x=1, poner un espacio en x=0
+	{
+		buffer->fg = fg;
+		buffer->bg = bg;
+		buffer->chr = 0;
+	}
+	buffer += x; //poner al búfer apuntando al inicio de la zona donde se imprimirá
 	while(*str)
 	{
-		if(x >= w)
+		if(x >= w) //salir si no se pueden imprimir más caracteres por la derecha
 			return;
 		code = UTF8_UTF32(str, &offset);
 		str += offset;
-		buffer->fg = fg;
-		buffer->bg = bg;
-		buffer->chr = code;
 		ch_width = chwidth(code);
-		buffer+= ch_width;
-		x += ch_width;
+		
+		if(ch_width == 2) //si el carácter es de ancho doble
+		{
+			buffer->fg = fg; //imprimir color del carácter
+			buffer->bg = bg; //
+			if((x + 1) >= w) //salir si no se pueden imprimir más caracteres por la derecha
+			{
+				buffer->chr = 0;
+				return;
+			}
+			buffer->chr = code; //imprimir código del carácter
+			buffer++;
+			x++;
+			buffer->fg = fg; //imprimir un espacio
+			buffer->bg = bg; //
+			buffer->chr = 0; //
+			buffer++;
+			x++;
+		}
+		else //si el carácter es de ancho normal
+		{
+			buffer->fg = fg;    //imprimir el carácter
+			buffer->bg = bg;    //
+			buffer->chr = code; //
+			buffer++;
+			x++;
+		}
 	}
 }
 
@@ -667,6 +697,7 @@ void TTui::Update(byte redraw)
 				}
 				index++;
 			}
+			skip = 0;
 		}
 		term.Refresh();
 		break;
@@ -709,6 +740,8 @@ void TTui::Update(byte redraw)
 }
 
 int test_scroll=0;////
+int mousex = 0;
+int mousey = 0;
 void TTui::TEST_REDRAW(void)
 {
 	int titleX = 0;
@@ -885,4 +918,10 @@ void TTui::TEST_REDRAW(void)
 	cellPrint(buffer, editX, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_LEFT], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha izquierda
 	cellPrint(buffer, editX + editW - 2, editY + editH - 1, wndW, wndH, gchars[GCH_SCRL_RIGHT], colors[CLRF_EDIT_SC_ARR], colors[CLRB_EDIT_SC_ARR]); //flecha derecha
 	cellPrint(buffer, editX + editW - 1, editY + editH - 1, wndW, wndH, gchars[GCH_BOX2_C4], colors[CLRF_EDIT_BORDER], colors[CLRB_EDIT_BORDER]); //borde abajo derecha
+	
+	for(int j = 0; j < 20; j++)
+		cellPrint(buffer, mousex - 10, mousey + j - 2, wndW, wndH, "|############################|", 1, 7);
+	cellPrint(buffer, mousex - 10, mousey + 0 - 2,  wndW, wndH, "+----------------------------+", 1, 7);
+	cellPrint(buffer, mousex - 10, mousey + 19 - 2, wndW, wndH, "+----------------------------+", 1, 7);
+	cellPrint(buffer, mousex - 8, mousey - 2, wndW, wndH, "ありがとう   ¡Mothafuckaç!", 1, 7);
 }

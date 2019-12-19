@@ -117,6 +117,8 @@ enum
 	GCH_PROG_FULL
 };
 extern int test_scroll;////
+extern int mousex, mousey;
+
 #define HK_KEY_NUMMODS 3
 extern const char *modkeynames[HK_KEY_NUMMODS]; //nombres de las teclas modificadoras
 #define HK_KEY_NUMKEYS 26
