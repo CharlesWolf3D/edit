@@ -377,7 +377,7 @@ int strlen_cells(const char *str)
 //bg=color de fondo
 void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte fg, byte bg)
 {
-	unsigned int code;
+	unsigned code;
 	int offset;
 	int ch_width = 0;
 	if(y < 0 || y >= h) //salir si la línea está fuera de la pantalla
@@ -441,57 +441,104 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 //w=ancho del búfer
 //h=alto del búfer
 //str=puntero a la cadena
-//textClr=color del texto
-//keyClr=color del carácter enfatizado
-//devuelve la longitud en celdas del texto sin el ampersand
+//textFG=color de primer plano del texto
+//textBG=color de fondo del texto
+//keyFG=color de primer plano del carácter enfatizado
+//keyBG=color de fondo del carácter enfatizado
+//devuelve la longitud en celdas del texto impreso sin el ampersand
 int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, byte textFG, byte textBG, byte keyFG, byte keyBG)
 {
-	unsigned int code;
-	int offset, len = 0;
-	int ch_width;
+	unsigned len = 0;
 	byte fg = textFG, bg = textBG;
-	while(x < 0 && *str)
+	byte key = 0;
+	unsigned code;
+	int offset;
+	int ch_width = 0;
+	if(y < 0 || y >= h) //salir si la línea está fuera de la pantalla
+		return(0);
+	while(x < 0 && *str) //saltarse los caracteres que estén a la izquierda del inicio de la pantalla
 	{
 		code = UTF8_UTF32(str, &offset);
-		if(code != '&')
+		str += offset;
+		if((key == 0) && (code == '&'))
 		{
-			ch_width = chwidth(code);
-			len += ch_width;
-			x += ch_width;
-			fg = textFG;
-			bg = textBG;
-		}
-		else
-		{
+			key = 1;
 			fg = keyFG;
 			bg = keyBG;
 		}
-		str += offset;
-	}
-	buffer += x + y * w;
-	while(*str)
-	{
-		code = UTF8_UTF32(str, &offset);
-		str += offset;
-		if(code  != '&')
+		else
 		{
 			ch_width = chwidth(code);
-			if((x < w) && (y >= 0) && (y < h))
+			x += ch_width;
+			if(key == 1)
 			{
-				buffer->chr = code;
-				buffer->fg = fg;
-				buffer->bg = bg;
-				buffer += ch_width;
-				len += ch_width;
+				key = 0;
 				fg = textFG;
 				bg = textBG;
 			}
-			x += ch_width;
+		}
+	}
+	buffer += y * w; //poner al búfer apuntando al inicio de la zona donde se imprimirá
+	if((ch_width == 2) && (x == 1)) //si nos hemos saltado un carácter de ancho doble y estamos en la coordenada x=1, poner un espacio en x=0
+	{
+		buffer->fg = fg;
+		buffer->bg = bg;
+		buffer->chr = 0;
+		len++;
+	}
+	buffer += x; //poner al búfer apuntando al inicio de la zona donde se imprimirá
+	key = 0;
+	fg = textFG;
+	bg = textBG;
+	while(*str)
+	{
+		if(x >= w) //salir si no se pueden imprimir más caracteres por la derecha
+			return(len);
+		code = UTF8_UTF32(str, &offset);
+		str += offset;
+		if((key == 0) && (code == '&'))
+		{
+			key = 1;
+			fg = keyFG;
+			bg = keyBG;
 		}
 		else
 		{
-			fg = keyFG;
-			bg = keyBG;
+			ch_width = chwidth(code);
+			if(ch_width == 2) //si el carácter es de ancho doble
+			{
+				buffer->fg = fg; //imprimir color del carácter
+				buffer->bg = bg; //
+				if((x + 1) >= w) //salir si no se pueden imprimir más caracteres por la derecha
+				{
+					buffer->chr = 0;
+					return(len);
+				}
+				buffer->chr = code; //imprimir código del carácter
+				buffer++;
+				x++;
+				buffer->fg = fg; //imprimir un espacio
+				buffer->bg = bg; //
+				buffer->chr = 0; //
+				buffer++;
+				x++;
+			}
+			else //si el carácter es de ancho normal
+			{
+				buffer->fg = fg;    //imprimir el carácter
+				buffer->bg = bg;    //
+				buffer->chr = code; //
+				buffer++;
+				x++;
+			}
+			len++;
+			if(key == 1)
+			{
+				key = 0;
+				fg = textFG;
+				bg = textBG;
+			}
+
 		}
 	}
 	return(len);
