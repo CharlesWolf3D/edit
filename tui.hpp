@@ -156,7 +156,7 @@ extern byte wndPosLocation;
 // Sólo admite caracteres compuestos por un punto de código.
 typedef struct
 {
-	dword chr; // Punto de código en UTF-32
+	dword chr; // Punto de código en UTF-32, si es 0, significa que es la parte derecha de un carácter de ancho doble
 	byte fg;   // Color de primer plano, valor 255 es predeterminado
 	byte bg;   // Color de fondo, valor 255 es predeterminado
 } cell_t;

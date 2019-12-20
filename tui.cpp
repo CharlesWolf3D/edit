@@ -3,7 +3,6 @@
 #include "term.hpp"
 
 ////TODO:
-////2 búferes
 ////dibujar controles
 ////eventos de controles
 
@@ -397,10 +396,13 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 		buffer->chr = 0;
 	}
 	buffer += x; //poner al búfer apuntando al inicio de la zona donde se imprimirá
+	if((x > 0) && (x < w) && *str) //si la celda anterior a la primera que hay que imprimir tiene un carácter de ancho doble, borrarlo
+		if(buffer->chr == 0)
+			(buffer - 1)->chr = ' ';
 	while(*str)
 	{
 		if(x >= w) //salir si no se pueden imprimir más caracteres por la derecha
-			return;
+			break;
 		code = UTF8_UTF32(str, &offset);
 		str += offset;
 		ch_width = chwidth(code);
@@ -412,7 +414,7 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 			if((x + 1) >= w) //salir si no se pueden imprimir más caracteres por la derecha
 			{
 				buffer->chr = 0;
-				return;
+				break;
 			}
 			buffer->chr = code; //imprimir código del carácter
 			buffer++;
@@ -432,6 +434,9 @@ void cellPrint(cell_t *buffer, int x, int y, int w, int h, const char *str, byte
 			x++;
 		}
 	}
+	if(x < w) //si la celda tras la que se ha terminado de imprimir es la parte derecha de un carácter de ancho doble, borrarlo
+		if(buffer->chr == 0)
+			buffer->chr = ' ';
 }
 
 //imprime el texto de un menú
@@ -487,13 +492,16 @@ int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, byte te
 		len++;
 	}
 	buffer += x; //poner al búfer apuntando al inicio de la zona donde se imprimirá
+	if((x > 0) && (x < w) && *str) //si la celda anterior a la primera que hay que imprimir tiene un carácter de ancho doble, borrarlo
+		if(buffer->chr == 0)
+			(buffer - 1)->chr = ' ';
 	key = 0;
 	fg = textFG;
 	bg = textBG;
 	while(*str)
 	{
 		if(x >= w) //salir si no se pueden imprimir más caracteres por la derecha
-			return(len);
+			break;
 		code = UTF8_UTF32(str, &offset);
 		str += offset;
 		if((key == 0) && (code == '&'))
@@ -512,7 +520,7 @@ int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, byte te
 				if((x + 1) >= w) //salir si no se pueden imprimir más caracteres por la derecha
 				{
 					buffer->chr = 0;
-					return(len);
+					break;
 				}
 				buffer->chr = code; //imprimir código del carácter
 				buffer++;
@@ -541,6 +549,9 @@ int printmn(cell_t *buffer, int x, int y, int w, int h, const char *str, byte te
 
 		}
 	}
+	if(x < w) //si la celda tras la que se ha terminado de imprimir es la parte derecha de un carácter de ancho doble, borrarlo
+		if(buffer->chr == 0)
+			buffer->chr = ' ';
 	return(len);
 }
 
